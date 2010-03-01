@@ -206,7 +206,7 @@ bool JResourceManagerImp::LoadResource(char* filename)
 	char path[128];
 	path[0] = NULL;
 	
-	for(int i = strlen(filename) - 1; i > 1; --i)
+	for(int i = strlen(filename) - 1; i >= 1; --i)
 	{
 		if(filename[i] == '\\')
 		{
