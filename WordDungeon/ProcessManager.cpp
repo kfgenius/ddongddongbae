@@ -28,6 +28,11 @@ bool CProcessManager::IsEmptyStack()
 //프로세스 얻기
 CProcess* CProcessManager::GetCurrentProcess()
 {
+	if(stack_count == 0)
+	{
+		return NULL;
+	}
+
 	return stack[stack_count - 1].p_process;
 }
 
