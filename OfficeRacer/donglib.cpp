@@ -196,39 +196,39 @@ DWORD _PlayAVI( char* name )
 //최대 최소값
 int Max(int x, int y)
 {
-	if(x>y)return x;
+	if(x > y)return x;
 		else return y;
 }
 
 int Min(int x, int y)
 {
-	if(x<y)return x;
+	if(x < y)return x;
 		else return y;
 }
 
 int MaxMin(int x, int min, int max)
 {
-	if(x<min)return min;
-		else if(x>max) return max;
+	if(x < min)return min;
+		else if(x > max) return max;
 		else return x;
 }
 
 double Max(double x, double y)
 {
-	if(x>y)return x;
+	if(x > y)return x;
 		else return y;
 }
 
 double Min(double x, double y)
 {
-	if(x<y)return x;
+	if(x < y)return x;
 		else return y;
 }
 
 double MaxMin(double x, double min, double max)
 {
-	if(x<min)return min;
-		else if(x>max) return max;
+	if(x < min)return min;
+		else if(x > max) return max;
 		else return x;
 }
 

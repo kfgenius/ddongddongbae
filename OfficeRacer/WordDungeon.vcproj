@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="WordDungeon"
+	Name="OfficeRacer"
 	ProjectGUID="{235984A4-8D06-4D84-95D2-A2E52B420AC3}"
 	RootNamespace="Jugde"
 	Keyword="Win32Proj"

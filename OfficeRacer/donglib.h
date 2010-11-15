@@ -95,6 +95,11 @@ DWORD _PlayAVI( char* name );
 int Max(int x, int y);
 int Min(int x, int y);
 int MaxMin(int x, int min, int max);
+
+double Max(double x, double y);
+double Min(double x, double y);
+double MaxMin(double x, double min, double max);
+
 BOOL Between(int value, int min, int max);
 
 //암호화를 위한 문자열의 번호를 알아내는 함수
