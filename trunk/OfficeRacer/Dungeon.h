@@ -3,6 +3,7 @@
 #include "GameProcess.h"
 
 #define PLAYER_MAX	4
+#define TRACK_MAX	12
 
 struct Car
 {
@@ -30,6 +31,8 @@ private:
 	JBrush car_brush;
 	JBrush line_brush;
 	JBrush course_brush;
+
+	void MoveCar(int id);
 
 public:
 	void Control();
