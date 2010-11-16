@@ -14,7 +14,7 @@ int main(char* arg[])
 	//_crtBreakAlloc = 12057;
 
 	//창 생성
-	if(!MainInitialize("Fever! Office Race", TRUE, FALSE, window_mode))return 0;
+	if(!MainInitialize("Fever! Office Race", FALSE, TRUE, window_mode))return 0;
 
 	//윈도우창 이동
 	if(window_mode)
@@ -79,7 +79,7 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 									MouseX=LOWORD(lParam);
 									MouseY=HIWORD(lParam);
 									mouse_move = TRUE;
-									ShowCursor(FALSE);
+									//ShowCursor(FALSE);
 								}
 								break;
 
