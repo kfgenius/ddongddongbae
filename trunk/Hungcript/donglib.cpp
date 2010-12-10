@@ -296,65 +296,6 @@ int GetCharLength(char tmp_char)
 	return char_length[tmp_char-0x20];
 }
 
-//근사값, 서페이스를 만들어 출력하는 방식이라면 쓸 생각이었음
-// int GetCharLength(char tmp_char)
-// {
-// 	if(tmp_char>=0x41 && tmp_char<=0x5a)return 15;
-// 	if(tmp_char=='~')return 16;
-// 
-// 	return 10;
-// }
-
-//문자열 처리 함수
-char str_buffer[3][1024];	//버퍼
-
-char* StrAdd(char* msg, ...)
-{
-	static int buffer_id;		//지금 사용하는 버퍼(3개의 버퍼를 돌아가면서 써서 동시 3개처리 가능하게 함)
-	if(++buffer_id>=3)buffer_id=0;
-	char* use_buffer=str_buffer[buffer_id];
-	size_t buffer_pointer=0;	//현재 버퍼에 쓰고 있는 위치
-
-	strcpy(use_buffer,"");
-	va_list ap;
-	va_start(ap,msg);
-	size_t max=strlen(msg);
-	for(size_t i=0; i<max; ++i)
-	{
-		//변수 집어 넣기
-		if(msg[i]=='%' && i<max-1)
-		{
-			//문자
-			if(msg[i+1]=='s')
-			{
-				use_buffer[buffer_pointer]=NULL;
-				strcat(use_buffer,va_arg(ap,char*));
-				buffer_pointer=strlen(use_buffer);
-				++i;
-			}
-			//숫자
-			else if(msg[i+1]=='d')
-			{
-				use_buffer[buffer_pointer]=NULL;
-				char int_buffer[10];
-				_itoa(va_arg(ap,int),int_buffer,10);
-				strcat(use_buffer,int_buffer);
-				buffer_pointer=strlen(use_buffer);
-				++i;
-			}
-		}
-		//그냥 복사
-		else
-		{
-			use_buffer[buffer_pointer]=msg[i];			
-			++buffer_pointer;
-		}
-	}
-	use_buffer[buffer_pointer]=NULL;
-
-	return use_buffer;
-}
-
 //화면 지우기
 void ClearScreen()
 {
@@ -685,7 +626,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 	unsigned int begin[STR_MAX], end[STR_MAX];
 
 	//입력 받기
-	strcpy(han, "");	
+	strcpy(han, "");
 
 	//한글에 대치 안 되는 대문자를 소문자로 바꿈
 	for(unsigned int i=0; i<strlen(text); ++i)
@@ -827,7 +768,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 
 /////////////////////////////////////////////////////
 //기본 대화 처리 클래스 메소드
-int dlg_id = 0;
+#define DLG_TILE_SIZE	10
 
 CDlg::CDlg()
 {
@@ -836,122 +777,170 @@ CDlg::CDlg()
 	b_shadow=FALSE;
 	dlgbox=NULL;
 	show_dlgbox=FALSE;
-	SetColor(0,0,0);
+	SetTextColor(0, 0, 0);
 	text_font=&global_font;
 	frame_x=frame_y=10;
 	opacity=1.0f;
-
-	//자신의 ID 받기
-	id = dlg_id++;
 }
 
 CDlg::~CDlg()
 {
+	JPictureInfo pi;
+	if(jdd->GetPictureInfo(dlgbox, &pi))
+	{
+		jdd->DeleteSurface(dlgbox);
+	}
 }
 
-void CDlg::MakeDlgBox(char* pic_dlg)
+//대화창 그려주는 함수
+void CDlg::MakeDlgBox(char* dlgbox)
 {
 	JPictureInfo pi;
-	if(jdd->GetPictureInfo(pic_dlg, &pi))jdd->DeleteSurface(pic_dlg);	//이미 그림이 존재하면 지우기
+	if(jdd->GetPictureInfo(dlgbox, &pi))
+	{
+		jdd->DeleteSurface(dlgbox);	//이미 그림이 존재하면 지우기
+	}
 
 	//새로운 대화창 생성
-	pi.SetWidth((frame_x*2)+(width*10));
-	pi.SetHeight((frame_y*2)+(line*20));
+	pi.SetWidth((frame_x * 2) + (width * 10));
+	pi.SetHeight((frame_y * 2) + (line * 20));
 	pi.SetColorKey(JColor(0,0,255));
 	pi.SetOpacity(opacity);
-	jdd->CreateSurface(pic_dlg, &pi, true);
+	jdd->CreateSurface(dlgbox, &pi, true);
 
 	//바탕은 투명색
 	JBrush blue_brush;
 	blue_brush = jdd->CreateBrush(JColor(0,0,255));
 	RECT pic_rect;
-	SetRect(&pic_rect, 0, 0, (frame_x*2)+(width*10), (frame_y*2)+(line*20));
-	jdd->DrawRect(pic_dlg, blue_brush, &pic_rect);
+	SetRect(&pic_rect, 0, 0, (frame_x * 2) + (width * DLG_TILE_SIZE), (frame_y * 2) + (line * DLG_TILE_SIZE * 2));
+	jdd->DrawRect(dlgbox, blue_brush, &pic_rect);
 	jdd->DeleteBrush(blue_brush);
 
 	//대화창 미리 그리기
 	RECT src_rect[3];
 	
-	for(int i=-1; i<=line*2; ++i)
+	for(int i = -1; i <= line * 2; ++i)
 	{
 		int tmp_y;
 		//위, 아래, 중간
-		if(i==-1)tmp_y=0;
-			else if(i==line*2)tmp_y=frame_y*2;
-			else tmp_y=frame_y;
+		if(i == -1)tmp_y=0;
+			else if(i == line * 2)tmp_y = frame_y * 2;
+			else tmp_y = frame_y;
 
 		//좌, 중, 우
-		for(int j=0; j<3; ++j)SetRect(&src_rect[j], frame_x*j, tmp_y, frame_x*(j+1), tmp_y+frame_y);
+		for(int j = 0; j < 3; ++j)SetRect(&src_rect[j], frame_x * j, tmp_y, frame_x * (j + 1), tmp_y + frame_y);
 
 		//그리기
-		for(int j=-1; j<=width; ++j)
+		for(int j = -1; j <= width; ++j)
 		{
-			if(j==-1)jdd->DrawPicture(pic_dlg,"_dlgbox", (j+1)*10, (i+1)*10, &src_rect[0]);
-				else if(j==width)jdd->DrawPicture(pic_dlg,"_dlgbox",(j+1)*10,(i+1)*10,&src_rect[2]);
-				else jdd->DrawPicture(pic_dlg,"_dlgbox",(j+1)*10,(i+1)*10,&src_rect[1]);
+			if(j == -1)jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[0]);
+				else if(j == width)jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE,&src_rect[2]);
+				else jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[1]);
 		}
 	}
 
-	dlgbox = pic_dlg;
+	this->dlgbox = dlgbox;
 	show_dlgbox = TRUE;
 }
 
+//대화창 이동
 void CDlg::Move(int mov_x, int mov_y)
 {
-	if(!setting || !setting2)return;	//대화창이 완성되기 전에 이동시키면 버그가 일어남
+	if(!setting || !setting2)
+	{
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return;
+	}
 
-	x+=mov_x;
-	y+=mov_y;
+	x += mov_x;
+	y += mov_y;
 }
 
-void CDlg::SetColor(BYTE r, BYTE g, BYTE b)
+void CDlg::SetTextColor(BYTE r, BYTE g, BYTE b)
 {
-	color.r=r;
-	color.g=g;
-	color.b=b;
+	text_color.r = r;
+	text_color.g = g;
+	text_color.b = b;
 }
 
-void CDlg::SetDlgBox(char* box_name)
+void CDlg::SetDlgBox(char* dlgbox)
 {
 	//사용자가 지정한 대화창 쓰기
-	dlgbox=box_name;
+	this->dlgbox = dlgbox;
 	show_dlgbox = TRUE;
 }
 
 void CDlg::SetFont(JFont *font)
 {
-	if(font!=NULL)text_font=font;
+	if(font==NULL)
+	{
+		printf("Warning : 폰트가 존재하지 않습니다.");
+		return;
+	}
+
+	text_font=font;
 }
 
 void CDlg::DrawDlg()
 {
-	if(!setting || !show_dlgbox)return;	//초기화가 안 되어 있으면 리턴
-
-	if(dlgbox!=NULL)
+	//초기화가 안 되어 있으면 리턴
+	if(!setting)
 	{
-		jdd->DrawPicture(backbuffer,dlgbox,x-frame_x,y-frame_y,NULL);
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return;
+	}
+
+	//대화창 출력
+	if(show_dlgbox && dlgbox != NULL)
+	{
+		jdd->DrawPicture(backbuffer, dlgbox, x - frame_x, y - frame_y, NULL);
 	}
 }
 
-void CDlg::ShowShadow(BOOL show_or_hide)
+//그림자 보이기 숨기기
+void CDlg::ShowShadow()
 {
-	b_shadow=show_or_hide;
+	b_shadow = true;
 }
 
-void CDlg::ShowDlg(BOOL show_or_hide)
+void CDlg::HideShadow()
 {
-	show_dlgbox=show_or_hide;
+	b_shadow = false;
 }
 
+//글상자 보이기 숨기기
+void CDlg::ShowDlg()
+{
+	show_dlgbox = true;
+}
+
+void CDlg::HideDlg()
+{
+	show_dlgbox = false;
+}
+
+//마우스가 대화창 위에 있는지 검사
 BOOL CDlg::MouseInBox()
 {
-	if(mouse_control && MouseX>=x && MouseX<x+width*10 && MouseY>=y && MouseY<y+line*20)return TRUE;
-		else return FALSE;
+	if(mouse_control && MouseX >= x && MouseX < x + width * DLG_TILE_SIZE && MouseY >= y && MouseY < y + line * DLG_TILE_SIZE * 2)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
+//투명도 검사
 void CDlg::SetOpacity(float opacity)
 {
-	if(dlgbox == NULL)return;	//대화창이 없으면 돌아가기
+	//대화창이 없으면 돌아가기
+	if(dlgbox == NULL)
+	{
+		printf("Warning : 대화창이 지정되어 있지 않습니다.");
+		return;
+	}
 
 	JPictureInfo pi;
 	jdd->GetPictureInfo(dlgbox, &pi);
@@ -961,20 +950,22 @@ void CDlg::SetOpacity(float opacity)
 	this->opacity = opacity;
 }
 
+//대화창 여백 지정
 void CDlg::SetFrameSize(int vx, int vy)
 {
-	frame_x=vx;
-	frame_y=vy;
+	frame_x = vx;
+	frame_y = vy;
 }
+
 //////////////////////////////////////////////////////
 //출력을 위한 대화상자
 #define SNR_START 0
 
 CTextDlg::CTextDlg(unsigned int vbuffer_size)
 {
-	buffer_size=vbuffer_size;
-	dlg_buffer=new char[buffer_size];	//대화 내용 버퍼
-	text_buffer=new char[buffer_size];	//현재까지 출력한 내용의 버퍼
+	buffer_size = vbuffer_size;
+	dlg_buffer = new char[buffer_size];		//대화 내용 버퍼
+	text_buffer = new char[buffer_size];	//현재까지 출력한 내용의 버퍼
 
 	lock=FALSE;
 }
@@ -982,48 +973,59 @@ CTextDlg::CTextDlg(unsigned int vbuffer_size)
 CTextDlg::~CTextDlg()
 {
 	//버퍼 지우기
-	if(dlg_buffer!=NULL)
+	if(dlg_buffer != NULL)
 	{
 		delete[] dlg_buffer;
-		dlg_buffer=NULL;
+		dlg_buffer = NULL;
 	}
 
-	if(text_buffer!=NULL)
+	if(text_buffer != NULL)
 	{
 		delete[] text_buffer;
-		text_buffer=NULL;
+		text_buffer = NULL;
 	}
 }
 
 void CTextDlg::SetDlg(int vx, int vy, int vwidth, int vline)
 {
-	x=vx;
-	y=vy;
-	width=Max(30,vwidth);
-	width/=10;
-	line=Max(1,vline);
+	x = vx;
+	y = vy;
+	width = Max(30, vwidth);
+	width /= 10;
+	line=Max(1, vline);
 
-	setting=TRUE;
+	setting = TRUE;
 }
 
 //대화 만들기
 void CTextDlg::MakeText(char* content)
 {
-	if(!setting || content==NULL)return;	//초기화가 안 되어 있으면 리턴
+	//초기화가 안 되어 있으면 리턴
+	if(!setting)
+	{
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return;
+	}
+
+	if(content == NULL)
+	{
+		printf("Warning : 내용이 없습니다.");
+		return;
+	}
 
 	//대화내용 복사
-	length=(int)strlen(content);
+	length = (int)strlen(content);
 	strncpy(dlg_buffer, content, buffer_size);
-	if(strlen(content) >= buffer_size)dlg_buffer[buffer_size-1]=NULL;
-	ani_end=FALSE;
+	if(strlen(content) >= buffer_size)dlg_buffer[buffer_size - 1] = NULL;
+	scroll_end = FALSE;
 
 	//대화를 출력하기 알맞게 처리
-	sp=SNR_START;	//처리되고 있는 포인트
-	int space=-1;	//이전까지 처리한 포인트, space가 있던 곳
-	int senlen=0;	//문장의 길이
+	sp = SNR_START;	//처리되고 있는 포인트
+	int space = -1;	//이전까지 처리한 포인트, space가 있던 곳
+	int senlen = 0;	//문장의 길이
 	
 	//대화창에 맞게 문장을 줄 바꿈
-	if(text_font==&global_font)
+	if(text_font == &global_font)
 	while(sp<length)
 	{
 		BOOL length_check=TRUE;		//길이 체크를 할지 안 할지 검사
@@ -1051,61 +1053,72 @@ void CTextDlg::MakeText(char* content)
 		}
 		
 		//길이가 대화창을 넘었는지 검사
-		if(length_check && senlen>width*10)
+		if(length_check && senlen > width*10)
 		{
-			if(space<0)	//스페이스가 하나도 없을때 강제 줄 변환
+			if(space < 0)	//스페이스가 하나도 없을때 강제 줄 변환
 			{
 				//사이에 CR을 넣어줌
 				char* tmp_text;
-				tmp_text = new char[length+2];
+				tmp_text = new char[length + 2];
 
 				//새로운 문자열(지금 것보다 길이가 1 큰 것)에 내용 복사
-				for(int i=0; i<sp; ++i)tmp_text[i]=dlg_buffer[i];
-				tmp_text[sp]='\n';
-				for(int i=sp+1; i<length+1; ++i)tmp_text[i]=dlg_buffer[i-1];
-				tmp_text[length+1]=NULL;
-				strcpy(dlg_buffer,tmp_text);
-				delete[] tmp_text;
+				for(int i = 0; i < sp; ++i)tmp_text[i] = dlg_buffer[i];
+				tmp_text[sp] = '\n';
+				for(int i = sp + 1; i < length + 1; ++i)tmp_text[i] = dlg_buffer[i - 1];
+				tmp_text[length + 1] = NULL;
+				strcpy(dlg_buffer, tmp_text);
+				delete [] tmp_text;
 
 				//지금 문자열 길이는 지금 문자의 길이
-				if(dlg_buffer[sp+1]&0x80)senlen=20;
-					else senlen=GetCharLength(dlg_buffer[sp+1]);
+				if(dlg_buffer[sp + 1] & 0x80)
+				{
+					senlen = 20;
+				}
+				else
+				{
+					senlen=GetCharLength(dlg_buffer[sp + 1]);
+				}
 
 				++length;
 				++sp;
 			}
 			else
 			{
-				dlg_buffer[space]='\n';
-				senlen=0;
-				for(int i=space+1;i<=sp;++i)
+				dlg_buffer[space] = '\n';
+				senlen = 0;
+				for(int i = space + 1; i <= sp; ++i)
 				{
 					if(dlg_buffer[i]&0x80)
 					{
-						senlen+=20;
+						senlen += 20;
 						++i;
 					}
 					//기타
-					else senlen+=GetCharLength(dlg_buffer[i]);
+					else senlen += GetCharLength(dlg_buffer[i]);
 				}
-				space=-1;
+				space = -1;
 			}
 		}
 
 		//한글일 때 2칸 뛰고 나머지는 1칸
-		sp+=sp_add;
+		sp += sp_add;
 	}
 
-	sp=SNR_START, tp=0;;	//출력위치 초기화
-	n_of_e=0;				//줄바꿈 횟수
+	sp = SNR_START, tp = 0;;	//출력위치 초기화
+	n_of_e = 0;					//줄바꿈 횟수
 
-	setting2=TRUE;
+	setting2 = TRUE;
 }
 
 //대화 출력(정지된 상태에서)
 void CTextDlg::Print(char* content)
 {
-	if(!setting)return;	//초기화가 안 되어 있으면 리턴
+	//초기화가 안 되어 있으면 리턴
+	if(!setting)
+	{
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return;
+	}
 
 	MakeText(content);
 
@@ -1128,24 +1141,38 @@ void CTextDlg::Print(char* content)
 //대화출력(실시간으로)
 int CTextDlg::Printing()
 {
-	if(!setting || !setting2)return -1;	//초기화가 안 되어 있으면 리턴
-
-	if(!ani_end)
+	//초기화가 안 되어 있으면 리턴
+	if(!setting || !setting2)
 	{
-		if(sp<length && n_of_e<line)
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return -1;
+	}
+
+	if(!scroll_end)
+	{
+		if(sp < length && n_of_e < line)
 		{
-			if(dlg_buffer[sp]=='\n')++n_of_e;
-			text_buffer[tp]=dlg_buffer[sp];
-			if(dlg_buffer[sp]&0x80)	//한글일 경우 2칸 전진
+			if(dlg_buffer[sp] == '\n')++n_of_e;
+			text_buffer[tp] = dlg_buffer[sp];
+			
+			//한글일 경우 2칸 전진
+			if(dlg_buffer[sp] & 0x80)
 			{
-				++sp; ++tp;
-				text_buffer[tp]=dlg_buffer[sp];
+				++sp;
+				++tp;
+				text_buffer[tp] = dlg_buffer[sp];
 			}
-			text_buffer[tp+1]=NULL;
+			
+			text_buffer[tp+1] = NULL;
+			
 			//포인터 증가
-			++sp; ++tp;
+			++sp;
+			++tp;
 		}
-		else ani_end=TRUE;
+		else
+		{
+			scroll_end = TRUE;
+		}
 	}
 	else
 	{
@@ -1154,7 +1181,7 @@ int CTextDlg::Printing()
 		{
 			if(sp<length)
 			{
-				ani_end=FALSE;
+				scroll_end=FALSE;
 				n_of_e=0;
 				tp=0;
 			}
@@ -1164,23 +1191,27 @@ int CTextDlg::Printing()
 			}
 		}
 	}
+
 	//대화 출력
 	DrawDlg();
 
-	RECT text, shadow;
+	RECT text_rect, shadow_rect;
+	
 	//그림자
 	if(b_shadow)
 	{
-		SetRect(&shadow,x+1,y+1,SCREEN_X,SCREEN_Y);
-		jdd->DrawText(backbuffer,text_buffer,*text_font,&shadow,JColor(0,0,0));
+		SetRect(&shadow_rect, x+1, y+1, SCREEN_X, SCREEN_Y);
+		jdd->DrawText(backbuffer, text_buffer, *text_font, &shadow_rect, JColor(0,0,0));
 	}
+	
 	//글자
-	SetRect(&text,x,y,SCREEN_X,SCREEN_Y);
-	jdd->DrawText(backbuffer,text_buffer,*text_font,&text,color);
+	SetRect(&text_rect, x, y, SCREEN_X, SCREEN_Y);
+	jdd->DrawText(backbuffer, text_buffer, *text_font, &text_rect, text_color);
 
 	return 0;
 }
 
+//대화창 락/언락
 void CTextDlg::Lock()
 {
 	lock=TRUE;
@@ -1195,46 +1226,46 @@ void CTextDlg::UnLock()
 //선택을 위한 대화상자
 CSelectDlg::CSelectDlg(int select_max, unsigned int vbuffer_size)
 {
-	buffer_size=vbuffer_size;
-	dlg_buffer=new char[buffer_size];
-	select_point=new char*[select_max];
+	buffer_size = vbuffer_size;
+	dlg_buffer = new char[buffer_size];
+	select_point = new char*[select_max];
 
-	setting2=FALSE;
+	setting2 = FALSE;
 }
 
 CSelectDlg::~CSelectDlg()
 {
 	//버퍼 지우기
-	if(dlg_buffer!=NULL)
+	if(dlg_buffer != NULL)
 	{
 		delete [] dlg_buffer;
-		dlg_buffer=NULL;
+		dlg_buffer = NULL;
 	}
 
-	if(select_point!=NULL)
+	if(select_point != NULL)
 	{
 		delete [] select_point;
-		select_point=NULL;
+		select_point = NULL;
 	}
 }
 
 void CSelectDlg::SetDlg(int x, int y, int width, int line, BOOL row, int start)
 {
-	this->x=x;
-	this->y=y;
-	this->width=width;
-	this->line=line;
-	select=start;
+	this->x = x;
+	this->y = y;
+	this->width = width;
+	this->line = line;
+	select = start;
 
 	//가로 크기를 10으로 떨어지게 수정
-	width=Max(width, 30);
-	this->width = width/10;
+	width = Max(width, 30);
+	this->width = width / 10;
 
 	//가로선택지인지 세로 선택지인지 확인, 길이 조정
-	if(line<=0)line=1;
-	this->row=row;
+	if(line <= 0)line = 1;
+	this->row = row;
 
-	setting=TRUE;
+	setting = TRUE;
 }
 
 void CSelectDlg::MakeSelection(char* input_dlg)
@@ -1243,33 +1274,36 @@ void CSelectDlg::MakeSelection(char* input_dlg)
 
 	//버퍼 크기를 넘어가는 것을 방지
 	strncpy(dlg_buffer, input_dlg, buffer_size);
-	if(strlen(input_dlg)>=buffer_size)dlg_buffer[buffer_size-1]=NULL;
+	if(strlen(input_dlg) >= buffer_size)dlg_buffer[buffer_size-1] = NULL;
 
-	int length=(int)strlen(dlg_buffer);
+	int length = (int)strlen(dlg_buffer);
 
 	//대화를 출력하기 알맞게 처리
-	n_of_e=0;
-	int bp=1;
-	select_point[0]=dlg_buffer;
-	for(int i=0; i<length; ++i)
+	n_of_e = 0;
+	int bp = 1;
+	select_point[0] = dlg_buffer;
+	for(int i = 0; i < length; ++i)
 	{
-		if(dlg_buffer[i]=='\\')
+		if(dlg_buffer[i] == '\\')
 		{
-			dlg_buffer[i]=NULL;
-			select_point[bp]=dlg_buffer+i+1;
+			dlg_buffer[i] = NULL;
+			select_point[bp] = dlg_buffer + i + 1;
 			++n_of_e;
 			++bp;
 			continue;
 		}
 
-		if(dlg_buffer[i]==13)
+		if(dlg_buffer[i] == 0x0d)
 		{
 			continue;
 		}
 	}
 
 	//스크립트에서 읽어 온 문장의 끝에 음표(0x0d)가 생기는 것 방지
-	if(dlg_buffer[length-1]==13)dlg_buffer[length-1]=NULL;
+	if(dlg_buffer[length - 1] == 13)
+	{
+		dlg_buffer[length - 1] = NULL;
+	}//@_@
 
 	//대화창 표시에 필요한 것들 계산
 	if(row)
@@ -1287,12 +1321,17 @@ void CSelectDlg::MakeSelection(char* input_dlg)
 		sy=y+(select%line)*20;
 	}
 
-	setting2=TRUE;
+	setting2 = TRUE;
 }
 
 int CSelectDlg::Select(char* input_dlg, BOOL cancel)
 {
-	if(!setting)return -999;
+	//초기화가 안 되어 있으면 리턴
+	if(!setting || !setting2)
+	{
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return -999;
+	}
 
 	MakeSelection(input_dlg);
 
@@ -1315,7 +1354,12 @@ int CSelectDlg::Select(char* input_dlg, BOOL cancel)
 
 int CSelectDlg::Selecting()
 {
-	if(!setting2)return -999;
+	//초기화가 안 되어 있으면 리턴
+	if(!setting2)
+	{
+		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
+		return -999;
+	}
 
 	//대화상자
 	if(keyboard_control)
@@ -1419,7 +1463,7 @@ int CSelectDlg::Selecting()
 		}
 
 		if(b_shadow)jdd->DrawText(backbuffer,select_point[i],*text_font,tx+1,ty+1,JColor(0,0,0));
-		jdd->DrawText(backbuffer,select_point[i],*text_font,tx,ty,color);
+		jdd->DrawText(backbuffer, select_point[i], *text_font, tx, ty, text_color);
 	}
 
 	//마우스 결정
@@ -1465,7 +1509,7 @@ void CInputDlg::SetDlg(int vx, int vy, int max)
 
 	str_max*=10;
 
-	setting=TRUE;
+	setting = TRUE;
 }
 
 void CInputDlg::Clear()
@@ -1513,7 +1557,7 @@ int CInputDlg::Inputing()
 	if(blink_count<20 && str_max>text_length+10)strcat(show_text,"_");
 	//입력된 정보 표시
 	if(b_shadow)jdd->DrawText(backbuffer,show_text,*text_font,x+1,y+1,JColor(0,0,0));
-	jdd->DrawText(backbuffer,show_text,*text_font,x,y,color);
+	jdd->DrawText(backbuffer,show_text,*text_font,x,y, text_color);
 
 	int eng_len=(int)strlen(eng_buffer);
 	//입력
@@ -1609,7 +1653,7 @@ int CInputDlg::Inputing()
 		if(blink_count<0 || blink_count>=40)blink_count=0;
 		if(blink_count<20 && str_max>text_length+10)strcat(show_text,"_");
 		//입력된 정보 표시
-		jdd->DrawText(backbuffer,show_text,*text_font,x,y,color);
+		jdd->DrawText(backbuffer,show_text,*text_font,x,y, text_color);
 
 	}
 
@@ -2343,18 +2387,25 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszClassName="Game";
 	RegisterClass(&wc);
-	
+
+	//창 모드
 	if(window_mode)
 	{
 		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
 		ws &= ~WS_THICKFRAME;
 		ws &= ~WS_MAXIMIZEBOX;
-		hwnd = CreateWindow("Game", window_name, ws, 100, 100, SCREEN_X+10, SCREEN_Y+35, NULL, NULL, hInstance, NULL );
+
+		RECT crt;
+		SetRect(&crt, 0, 0, SCREEN_X, SCREEN_Y);
+		AdjustWindowRect(&crt, ws, FALSE);
+
+		hwnd = CreateWindow("Game", window_name, ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
 	    ShowCursor( TRUE );
 	}
+	//전체 화면
 	else
 	{
-		hwnd=CreateWindow("Game",window_name,WS_POPUP|WS_VISIBLE,0,0,SCREEN_X,SCREEN_Y,NULL,NULL,hInstance,NULL);
+		hwnd = CreateWindow("Game", window_name, WS_POPUP|WS_VISIBLE, 0, 0, SCREEN_X, SCREEN_Y, NULL, NULL, hInstance, NULL);
 	    ShowCursor( FALSE );
 	}
 
@@ -2363,6 +2414,7 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	//그래픽 초기화
 	backbuffer=jdd->GetBackBuffer();
 	global_font=jdd->CreateFont("궁서",20);
+	
 	//로딩에 긴 시간이 걸릴 때를 대비한 화면
 	if(jdd->LoadPicture("CommonLoading", "Loading.jpg", NULL, TRUE) || jdd->LoadPicture("CommonLoading", "Loading.gif", NULL, TRUE))
 	{
@@ -2379,6 +2431,9 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	
 	jdd->SetFrameRate(100,TRUE);
 	jdd->SetVerticalSync(FALSE);
+
+	//대화창용
+	jdd->LoadPicture("_dlgbox", "DATA\\_dlgbox.gif", NULL, TRUE);
 
 	//사운드 초기화
 	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
