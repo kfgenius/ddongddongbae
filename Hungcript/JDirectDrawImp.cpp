@@ -1179,9 +1179,18 @@ void JDirectDrawImp::OnMove(int x, int y)
 	JPictureInfo info;
 	GetPictureInfo("Back Buffer", &info);
 
+	//서페이스 위치 재설정
+	LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
+	ws &= ~WS_THICKFRAME;
+	ws &= ~WS_MAXIMIZEBOX;
+
+	RECT crt;
+	SetRect(&crt, 0, 0, info.GetWidth(), info.GetHeight());
+	AdjustWindowRect(&crt, ws, FALSE);
+
 	RECT m_rcClient;
 	GetWindowRect(hwnd, &m_rcClient);
-	int window_x=m_rcClient.left+5;
-	int window_y=m_rcClient.top+30;
+	int window_x=m_rcClient.left - crt.left;
+	int window_y=m_rcClient.top - crt.top;
 	SetRect(&render_rect, window_x, window_y, window_x+info.GetWidth(), window_y+info.GetHeight());
 }
