@@ -1,0 +1,192 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource2.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 한국어 resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource2.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TILEATTR DIALOGEX 0, 0, 113, 98
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "속성 설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,7,77,50,14
+    PUSHBUTTON      "취소",IDCANCEL,56,77,50,14
+    LTEXT           "타일",IDC_LAYER,7,7,18,8
+    LTEXT           "Static",IDC_TILENO,27,7,19,8
+    LTEXT           "이동",IDC_STATIC,7,25,17,8
+    LTEXT           "속성",IDC_STATIC,7,41,17,8
+    LTEXT           "대미지",IDC_STATIC,7,57,25,8
+    COMBOBOX        IDC_MOVE,33,22,48,69,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_ATTR,33,38,48,76,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_DAMAGE,33,56,48,12,ES_AUTOHSCROLL
+END
+
+IDD_UNITATTR DIALOGEX 0, 0, 164, 169
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "속성 설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,32,148,50,14
+    PUSHBUTTON      "취소",IDCANCEL,82,148,50,14
+    LTEXT           "유닛",IDC_STATIC,7,7,18,8
+    LTEXT           "Static",IDC_TILENO,27,7,19,8
+    LTEXT           "HP",IDC_STATIC,7,25,10,8
+    LTEXT           "공격",IDC_STATIC,7,41,17,8
+    LTEXT           "방어",IDC_STATIC,7,57,17,8
+    EDITTEXT        IDC_HP,27,23,48,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_POW,27,39,48,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DEF,27,55,48,12,ES_AUTOHSCROLL
+    LTEXT           "민첩",IDC_STATIC,7,73,17,8
+    EDITTEXT        IDC_AGL,27,71,48,12,ES_AUTOHSCROLL
+    LTEXT           "MP",IDC_STATIC,89,25,10,8
+    LTEXT           "마공",IDC_STATIC,89,41,17,8
+    LTEXT           "마방",IDC_STATIC,89,57,17,8
+    EDITTEXT        IDC_MP,109,22,48,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MPOW,109,38,48,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MDEF,109,54,48,12,ES_AUTOHSCROLL
+    LTEXT           "이동",IDC_STATIC,89,73,17,8
+    EDITTEXT        IDC_MOV,109,70,48,12,ES_AUTOHSCROLL
+    LTEXT           "점프",IDC_STATIC,7,89,17,8
+    EDITTEXT        IDC_JUMP,27,87,48,12,ES_AUTOHSCROLL
+    LTEXT           "수영",IDC_STATIC,89,89,17,8
+    EDITTEXT        IDC_SWIM,109,86,48,12,ES_AUTOHSCROLL
+    LTEXT           "속성",IDC_STATIC,46,128,17,8
+    COMBOBOX        IDC_ATTR,69,126,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "시야",IDC_STATIC,7,105,17,8
+    EDITTEXT        IDC_SEE,27,103,48,12,ES_AUTOHSCROLL
+    LTEXT           "활동",IDC_STATIC,89,105,17,8
+    EDITTEXT        IDC_ACT,109,102,48,12,ES_AUTOHSCROLL
+END
+
+IDD_NEW_MAP DIALOGEX 0, 0, 186, 114
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "새로운 맵 만들기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,41,93,50,14
+    PUSHBUTTON      "취소",IDCANCEL,93,93,50,14
+    LTEXT           "파일 이름",IDC_STATIC,16,14,35,8
+    LTEXT           "크기",IDC_STATIC,16,50,17,8
+    EDITTEXT        IDC_WIDTH,34,64,39,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_HEIGHT,117,64,39,13,ES_AUTOHSCROLL
+    LTEXT           "가로",IDC_STATIC,15,67,17,8
+    LTEXT           "세로",IDC_STATIC,97,67,17,8
+    EDITTEXT        IDC_FILENAME,16,27,141,13,ES_AUTOHSCROLL
+END
+
+IDD_OPEN_MAP DIALOGEX 0, 0, 186, 242
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "맵 열기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,41,221,50,14
+    PUSHBUTTON      "취소",IDCANCEL,93,221,50,14
+    LISTBOX         IDC_MAP_LIST,7,7,172,205,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_TILEATTR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 106
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 91
+    END
+
+    IDD_UNITATTR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 157
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 162
+    END
+
+    IDD_NEW_MAP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_OPEN_MAP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 235
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 한국어 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
