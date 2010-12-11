@@ -16,16 +16,15 @@ bool open_dialog = false;
 
 //int undo_count=0;
 
-//파일 다이얼로그 핸들
+//다이얼로그 핸들
 HWND hNewMap;
 HWND hLoadMap;
-
-// 타일 속성 다이얼로그
 HWND hAttr;
-int tile_no, layer_no;
-
-// 유닛 속성 다이얼로그
 HWND hUnitAttr;
+HWND hEventID;
+
+int tile_no, layer_no;
+int selected_event_x, selected_event_y;
 
 /////////////////////////////
 // 맵 에디터
@@ -51,8 +50,9 @@ HWND hUnitAttr;
 #define BASE_WINDOW_NAME	"혼둠맵Editor v0.9a+"
 
 unsigned char x_size, y_size;
-unsigned char land_map[LAYER_MAX][MAP_XMAX][MAP_YMAX];
-unsigned char eventland_map[MAP_XMAX][MAP_YMAX];
+unsigned char land_map[LAYER_MAX][MAP_XMAX][MAP_YMAX];	//지형 정보
+unsigned char eventland_map[MAP_XMAX][MAP_YMAX];		//이벤트
+unsigned char passable_map[MAP_XMAX][MAP_YMAX];			//통행여부
 unsigned char selected[LAYER_MAX]={0,0,0};
 bool save_recent;	//세이브 여부
 bool redraw;	//다시 그리는 여부
@@ -274,6 +274,7 @@ bool Load()
 		fread(&data_type,sizeof(char),11,fp);
 		data_type[11]=NULL;
 
+		//휴가루 웍휴2 맵(~ 혼둠맵 V0.9a)
 		if(strcmp(data_type,"HYUGARU2MAP")==0)
 		{
 			MapDataInit();
@@ -311,6 +312,8 @@ void PaintMap(int x, int y, int value)
 	value=land_map[edit_layer][x][y];
 	
 	land_map[edit_layer][x][y]=selected[edit_layer];
+	if(edit_layer == 2)eventland_map[x][y]=selected[edit_layer];
+
 	PaintMap(x-1, y, value);
 	PaintMap(x+1, y, value);
 	PaintMap(x, y-1, value);
@@ -592,6 +595,14 @@ void ClearAll()
 	jdd=NULL;
 }
 
+//다이얼로그 창 닫는 처리
+void CloseDialog(HWND hDlgWnd)
+{
+	ShowWindow(hDlgWnd, SW_HIDE);
+	open_dialog = false;
+	LButton = RButton = false;
+}
+
 //새로운 맵 만들기 속성창 메시지 처리
 BOOL CALLBACK NewMapProc(HWND hNewMapwnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
 {
@@ -620,13 +631,11 @@ BOOL CALLBACK NewMapProc(HWND hNewMapwnd,UINT iMessage,WPARAM wParam,LPARAM lPar
 			sprintf(buffer, "%s - %s", BASE_WINDOW_NAME, edit_file_name);
 			SetWindowText(hwnd, buffer);
 			
-			ShowWindow(hNewMapwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hNewMapwnd);
 			break;
 
 			case IDCANCEL:
-			ShowWindow(hNewMapwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hNewMapwnd);
 			break;
 
 			case IDC_FILENAME:
@@ -657,8 +666,7 @@ BOOL CALLBACK NewMapProc(HWND hNewMapwnd,UINT iMessage,WPARAM wParam,LPARAM lPar
 
 		//창 닫기
 		case WM_CLOSE:
-		ShowWindow(hNewMapwnd, SW_HIDE);
-		open_dialog = false;
+		CloseDialog(hNewMapwnd);
 		return TRUE;
 	}
 
@@ -693,13 +701,11 @@ BOOL CALLBACK LoadMapProc(HWND hLoadMapwnd,UINT iMessage,WPARAM wParam,LPARAM lP
 			sprintf(window_name, "%s - %s", BASE_WINDOW_NAME, edit_file_name);
 			SetWindowText(hwnd, window_name);
 
-			ShowWindow(hLoadMapwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hLoadMapwnd);
 			break;
 
 			case IDCANCEL:
-			ShowWindow(hLoadMapwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hLoadMapwnd);
 			break;
 
 			case IDC_MAP_LIST:
@@ -722,8 +728,7 @@ BOOL CALLBACK LoadMapProc(HWND hLoadMapwnd,UINT iMessage,WPARAM wParam,LPARAM lP
 
 		//창 닫기
 		case WM_CLOSE:
-		ShowWindow(hLoadMapwnd, SW_HIDE);
-		open_dialog = false;
+		CloseDialog(hLoadMapwnd);
 		return TRUE;
 	}
 
@@ -751,11 +756,12 @@ BOOL CALLBACK AttrDlgProc(HWND hAttrwnd,UINT iMessage,WPARAM wParam,LPARAM lPara
 			tile_attr[layer_no][tile_no] = SendMessage(hCombo, CB_GETCURSEL, 0, 0);
 			tile_damage[layer_no][tile_no] = GetDlgItemInt(hAttr, IDC_DAMAGE, NULL, TRUE);
 
-			open_dialog = false;
+			CloseDialog(hAttrwnd);
+			break;
 
 			case IDCANCEL:
-			ShowWindow(hAttrwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hAttrwnd);
+			break;
 		}
 		return TRUE;
 
@@ -766,8 +772,7 @@ BOOL CALLBACK AttrDlgProc(HWND hAttrwnd,UINT iMessage,WPARAM wParam,LPARAM lPara
 
 		//창 닫기
 		case WM_CLOSE:
-		ShowWindow(hAttrwnd, SW_HIDE);
-		open_dialog = false;
+		CloseDialog(hAttrwnd);
 		return TRUE;
 	}
 
@@ -808,11 +813,12 @@ BOOL CALLBACK UnitAttrDlgProc(HWND hAttrwnd,UINT iMessage,WPARAM wParam,LPARAM l
 			hCombo = GetDlgItem(hUnitAttr, IDC_ATTR);
 			SendMessage(hCombo, CB_GETCURSEL, punit->attr, 0);
 
-			open_dialog = false;
+			CloseDialog(hAttrwnd);
+			break;
 
 			case IDCANCEL:
-			ShowWindow(hAttrwnd, SW_HIDE);
-			open_dialog = false;
+			CloseDialog(hAttrwnd);
+			break;
 		}
 		return TRUE;
 
@@ -823,8 +829,45 @@ BOOL CALLBACK UnitAttrDlgProc(HWND hAttrwnd,UINT iMessage,WPARAM wParam,LPARAM l
 
 		//창 닫기
 		case WM_CLOSE:
-		ShowWindow(hAttrwnd, SW_HIDE);
-		open_dialog = false;
+		CloseDialog(hAttrwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+//유닛 속성창 메시지 처리
+BOOL CALLBACK EventIDDlgProc(HWND hEventIDwnd,UINT iMessage,WPARAM wParam,LPARAM lParam)
+{
+	switch (iMessage)
+	{
+		case WM_INITDIALOG:
+		return TRUE;
+
+		case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+			//값 가져오기
+			case IDOK:
+			eventland_map[selected_event_x][selected_event_y] =  MaxMin(GetDlgItemInt(hEventID, IDC_EVENT_ID, NULL, TRUE), 0, 255);
+
+			CloseDialog(hEventIDwnd);
+			break;
+
+			case IDCANCEL:
+			CloseDialog(hEventIDwnd);
+			break;
+		}
+		return TRUE;
+
+		//창을 움직이면 밑의 그림을 다시 그림
+		case WM_MOVE:
+		redraw=true;
+		return TRUE;
+
+		//창 닫기
+		case WM_CLOSE:
+		CloseDialog(hEventIDwnd);
 		return TRUE;
 	}
 
@@ -940,6 +983,16 @@ void InitUnitDialog(HINSTANCE hInstance)
 	for(int i=0; i<5; ++i)SendMessage(hCombo,CB_ADDSTRING,0,(LPARAM)unitattrs[i]);
 }
 
+//이벤트ID 다이얼로그
+void InitEventIDDialog(HINSTANCE hInstance)
+{
+	hEventID = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_EVENT_ID), hwnd, EventIDDlgProc);
+	RECT m_rcClient;
+	GetWindowRect(hwnd, &m_rcClient);
+	SetWindowPos(hEventID,NULL,m_rcClient.left + 150,m_rcClient.top + 50, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
+	ShowWindow(hEventID,SW_HIDE);
+}
+
 //속성값 불러오기
 void LoadAttribute()
 {
@@ -1017,6 +1070,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	InitLoadMapDialog(hInstance);
 	InitTileDialog(hInstance);
 	InitUnitDialog(hInstance);
+	InitEventIDDialog(hInstance);
 
 	//속성 정보 불러오기
 	LoadAttribute();
@@ -1109,7 +1163,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		//마우스 왼쪽 버튼 이벤트
-		if(LButton)
+		if(LButton && !open_dialog)
 		{
 			int tx=MouseX/tile_size+fx;
 			int ty=MouseY/tile_size+fy;
@@ -1132,20 +1186,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 					{
 						if(!mouse_click)
 						{
-							if(edit_layer==2)
-							{
-								CSelectDlg dlg(100, 1024);
-								dlg.SetDlg(200, 20, 40, 20);
-								char select_content[1024];
-								strcpy(select_content, "");
-								for(int i=0; i<EVENT_NO_MAX; i++)
-								{
-									strcat(select_content, StrAdd("%d", i));
-									if(i<EVENT_NO_MAX-1)strcat(select_content, "\\");
-								}
-								eventland_map[tx][ty]=dlg.Select(select_content);
-							}
-							else Paint(tx, ty);
+							Paint(tx, ty);
 						}
 					}
 					//지우기
@@ -1262,64 +1303,78 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 			else if(MouseX >= NEW_ICON_X && MouseX < NEW_ICON_X + FILE_ICON_WIDTH 
 				&& MouseY >= NEW_ICON_Y && MouseY < NEW_ICON_Y + FILE_ICON_HEIGHT)
 			{
-				if(!open_dialog)
+				//저장하지 않고 새로운 맵을 만들 때
+				if(!save_recent)
 				{
-					//OK버튼은 처음에는 비활성화
-					HWND h_ok_button = GetDlgItem(hNewMap, IDOK);
-					EnableWindow(h_ok_button, FALSE);
-
-					//파일이름 비워두기
-					SetDlgItemText(hNewMap, IDC_FILENAME, "");
-
-					//윈도우 보이기
-					ShowWindow(hNewMap,SW_SHOW);
-
-					redraw = true;
-					open_dialog = true;
+					if(MessageBox(hwnd, "작업 중인 맵을 저장하지 않았습니다.\n저장하시겠습니까?", "경고", MB_YESNO) == IDYES)
+					{
+						Save();
+						save_recent=true;
+					}
 				}
+
+				//OK버튼은 처음에는 비활성화
+				HWND h_ok_button = GetDlgItem(hNewMap, IDOK);
+				EnableWindow(h_ok_button, FALSE);
+
+				//파일이름 비워두기
+				SetDlgItemText(hNewMap, IDC_FILENAME, "");
+
+				//윈도우 보이기
+				ShowWindow(hNewMap,SW_SHOW);
+
+				redraw = true;
+				open_dialog = true;
 			}
 			//맵 불러오기
 			else if(MouseX >= OPEN_ICON_X && MouseX < OPEN_ICON_X + FILE_ICON_WIDTH 
 				&& MouseY >= OPEN_ICON_Y && MouseY < OPEN_ICON_Y + FILE_ICON_HEIGHT)
 			{
-				if(!open_dialog)
+				//저장하지 않고 불러 올 때
+				if(!save_recent)
 				{
-					HWND hList = GetDlgItem(hLoadMap, IDC_MAP_LIST);
-					CFiles* files = new CFiles();
-					files->SearchFile("MAP", "map");
-
-					//기존의 스트링 모두 삭제
-					while(SendMessage(hList, LB_GETCOUNT, 0, 0) > 0)
+					if(MessageBox(hwnd, "작업 중인 맵을 저장하지 않았습니다.\n저장하시겠습니까?", "경고", MB_YESNO) == IDYES)
 					{
-						SendMessage(hList, LB_DELETESTRING, 0, 0);
+						Save();
+						save_recent=true;
 					}
-
-					//파일 추가
-					std::vector<char*>::iterator it;
-					for(it=files->filename.begin(); it!=files->filename.end(); ++it)
-					{
-						char filename[80];
-						strcpy(filename, (*it));
-
-						filename[strlen(filename) - 4] = NULL;
-						SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)filename);
-					}
-
-					//OK버튼은 처음에는 비활성화
-					HWND h_ok_button = GetDlgItem(hLoadMap, IDOK);
-					EnableWindow(h_ok_button, FALSE);
-
-					//윈도우 보이기
-					ShowWindow(hLoadMap, SW_SHOW);
-
-					redraw = true;
-					
-					//파일 찾기 클래스 릴리즈
-					delete files;
-					files = NULL;
-					
-					open_dialog = true;
 				}
+
+				HWND hList = GetDlgItem(hLoadMap, IDC_MAP_LIST);
+				CFiles* files = new CFiles();
+				files->SearchFile("MAP", "map");
+
+				//기존의 스트링 모두 삭제
+				while(SendMessage(hList, LB_GETCOUNT, 0, 0) > 0)
+				{
+					SendMessage(hList, LB_DELETESTRING, 0, 0);
+				}
+
+				//파일 추가
+				std::vector<char*>::iterator it;
+				for(it=files->filename.begin(); it!=files->filename.end(); ++it)
+				{
+					char filename[80];
+					strcpy(filename, (*it));
+
+					filename[strlen(filename) - 4] = NULL;
+					SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)filename);
+				}
+
+				//OK버튼은 처음에는 비활성화
+				HWND h_ok_button = GetDlgItem(hLoadMap, IDOK);
+				EnableWindow(h_ok_button, FALSE);
+
+				//윈도우 보이기
+				ShowWindow(hLoadMap, SW_SHOW);
+
+				redraw = true;
+				
+				//파일 찾기 클래스 릴리즈
+				delete files;
+				files = NULL;
+				
+				open_dialog = true;
 			}
 			//맵 이동
 			else if(MouseY>=60 && MouseY<85 && MouseX>=665 && MouseX<690)
@@ -1433,7 +1488,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		//마우스 오른쪽 버튼
-		if(RButton)
+		if(RButton && !open_dialog)
 		{
 			if(!rmouse_click)
 			{
@@ -1442,62 +1497,82 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 				//타일 속성 정의
 				if(MouseY>=480 && MouseY<552)
 				{
-					if(!open_dialog)
-					{
-						if(MouseY<512)layer_no=0;
-							else if(MouseY<552)layer_no=1;
+					if(MouseY<512)layer_no=0;
+						else if(MouseY<552)layer_no=1;
 
-						ShowWindow(hAttr,SW_SHOW);
-						tile_no=MouseX>>5;
+					tile_no=MouseX>>5;
 
-						//타일 종류
-						if(layer_no==0)SetDlgItemText(hAttr, IDC_LAYER, "바닥");
-						else if(layer_no==1)SetDlgItemText(hAttr, IDC_LAYER, "물체");
+					//타일 종류
+					if(layer_no==0)SetDlgItemText(hAttr, IDC_LAYER, "바닥");
+					else if(layer_no==1)SetDlgItemText(hAttr, IDC_LAYER, "물체");
 
-						//타일 번호
-						SetDlgItemInt(hAttr, IDC_TILENO, tile_no, TRUE);
+					//타일 번호
+					SetDlgItemInt(hAttr, IDC_TILENO, tile_no, TRUE);
 
-						//속성값 넘기기
-						HWND hCombo = GetDlgItem(hAttr, IDC_MOVE);
-						SendMessage(hCombo, CB_SETCURSEL, tile_mov[layer_no][tile_no], 0);
-						hCombo = GetDlgItem(hAttr, IDC_ATTR);
-						SendMessage(hCombo, CB_SETCURSEL, tile_attr[layer_no][tile_no], 0);
-						SetDlgItemInt(hAttr, IDC_DAMAGE, tile_damage[layer_no][tile_no], TRUE);
+					//속성값 넘기기
+					HWND hCombo = GetDlgItem(hAttr, IDC_MOVE);
+					SendMessage(hCombo, CB_SETCURSEL, tile_mov[layer_no][tile_no], 0);
+					hCombo = GetDlgItem(hAttr, IDC_ATTR);
+					SendMessage(hCombo, CB_SETCURSEL, tile_attr[layer_no][tile_no], 0);
+					SetDlgItemInt(hAttr, IDC_DAMAGE, tile_damage[layer_no][tile_no], TRUE);
 
-						redraw = true;
-						open_dialog = true;
-					}
+					ShowWindow(hAttr,SW_SHOW);
+
+					redraw = true;
+					open_dialog = true;
 				}
 				//유닛 속성 정의
 				else if(MouseY>=552 && MouseY<592)
 				{
+					tile_no=MouseX>>5;
+
+					//타일 번호
+					SetDlgItemInt(hUnitAttr, IDC_TILENO, tile_no, TRUE);
+
+					//속성값 넘기기
+					SetDlgItemInt(hUnitAttr, IDC_HP, unitdata[tile_no].hp, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_MP, unitdata[tile_no].mp, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_POW, unitdata[tile_no].pow, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_MPOW, unitdata[tile_no].mpow, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_DEF, unitdata[tile_no].def, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_MDEF, unitdata[tile_no].mdef, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_AGL, unitdata[tile_no].agl, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_MOV, unitdata[tile_no].mov, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_JUMP, unitdata[tile_no].jump, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_SWIM, unitdata[tile_no].swim, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_SEE, unitdata[tile_no].see, TRUE);
+					SetDlgItemInt(hUnitAttr, IDC_ACT, unitdata[tile_no].act, TRUE);
+					
+					HWND hCombo = GetDlgItem(hUnitAttr, IDC_ATTR);
+					SendMessage(hCombo, CB_SETCURSEL, unitdata[tile_no].attr, 0);
+
+					ShowWindow(hUnitAttr,SW_SHOW);
+
+					redraw = true;
+					open_dialog = true;
+				}
+				//이벤트 번호 변경
+				else if(MouseX<640 && MouseY<480)
+				{
 					if(!open_dialog)
 					{
-						ShowWindow(hUnitAttr,SW_SHOW);
-						tile_no=MouseX>>5;
+						int tx = MouseX / tile_size + fx;
+						int ty = MouseY / tile_size + fy;
 
-						//타일 번호
-						SetDlgItemInt(hUnitAttr, IDC_TILENO, tile_no, TRUE);
+						if(tx < x_size && ty < y_size)
+						{
+							SAVE_UNDO;
 
-						//속성값 넘기기
-						SetDlgItemInt(hUnitAttr, IDC_HP, unitdata[tile_no].hp, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_MP, unitdata[tile_no].mp, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_POW, unitdata[tile_no].pow, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_MPOW, unitdata[tile_no].mpow, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_DEF, unitdata[tile_no].def, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_MDEF, unitdata[tile_no].mdef, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_AGL, unitdata[tile_no].agl, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_MOV, unitdata[tile_no].mov, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_JUMP, unitdata[tile_no].jump, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_SWIM, unitdata[tile_no].swim, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_SEE, unitdata[tile_no].see, TRUE);
-						SetDlgItemInt(hUnitAttr, IDC_ACT, unitdata[tile_no].act, TRUE);
-						
-						HWND hCombo = GetDlgItem(hUnitAttr, IDC_ATTR);
-						SendMessage(hCombo, CB_SETCURSEL, unitdata[tile_no].attr, 0);
+							SetDlgItemInt(hEventID, IDC_EVENT_ID, eventland_map[tx][ty], TRUE);
 
-						redraw = true;
-						open_dialog = true;
+							selected_event_x = tx;
+							selected_event_y = ty;
+
+							redraw = true;
+							open_dialog = true;
+
+							ShowWindow(hEventID, SW_SHOW);
+						}
 					}
 				}
 			}
@@ -1566,6 +1641,7 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 								break;
 
 		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								redraw = true;
 								break;
 		
 		case WM_ACTIVATE	 : if(LOWORD(wParam))
