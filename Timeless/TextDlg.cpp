@@ -59,7 +59,10 @@ void CTextDlg::MakeText(char* content)
 	//대화내용 복사
 	length = (int)strlen(content);
 	strncpy(dlg_buffer, content, buffer_size);
-	if(strlen(content) >= buffer_size)dlg_buffer[buffer_size - 1] = NULL;
+	if(strlen(content) >= buffer_size)
+	{
+		dlg_buffer[buffer_size - 1] = NULL;
+	}
 	scroll_end = FALSE;
 
 	//대화를 출력하기 알맞게 처리
@@ -71,16 +74,16 @@ void CTextDlg::MakeText(char* content)
 	if(text_font == &global_font)
 	while(sp<length)
 	{
-		BOOL length_check=TRUE;		//길이 체크를 할지 안 할지 검사
-		int sp_add=1;				//이동할 칸 수, 한글일 경우만 2칸.
+		BOOL length_check = TRUE;	//길이 체크를 할지 안 할지 검사
+		int sp_add = 1;				//이동할 칸 수, 한글일 경우만 2칸.
 
 		//줄 바꿈
-		if(dlg_buffer[sp]=='\\')
+		if(dlg_buffer[sp] == '\\')
 		{
-			dlg_buffer[sp]='\n';
-			space=-1;
-			senlen=0;
-			length_check=FALSE;
+			dlg_buffer[sp] = '\n';
+			space = -1;
+			senlen = 0;
+			length_check = FALSE;
 		}
 		//한글
 		else if(dlg_buffer[sp]&0x80)
@@ -173,8 +176,9 @@ void CTextDlg::Print(char* content)
 		if(!ProcessMessage())break;		//윈도우 메세지 처리
 
 		jdd->DrawPicture(backbuffer, "CommonBlank", 0, 0, NULL);
-		if(Printing()==999)break;	//내용을 다 출력하면 중단
+		if(Printing() == TEXT_DLG_END)break;	//내용을 다 출력하면 중단
 		jdd->Render();
+
 		//빨리 넘기기
 		if(keyboard_control && GetKey(vkey_enter, 0) || mouse_control && LeftDown());
 			else Sleep(10);
@@ -188,7 +192,7 @@ int CTextDlg::Printing()
 	if(!setting || !setting2)
 	{
 		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
-		return -1;
+		return TEXT_DLG_ERROR;
 	}
 
 	if(!scroll_end)
@@ -222,6 +226,8 @@ int CTextDlg::Printing()
 		//다음으로
 		if(keyboard_control && GetKey(vkey_enter) || mouse_control && LeftDown())
 		{
+			text_buffer[0] = NULL;	//텍스트 버퍼 지우기
+
 			if(sp < length)
 			{
 				scroll_end = FALSE;
@@ -232,8 +238,7 @@ int CTextDlg::Printing()
 			{
 				if(!lock)
 				{
-					text_buffer[0] = NULL;	//텍스트 버퍼 지우기
-					return 999;
+					return TEXT_DLG_END;
 				}
 			}
 		}

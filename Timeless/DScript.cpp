@@ -122,12 +122,6 @@ CScript::CScript(char* script_file)
 	if(SoundOBJ)m_ogg = new COgg(SoundOBJ);
 		else m_ogg = NULL;
 
-	//게임 생성
-	m_game = NULL;
-
-	//MLC리스트 초기화
-	for(int i=0; i<MLC_MAX; ++i)mlc_list[i] = NULL;
-
 	//기타
 	debug_mode = false;	
 	text_rgb[0]=text_rgb[1]=text_rgb[2]=0;
@@ -159,21 +153,6 @@ CScript::~CScript()
 	{
 		delete m_ogg;
 		m_ogg = NULL;
-	}
-
-	//게임 제거
-	if(m_game)
-	{
-		delete m_game;
-		m_game=NULL;
-	}
-
-	//mlc 리스트 제거
-	for(int i=0; i<MLC_MAX; ++i)
-	if(mlc_list[i])
-	{
-		delete [] mlc_list[i];
-		mlc_list[i] = NULL;
 	}
 }
 
@@ -251,10 +230,6 @@ void CScript::Load(char* script_file)
 			return;
 		}		
 	}
-
-	//그림 자료 읽어오기
-	//sprintf(mlc_file, "%s.mlc", script_file);
-	//jre->LoadResource(mlc_file);
 
 	//챕터명 기억
 	char* temp_chapter = strrchr(script_file, '\\');
@@ -478,9 +453,6 @@ void CScript::UnLoad()
 	//리턴 지점 비우기
 	return_no.clear();
 
-	//그림 제거
-	if(jre)jre->UnloadResource(mlc_file);
-
 	//화면효과 초기화
 	screen_effect[0] = 0;
 	screen_effect[1] = 0;
@@ -491,169 +463,6 @@ void CScript::UnLoad()
 	if(m_ogg)m_ogg->StopOgg();
 
 	enable=FALSE;
-}
-
-#define SYSTEMMENU_MAX	8
-
-void CScript::SystemMenu(bool save)
-{
-	//세이브 가능한 상황인지 확인
-	if(save)
-	{
-		//세이브 가능 명령어들
-		std::vector<CScriptCommand>::iterator it;
-		for(it=m_script.begin(); it!=m_script.end(); ++it)
-		{
-			//스크립트 중일 때는 출력 때만 저장가능
-			if(!m_game)
-			{
-				if(it->id<0 || it->id==hash("출력"));	//상관없는 명령어
-				else return;	//아직 안 끝난 명령이 있으면 불가능
-			}
-			//내부 게임일 때는 계속일 때만 가능
-			else
-			{
-				if(it->id<0 || it->id==hash("계속"));	//상관없는 명령어
-				else return;	//아직 안 끝난 명령이 있으면 불가능
-			}
-		}
-	}
-
-	JPictureInfo pi;
-	jdd->GetPictureInfo(m_textmap[system_menu_hash].buffer, &pi);
-
-	int menu_width = pi.GetWidth();
-	int menu_height = pi.GetHeight();
-	int put_max = (save)?SYSTEMMENU_MAX:SYSTEMMENU_MAX-2;	//메뉴 수, 로드일 때는 2개가 없음
-
-	//메뉴 설정
-	int selected_menu = 0;
-	char menu_name[SYSTEMMENU_MAX][80];
-	char save_filename[80];
-
-	if(!enable_save && save)selected_menu=SYSTEMMENU_MAX-2;	//세이브 불가능일 경우
-
-	strcpy(menu_name[SYSTEMMENU_MAX-1], "게임 종료");
-	strcpy(menu_name[SYSTEMMENU_MAX-2], "타이틀로");
-
-	//세이브 파일 정보 얻기
-	for(int i=0; i<SYSTEMMENU_MAX-2; ++i)
-	{
-		FILE *info_fp;
-		sprintf(save_filename, "Save\\Save%d.sav", i+1);
-		if(info_fp = fopen(save_filename, "rb"))
-		{
-			//흥크립트 세이브 파일인지 확인
-			char header[9];
-			fread(header, sizeof(char), 8, info_fp);
-			header[7]=NULL;
-			//챕터 이름 읽기
-			if(strcmp(header, "HungSav")==0)
-			{
-				fseek(info_fp, 80, SEEK_CUR);
-				fread(menu_name[i], sizeof(char), 80, info_fp);
-			}
-			else strcpy(menu_name[i], "빈 세이브 파일");
-			
-			fclose(info_fp);
-		}
-		else strcpy(menu_name[i], "빈 세이브 파일");
-	}
-	
-	//시스템 메뉴
-	while(1)
-	{
-		if(!ProcessMessage())break;
-		if(GetKey(vkey_esc) || (mouse_control && RightDown()))break;
-
-		//이동
-		int old_pos = selected_menu;
-		if(GetKey(vkey_up, 10))--selected_menu;
-			else if(GetKey(vkey_down, 10))++selected_menu;
-
-		if(save)
-		{
-			if(enable_save)selected_menu = MaxMin(selected_menu, 0, SYSTEMMENU_MAX-1);
-				else selected_menu = MaxMin(selected_menu, SYSTEMMENU_MAX-2, SYSTEMMENU_MAX-1);
-		}
-		else selected_menu = MaxMin(selected_menu, 0, SYSTEMMENU_MAX-3);
-
-		if(old_pos != selected_menu)_Play(sound[CURSOR_SOUND]);
-
-		//마우스 선택
-		BOOL mouse_select=FALSE;
-		if(mouse_control)
-		{
-			for(int i=0; i<put_max; ++i)
-			{
-				if(save && !enable_save && i<SYSTEMMENU_MAX-2)continue;
-
-				if(MouseX>=128 && MouseX<menu_width+128 && MouseY>=i*50+60 && MouseY<i*50+60+menu_height)
-				{
-					//이동이 있을 때만 검사
-					if(mouse_move)
-					{
-						selected_menu=i;
-						mouse_move=FALSE;
-					}
-
-					mouse_select=TRUE;
-					break;
-				}
-			}
-		}
-
-		//선택
-		if(GetKey(vkey_enter) || mouse_select && LeftDown())
-		{
-			//게임 종료
-			if(selected_menu == SYSTEMMENU_MAX-1)
-			{
-				gameover = TRUE;
-				break;
-			}
-			//타이틀로
-			else if(selected_menu == SYSTEMMENU_MAX-2)
-			{
-				ComTitle();
-				break;
-			}
-			//세이브
-			else if(save)
-			{
-				BOOL result = SaveGame(selected_menu+1);
-				if(result)strcpy(menu_name[selected_menu], m_textmap[chapter_hash].buffer);	//기록후 메뉴이름 변경
-			}
-			//로드
-			else
-			{
-				BOOL result = LoadGame(selected_menu+1);
-				if(result)return;
-			}
-		}
-
-		//출력 부분
-		if(save)jdd->DrawPicture(backbuffer, m_textmap[system_save_hash].buffer, 0, 0, NULL);
-			else jdd->DrawPicture(backbuffer, m_textmap[system_load_hash].buffer, 0, 0, NULL);
-		for(int i=0; i<put_max; ++i)
-		{
-			if(save && !enable_save && i<SYSTEMMENU_MAX-2)continue;		//세이브 불가능일 땐 보여주지 않음
-
-			int menu_y = i*50+60;
-
-			jdd->DrawPicture(backbuffer, m_textmap[system_menu_hash].buffer, 128, menu_y, NULL);
-			if(selected_menu == i)jdd->DrawPicture(backbuffer, m_textmap[system_cursor_hash].buffer, 128, menu_y, NULL);
-
-			//파일 정보
-			int center=(int)(640-(strlen(menu_name[i])*10))/2;
-			jdd->DrawText(backbuffer, menu_name[i], global_font, center, menu_y+10, JColor(0,0,0));
-		}		
-
-		//마우스 커서
-		if(mouse_control)jdd->DrawPicture(backbuffer,m_textmap[area_cursor_hash].buffer, MouseX, MouseY, NULL);
-
-		jdd->Render();
-	}
 }
 
 //스크립트 페이지 지정
@@ -670,7 +479,6 @@ BOOL CScript::SetPage(int no)
 		return TRUE;
 	}
 }
-
 //스크립트 처리
 void CScript::Scripting()
 {
@@ -742,19 +550,6 @@ void CScript::Scripting()
 			jdd->ApplyColorMatrix(backbuffer, backbuffer, 0, 0, NULL, CM_blue);
 		}
 	}
-
-	//로드 메뉴
-	/*if(on_loadmenu)
-	{
-		SystemMenu(false);
-		on_loadmenu=false;
-	}
-	//세이브 메뉴
-	else if(GetKey(vkey_esc) || (mouse_control && RightDown()) || on_savemenu)
-	{
-		SystemMenu();
-		on_savemenu=false;
-	}*/
 
 	//에러 검사
 	if(script_no < 0 || (script_no >= snrs && m_script.empty()) || !enable)
@@ -837,28 +632,16 @@ void CScript::CreateCommandMap()
 	//연산
 	RunCommand[hash("랜덤")]=&CScript::ComRandom;
 
-	//게임
-	RunCommand[hash("모험")]=&CScript::ComRPG;
-
 	//스크립트 흐름 제어
 	RunCommand[hash("대기")]=&CScript::ComWait;
 	RunCommand[hash("분기")]=&CScript::ComCase;
 	RunCommand[hash("이동")]=&CScript::ComGoto;
 	RunCommand[hash("돌아감")]=&CScript::ComReturn;
-	RunCommand[hash("로드")]=&CScript::ComLoad;
-	RunCommand[hash("로드메뉴")]=&CScript::ComLoadMenu;
-	RunCommand[hash("세이브메뉴")]=&CScript::ComSaveMenu;
-	RunCommand[hash("챕터")]=&CScript::ComChapter;
-	RunCommand[hash("세이브가능")]=&CScript::ComEnableSave;
-	RunCommand[hash("세이브불가")]=&CScript::ComDisableSave;
 	RunCommand[hash("영역선택")]=&CScript::ComSelectArea;
 	RunCommand[hash("영역분기")]=&CScript::ComGotoByArea;
 	RunCommand[hash("계속")]=&CScript::ComInfinity;
-	RunCommand[hash("MLC로드")]=&CScript::ComLoadMLC;
-	RunCommand[hash("MLC언로드")]=&CScript::ComUnloadMLC;
 
 	//종료
-	RunCommand[hash("타이틀")]=&CScript::ComTitle;
 	RunCommand[hash("끝")]=&CScript::ComEnd;
 }
 
@@ -1287,25 +1070,6 @@ void CScript::RunScript()
 {
 	if(m_script.empty())return;	//아무 작업도 안 들어 있을 때
 
-	//게임 실행
-	if(m_game)
-	{
-		if(event_no == -1)
-		{
-			m_game->Control();
-			event_no = m_game->Process();
-			if(event_no >= 0)	//이벤트 발생
-			{
-				script_no = m_BookmarkHash[event_no];	//이동
-				m_script.clear();
-				return;
-			}
-		}
-		else m_game->Process();
-
-		m_game->Draw();
-	}
-
 	//그림 표시
 	std::map<int, ScriptPicture>::iterator pit;
 	for(pit=m_pic.begin(); pit!=m_pic.end(); ++pit)
@@ -1462,362 +1226,6 @@ ScriptText* CScript::GetTextPoint(COMMAND_PTR it, BOOL error_msg)
 	}
 
 	return &m_textmap[tmp_id];	//사용중인 문자 포인터
-}
-
-BOOL CScript::SaveGame(int id)
-{
-	char save_filename[80];
-	sprintf(save_filename, "Save\\Save%d.sav", id);
-
-	FILE *save_fp;
-	if(!(save_fp = fopen(save_filename, "wb")))return FALSE;	//파일 못 만들면 리턴
-
-	_Play(sound[SELECT_SOUND]);	//효과음
-
-	//헤더
-	fwrite("HungSav3", sizeof(char), 8, save_fp);
-	fwrite(script_file, sizeof(char), 80, save_fp);
-	fwrite(m_textmap[chapter_hash].buffer, sizeof(char), 80, save_fp);
-	//대화창 변수 기록
-	fwrite(&script_no, sizeof(int), 1, save_fp);
-	fwrite(&text_rgb, sizeof(int), 3, save_fp);
-	fwrite(&text_shadow, sizeof(bool), 1, save_fp);
-	RECT dlg_rect, input_rect;
-	SetRect(&dlg_rect, m_dlg.GetX(), m_dlg.GetY(), m_dlg.GetWidth(), m_dlg.GetLine());
-	SetRect(&input_rect, m_input.GetX(), m_input.GetY(), m_input.GetWidth(), 0);
-	fwrite(&dlg_rect, sizeof(RECT), 1, save_fp);
-	fwrite(&input_rect, sizeof(RECT), 1, save_fp);
-	float tmp_opacity = m_dlg.GetOpacity();
-	fwrite(&tmp_opacity, sizeof(float), 1, save_fp);
-	fwrite(&font_name, sizeof(char), 20, save_fp);
-	//리턴 장소 기록
-	size_t size=return_no.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::vector<int>::iterator rit;
-	for(rit=return_no.begin(); rit!=return_no.end(); ++rit)
-	{
-		fwrite(&(*rit), sizeof(int), 1, save_fp);
-	}
-	//명령문 기록
-	size=m_script.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::vector<CScriptCommand>::iterator cit;
-	for(cit=m_script.begin(); cit!=m_script.end(); ++cit)
-	{
-		fwrite(&(*cit), sizeof(CScriptCommand), 1, save_fp);
-	}
-	//그림 기록
-	size=m_pic.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::map<int, ScriptPicture>::iterator pit;
-	for(pit=m_pic.begin(); pit!=m_pic.end(); ++pit)
-	{
-		fwrite(&pit->first, sizeof(int), 1, save_fp);
-		fwrite(&pit->second, sizeof(ScriptPicture), 1, save_fp);
-	}
-	//소리 기록
-	size=m_snd.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::map<int, ScriptSound>::iterator sit;
-	for(sit=m_snd.begin(); sit!=m_snd.end(); ++sit)
-	{
-		fwrite(&sit->first, sizeof(int), 1, save_fp);
-		fwrite(&sit->second, sizeof(ScriptSound), 1, save_fp);
-	}
-	//변수 기록
-	size=m_valuemap.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::map<int, int>::iterator vit;
-	for(vit=m_valuemap.begin(); vit!=m_valuemap.end(); ++vit)
-	{
-		fwrite(&vit->first, sizeof(int), 1, save_fp);
-		fwrite(&vit->second, sizeof(int), 1, save_fp);
-	}
-	//문자 변수 기록
-	size=m_textmap.size();
-	fwrite(&size, sizeof(int), 1, save_fp);
-	std::map<int, ScriptText>::iterator tit;
-	for(tit=m_textmap.begin(); tit!=m_textmap.end(); ++tit)
-	{
-		fwrite(&tit->first, sizeof(int), 1, save_fp);
-		fwrite(&tit->second, sizeof(ScriptText), 1, save_fp);
-	}
-
-	//mlc리스트 저장
-	for(int i=0; i<MLC_MAX; ++i)
-	{
-		unsigned char t_size;
-		if(mlc_list[i])t_size = (unsigned char)strlen(mlc_list[i]);
-			else t_size =0;
-		fwrite(&t_size, sizeof(char), 1, save_fp);
-		if(t_size>0)fwrite(mlc_list[i], sizeof(char), t_size, save_fp);		
-	}
-
-	//게임 정보 저장
-	bool game_play = false;
-
-	if(m_game)
-	{
-		game_play = true;
-		fwrite(&game_play, sizeof(bool), 1, save_fp);
-		m_game->SaveGame(save_fp);
-	}
-	else fwrite(&game_play, sizeof(bool), 1, save_fp);
-
-	//화면효과 저장
-	fwrite(&screen_effect, sizeof(int), 2, save_fp);
-
-	fclose(save_fp);
-
-	return TRUE;
-}
-
-BOOL CScript::LoadGame(int id)
-{
-	char save_filename[80];
-	sprintf(save_filename, "Save\\Save%d.sav", id);
-
-	FILE *load_fp;
-	if(!(load_fp = fopen(save_filename, "rb")))return FALSE;	//파일이 없으면 리턴
-
-	//헤더
-	char header[9];
-	fread(header, sizeof(char), 8, load_fp);
-	header[8] = NULL;
-	
-	//버전 확인
-	int ver=0;
-	if(strcmp(header, "HungSave")==0)ver=11;
-	else if(strcmp(header, "HungSav2")==0)ver=15;
-	else if(strcmp(header, "HungSav3")==0)ver=16;
-
-	if(ver == 0)	//흥크립트 세이브 파일이 아님
-	{
-		fclose(load_fp);
-		return FALSE;
-	}
-
-	_Play(sound[SELECT_SOUND]);	//효과음
-
-	//지금의 스크립트를 언로드하고 기록된 스크립트 읽기
-	fread(script_file, sizeof(char), 80, load_fp);
-	m_script.clear();
-	UnLoad();
-	Load(script_file);
-	fread(m_textmap[chapter_hash].buffer, sizeof(char), 80, load_fp);
-	//대화창 변수 읽기
-	fread(&script_no, sizeof(int), 1, load_fp);
-	fread(&text_rgb, sizeof(int), 3, load_fp);
-	fread(&text_shadow, sizeof(bool), 1, load_fp);
-	if(ver>=15)
-	{
-		RECT dlg_rect, input_rect;
-		fread(&dlg_rect, sizeof(RECT), 1, load_fp);
-		fread(&input_rect, sizeof(RECT), 1, load_fp);
-		m_dlg.SetDlg(dlg_rect.left, dlg_rect.top, dlg_rect.right, dlg_rect.bottom);
-		m_select.SetDlg(dlg_rect.left, dlg_rect.top, dlg_rect.right, dlg_rect.bottom);
-		m_input.SetDlg(input_rect.left, input_rect.top, input_rect.right);
-		float tmp_opacity;
-		fread(&tmp_opacity, sizeof(float), 1, load_fp);
-		m_dlg.SetOpacity(tmp_opacity);
-		m_select.SetOpacity(tmp_opacity);
-		m_input.SetOpacity(tmp_opacity);
-		fread(&font_name, sizeof(char), 20, load_fp);
-		jdd->DeleteFont(global_font);
-		global_font=jdd->CreateFont(font_name, 20);
-	}
-	//리턴 변수 읽기
-	size_t size;
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		int no;
-		fread(&no, sizeof(int), 1, load_fp);
-		return_no.push_back(no);
-	}
-	//글자색, 그림자 복원
-	m_dlg.SetTextColor(text_rgb[0], text_rgb[1], text_rgb[2]);
-	m_select.SetTextColor(text_rgb[0], text_rgb[1], text_rgb[2]);
-	m_input.SetTextColor(text_rgb[0], text_rgb[1], text_rgb[2]);
-	
-	if(text_shadow)
-	{
-		m_dlg.ShowShadow();
-		m_select.ShowShadow();
-		m_input.ShowShadow();
-	}
-	else
-	{
-		m_dlg.HideShadow();
-		m_select.HideShadow();
-		m_input.HideShadow();
-	}
-
-	if(ver==11)fread(m_textmap[bgm_hash].buffer, sizeof(char), 80, load_fp);
-	//명령문 읽기
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		CScriptCommand tmp_command;
-		fread(&tmp_command, sizeof(CScriptCommand), 1, load_fp);
-
-		//출력문의 경우 상태 돌리기
-		if(tmp_command.id == hash("출력"))
-		{
-			tmp_command.first=false;
-			if(snr[tmp_command.snr_no][0]=='@' || snr[tmp_command.snr_no][0]=='~')
-			{
-				tmp_command.text = strchr(snr[tmp_command.snr_no], ' ') + 1;
-			}
-			else tmp_command.text = snr[tmp_command.snr_no];
-		}
-		//0이하의 찌꺼기 명령은 무시
-		if(tmp_command.id>=0)m_script.push_back(tmp_command);
-	}
-	//그림 읽기
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		int tmp_id;
-		ScriptPicture tmp_pic;
-		fread(&tmp_id, sizeof(int), 1, load_fp);
-		fread(&tmp_pic, sizeof(ScriptPicture), 1, load_fp);
-		m_pic[tmp_id] = tmp_pic;
-
-		//그림 복원
-		m_pic[tmp_id].id = jdd->GetID(m_pic[tmp_id].src);
-
-		//투명도 복원
-		JPictureInfo pi;
-		pi.SetOpacity(m_pic[tmp_id].opacity);
-		pi.SetColorKey(m_pic[tmp_id].key);
-		jdd->SetPictureInfo(m_pic[tmp_id].id, &pi);
-
-		//애니에션인 경우
-		if(m_pic[tmp_id].ani)
-		{
-			JPictureInfo pi;
-			jdd->GetPictureInfo(m_pic[tmp_id].src, &pi);
-
-			int ani_x = pi.GetWidth() / m_pic[tmp_id].frame;	//프레임 수에 맞게 가로 길이 나누기
-			int ani_y = pi.GetHeight();							//세로는 무조건 그림 크기에 맞춤
-
-			if(m_pic[tmp_id].anitype == 0)animation.CreateAnimation(m_pic[tmp_id].id, ani_x, ani_y, ani_loop, m_pic[tmp_id].frame, m_pic[tmp_id].delay);
-			else if(m_pic[tmp_id].anitype == 2)animation.CreateAnimation(m_pic[tmp_id].id, ani_x, ani_y, ani_once, m_pic[tmp_id].frame, m_pic[tmp_id].delay);
-			else animation.CreateAnimation(m_pic[tmp_id].id, ani_x, ani_y, ani_exchange, m_pic[tmp_id].frame, m_pic[tmp_id].delay);
-		}
-	}
-	//소리 읽기
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		int tmp_id;
-		ScriptSound tmp_sound;
-		fread(&tmp_id, sizeof(int), 1, load_fp);
-		fread(&tmp_sound, sizeof(ScriptSound), 1, load_fp);
-		if(SoundOBJ)tmp_sound.sound = SndObjCreate(SoundOBJ, tmp_sound.src, 2);			
-			else tmp_sound.sound = NULL;
-		m_snd[tmp_id]=tmp_sound;
-	}
-	//변수 읽기
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		int tmp_val[2];
-		fread(&tmp_val, sizeof(int), 2, load_fp);
-		m_valuemap[tmp_val[0]]=tmp_val[1];
-	}
-	//문자 변수 읽기
-	fread(&size, sizeof(int), 1, load_fp);
-	for(size_t i=0; i<size; ++i)
-	{
-		int tmp_id;
-		ScriptText tmp_text;
-		fread(&tmp_id, sizeof(int), 1, load_fp);
-		fread(&tmp_text, sizeof(ScriptText), 1, load_fp);
-
-		m_textmap[tmp_id] = tmp_text;
-	}
-
-	//음악 재생 정보 확인
-	if(strlen(m_textmap[bgm_hash].buffer) > 0)
-	{
-		char ext[20];
-		strcpy(ext, strrchr(m_textmap[bgm_hash].buffer, '.'));
-
-		if(strcmp(ext, ".mid") == 0)
-		{
-			_MidiPlay(m_textmap[bgm_hash].buffer);
-			music_type = MUSIC_MID;
-		}
-		else if(strcmp(ext, ".ogg") == 0)
-		{
-			if(m_ogg)
-			{
-				m_ogg->OpenOgg(m_textmap[bgm_hash].buffer);
-				m_ogg->PlayOgg(true);
-			}
-			music_type = MUSIC_OGG;
-		}
-	}
-
-	//버전 1.1일때는 여기서 끝냄
-	if(ver==11)
-	{
-		fclose(load_fp);
-		return TRUE;
-	}
-
-	//mlc리스트 제거
-	for(int i=0; i<MLC_MAX; ++i)
-	{
-		if(mlc_list[i])
-		{
-			jre->UnloadResource(mlc_list[i]);
-			delete [] mlc_list[i];
-			mlc_list[i] = NULL;
-		}
-	}
-
-	//mlc리스트 읽기
-	for(int i=0; i<MLC_MAX; ++i)
-	{
-		unsigned char t_size;
-		fread(&t_size, sizeof(char), 1, load_fp);
-		if(t_size>0)
-		{
-			mlc_list[i] = new char[t_size + 1];
-			fread(mlc_list[i], sizeof(char), t_size, load_fp);		
-			mlc_list[i][t_size] = NULL;
-			jre->LoadResource(mlc_list[i]);
-		}
-	}
-
-	//일단 있는 게임 삭제
-	if(m_game)
-	{
-		delete m_game;
-		m_game = NULL;
-	}
-
-	//게임 정보 불러오기
-	bool game_play;
-	fread(&game_play, sizeof(bool), 1, load_fp);
-
-	if(game_play)
-	{
-		m_game = new CGame();
-		m_game->Start();
-		m_game->LoadGame(load_fp);
-		script_no = 0;
-	}
-
-	//화면효과 불러오기
-	if(ver>=16)fread(&screen_effect, sizeof(int), 2, load_fp);
-
-	fclose(load_fp);
-
-	return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -2162,7 +1570,7 @@ int CScript::ComPicture(COMMAND_PTR it)
 	JPictureInfo pi;
 	if(!jdd->GetPictureInfo(it->buffer, &pi))
 	{
-		//MLC에 없으면 파일로 찾기
+		//로드된 것이 없으면 파일로 찾기
 		pi.SetColorKey(JColor(0, 0, 255));
 		if(!jdd->LoadPicture(it->buffer, it->buffer, &pi, true))
 		{
@@ -2651,42 +2059,6 @@ int CScript::ComRandom(COMMAND_PTR it)
 	return RUN_END;
 }
 
-//내부 게임 실행
-int CScript::ComRPG(COMMAND_PTR it)
-{
-	//게임 생성
-	if(!m_game)
-	{
-		m_game = new CGame();
-		m_game->Start();
-	}
-
-	//맵 로드
-	if(m_game->Load(it->buffer))
-	{
-		//스크립트 로드
-		UnLoad();
-		Load(it->buffer);
-		if(it->value[0] == -1)m_game->SetAutoHeroXY();	//자동 좌표 찾기
-		else m_game->SetHeroXY(it->value[0], it->value[1]);	//수동 지정
-		script_no = 0;
-
-		return RUN_CLEAR;
-	}
-	else	//로드 실패
-	{
-		DebugMode();
-		fprintf(debug_fp, "%s(%d) - %s", script_file, it->snr_no, snr[it->snr_no]);
-		fprintf(debug_fp, " : %s을 찾을 수 없습니다.\n", it->buffer);
-
-		//게임 제거
-		delete m_game;
-		m_game=NULL;
-
-		return RUN_END;
-	}
-}
-
 //대기
 int CScript::ComWait(COMMAND_PTR it)
 {
@@ -2731,54 +2103,6 @@ int CScript::ComReturn(COMMAND_PTR it)
 		//가져오고 지움
 		return_no.pop_back();
 	}
-
-	return RUN_END;
-}
-
-//스크립트 로드
-int CScript::ComLoad(COMMAND_PTR it)
-{
-	//게임이 있다면 제거
-	if(m_game)
-	{
-		delete m_game;
-		m_game = NULL;
-	}
-
-	int start_no = it->value[0]; //시작 주소 외워두기
-	UnLoad();
-	Load(it->buffer);
-	script_no = m_BookmarkHash[start_no];
-
-	return RUN_CLEAR;
-}
-
-//로드 메뉴
-int CScript::ComLoadMenu(COMMAND_PTR it)
-{
-	on_loadmenu=true;
-
-	return RUN_END;
-}
-
-//세이브 메뉴
-int CScript::ComSaveMenu(COMMAND_PTR it)
-{
-	on_savemenu=true;
-
-	return RUN_END;
-}
-
-//챕터명 설정
-int CScript::ComChapter(COMMAND_PTR it)
-{
-	if(strcmp(it->buffer, "")==0)
-	{
-		DebugMode();
-		fprintf(debug_fp, "%s(%d) - %s", script_file, it->snr_no, snr[it->snr_no]);
-		fputs(" : 챕터명을 적지 않았습니다.\n", debug_fp);
-	}
-	else strcpy(m_textmap[chapter_hash].buffer, it->buffer);
 
 	return RUN_END;
 }
@@ -2865,93 +2189,6 @@ int CScript::ComInfinity(COMMAND_PTR it)
 	event_no=-1;	//이벤트 초기화
 
 	return RUN_NOTEND;
-}
-
-//로드
-int CScript::ComLoadMLC(COMMAND_PTR it)
-{
-	if(!jre->LoadResource(it->buffer))
-	{
-		DebugMode();
-		fprintf(debug_fp, "%s(%d) - %s", script_file, it->snr_no, snr[it->snr_no]);
-		fputs(" : MLC 파일을 찾을 수 없습니다.\n", debug_fp);
-	}
-	//mlc리스트에 추가
-	else
-	{
-		for(int i=0; i<MLC_MAX; ++i)
-		if(mlc_list[i] == NULL)
-		{
-			//대문자를 소문자로 변환(나중에 같은 이름인데도 다른 이름으로 판단하므로)
-			ToSmallCase(it->buffer);
-
-			//새로운 이름 작성
-			mlc_list[i] = new char[strlen(it->buffer)+1];
-			strcpy(mlc_list[i], it->buffer);
-			break;
-		}
-	}
-
-	return RUN_END;
-}
-
-//MLC 언로드
-int CScript::ComUnloadMLC(COMMAND_PTR it)
-{
-	if(jre->UnloadResource(it->buffer))
-	{
-		//대문자를 소문자로 변환(나중에 같은 이름인데도 다른 이름으로 판단하므로)
-		ToSmallCase(it->buffer);
-
-		//mlc리스트에서 제거
-		for(int i=0; i<MLC_MAX; ++i)
-		if(mlc_list[i] && strcmp(mlc_list[i], it->buffer) == 0)
-		{
-			//mlc 파일 리스트 제거
-			delete [] mlc_list[i];
-			mlc_list[i] = NULL;
-			break;
-		}
-	}
-
-	return RUN_END;
-}
-
-//타이틀로 돌아가기
-void CScript::ComTitle()
-{
-	//스크립트 클리어
-	m_script.clear();
-	UnLoad();
-
-	//변수 클리어
-	ClearValueMap();
-
-	//게임 제거
-	if(m_game)
-	{
-		delete m_game;
-		m_game=NULL;
-	}
-
-	//mlc 리스트 제거
-	for(int i=0; i<MLC_MAX; ++i)
-	if(mlc_list[i])
-	{
-		delete [] mlc_list[i];
-		mlc_list[i] = NULL;
-	}
-
-	//메인으로
-	Load("SYSTEM");
-	script_no = 0;
-}
-
-int CScript::ComTitle(COMMAND_PTR it)
-{
-	ComTitle();
-
-	return RUN_CLEAR;
 }
 
 //스크립트 끝내기

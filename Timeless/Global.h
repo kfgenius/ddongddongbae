@@ -10,15 +10,7 @@
 
 #include "JDirectDraw.h"
 #include "Dsutil.h"
-#include "JResourceManager.h"
-#include "resource.h"
 #include "Ogg.h"
-#include "Dlg.h"
-
-#include <vector>
-#include <map>
-
-using namespace std;
 
 /*--------------------------------
 			정의 부분
@@ -52,7 +44,6 @@ extern BOOL gameover;		//강제 종료 플래그
 
 //문라이브 관련 변수
 extern JDirectDraw* jdd;
-extern JResourceManager* jre;
 extern char* backbuffer;
 extern JFont global_font;
 

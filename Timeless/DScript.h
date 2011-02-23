@@ -10,11 +10,8 @@
 using namespace std;
 
 #include "donglib.h"
-#include "Game.h"
 
 #define SCRIPT_VALUE_MAX	8	//스크립트에서 쓰는 변수의 수 한계
-
-#define MLC_MAX				100	//MLC로드 한계
 
 #define COMMAND_PTR			vector<CScriptCommand>::iterator
 
@@ -106,10 +103,6 @@ private:
 	void LoadFromTxt();
 	void DebugMode();		//디버그 모드인지 검사한 후 디버그 모드 시작
 
-	void SystemMenu(bool save=true);	//시스템 메뉴
-
-
-	char mlc_file[80];				//mlc 파일 이름(Unload때 필요)
 	char script_file[80];			//게임 로드시 필요
 	int screen_effect[2];			//화면효과
 	BOOL enable;					//제대로 로드되어 사용가능한지 확인
@@ -119,8 +112,6 @@ private:
 	map<int, int> m_BookmarkHash;		//북마크 해쉬
 	map<int, int> m_CommandMap;			//명령문 해쉬
 	vector<CScriptCommand> m_script;	//스크립트 저장 공간
-
-	char* mlc_list[100];				//MLC리스트
 
 	//변수
 	map<int, int> m_valuemap;		//숫자 변수
@@ -159,7 +150,6 @@ private:
 	COgg* m_ogg;					//OGG 플레이어
 
 	//게임
-	CGame* m_game;
 	int event_no;
 
 	//보조 명령
@@ -167,8 +157,6 @@ private:
 	ScriptPicture* CheckPicture(COMMAND_PTR it);
 	BOOL CheckBuffer(COMMAND_PTR it);
 	ScriptText* GetTextPoint(COMMAND_PTR it, BOOL error_msg = TRUE);
-	BOOL SaveGame(int id);
-	BOOL LoadGame(int id);
 
 	///////////////////////////////////////////////
 	//명령들
@@ -228,9 +216,6 @@ private:
 	//연산 관련
 	int ComRandom(COMMAND_PTR);
 
-	//게임 관련
-	int ComRPG(COMMAND_PTR);
-
 	//흐름제어 관련
 	int ComWait(COMMAND_PTR);
 	int ComCase(COMMAND_PTR);
@@ -245,12 +230,8 @@ private:
 	int ComSelectArea(COMMAND_PTR);
 	int ComGotoByArea(COMMAND_PTR);
 	int ComInfinity(COMMAND_PTR);
-	int ComLoadMLC(COMMAND_PTR);
-	int ComUnloadMLC(COMMAND_PTR);
 
 	//종료
-	void ComTitle();
-	int ComTitle(COMMAND_PTR);
 	int ComEnd(COMMAND_PTR);
 
 public:
