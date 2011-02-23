@@ -1,12 +1,9 @@
 #include <dsound.h>
-//#include <string.h>
-//#include <tchar.h>
 
 #include "Global.h"
 #include "JDirectDraw.h"
 
 JDirectDraw* jdd;
-JResourceManager* jre;
 
 char* backbuffer;
 
@@ -356,7 +353,6 @@ void WhiteIn(int delay)
 BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode)
 {
 	jdd=CreateDirectDraw();
-	jre=CreateDXResourceManager(jdd);
 
 	HINSTANCE hInstance=(HINSTANCE)0x00400000;
 

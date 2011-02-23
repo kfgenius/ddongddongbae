@@ -2,6 +2,9 @@
 
 #include "dlg.h"
 
+#define TEXT_DLG_END	999
+#define TEXT_DLG_ERROR	-1
+
 //출력을 위한 대화상자
 class CTextDlg:public CDlg
 {
