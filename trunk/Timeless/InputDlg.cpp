@@ -27,6 +27,7 @@ void CInputDlg::SetDlg(int vx, int vy, int max)
 	y=vy;
 	width=Max(30,max);
 	width/=10;
+	line = 1;
 
 	str_max*=10;
 

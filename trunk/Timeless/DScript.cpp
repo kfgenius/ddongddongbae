@@ -1524,8 +1524,6 @@ int CScript::ComInputBox(COMMAND_PTR it)
 	m_input.SetDlg(it->value[0],it->value[1],it->value[2]);
 	
 	//입력창 그림 생성
-	JPictureInfo pi;
-	if(jdd->GetPictureInfo("_inputbox", &pi))jdd->DeleteSurface("_inputbox");
 	m_input.MakeDlgBox("_inputbox");
 
 	return RUN_END;

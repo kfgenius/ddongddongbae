@@ -31,7 +31,7 @@ CDlg::~CDlg()
 	}
 }
 
-//대화창 그려주는 함수
+//대화창 조각을 조합해서 그려주는 함수
 void CDlg::MakeDlgBox(char* dlgbox)
 {
 	JPictureInfo pi;
