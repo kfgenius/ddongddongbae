@@ -128,6 +128,8 @@ CScript::CScript(char* script_file)
 	text_shadow=false;
 	strcpy(font_name, "궁서");
 	message_speed = 4;
+	text_skip = false;
+	text_auto = false;
 }
 
 //대화내용 비우기
@@ -244,8 +246,6 @@ void CScript::Load(char* script_file)
 	strcpy(m_textmap[bgm_hash].buffer, "");
 
 	//기타
-	enable_save = true;
-	on_savemenu = on_loadmenu = false;
 	area_select = false;
 	m_valuemap[area_x_hash] = SCREEN_X/2;
 	m_valuemap[area_y_hash] = SCREEN_Y/2;
@@ -1246,7 +1246,7 @@ int CScript::ComPrint(COMMAND_PTR it)
 	//대화 출력
 	int result = 0;
 	static int text_delay;
-	if(text_delay == 0)
+	if(text_delay == 0 || text_skip)
 	{
 		result = m_dlg.Printing();
 		text_delay = message_speed;
@@ -2105,22 +2105,6 @@ int CScript::ComReturn(COMMAND_PTR it)
 	return RUN_END;
 }
 
-//세이브 가능
-int CScript::ComEnableSave(COMMAND_PTR it)
-{
-	enable_save = true;
-
-	return RUN_END;
-}
-
-//세이브 불가능
-int CScript::ComDisableSave(COMMAND_PTR it)
-{
-	enable_save = false;
-
-	return RUN_END;
-}
-
 //영역 선택
 int CScript::ComSelectArea(COMMAND_PTR it)
 {
@@ -2195,4 +2179,28 @@ int CScript::ComEnd(COMMAND_PTR it)
 	gameover = TRUE;
 
 	return RUN_CLEAR;
+}
+
+//스킵
+void CScript::SetTextSkip(BOOL on_off)
+{
+	text_skip = on_off;
+}
+
+//오토
+void CScript::SetTextAuto(BOOL on_off)
+{
+	m_dlg.SetTextAuto(on_off);
+}
+
+//스킵 상태 알아오기
+BOOL CScript::GetTextSkip()
+{
+	return text_skip;
+}
+
+//오토 상태 알아오기
+BOOL CScript::GetTextAuto()
+{
+	return m_dlg.GetTextAuto();
 }

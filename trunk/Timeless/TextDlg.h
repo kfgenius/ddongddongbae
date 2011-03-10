@@ -14,6 +14,7 @@ private:
 	BOOL lock;
 	int tp, sp;			//한글자씩 출력하기 위한 포인터, tp는 지금 출력되는 대화창의 포인터, sp는 전체 내용의 포인터
 	BOOL scroll_end;	//글자가 출력되는 애니메이션이 끝났는지 여부
+	BOOL text_auto;
 
 public:
 	//생성자 소멸자
@@ -24,8 +25,14 @@ public:
 	void MakeText(char* content);
 	void ShowText();
 	void Print(char* content);
+	void Next();
+	void PrintOneCharacter();
 	int Printing();
 
 	void Lock();		//창을 못 닫게 함
 	void UnLock();		//창을 닫을 수 있게 함
+
+	//오토 관련(대화 자동 넘김)
+	void SetTextAuto(BOOL on_off);
+	BOOL GetTextAuto();
 };

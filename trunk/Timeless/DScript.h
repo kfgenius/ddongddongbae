@@ -120,11 +120,8 @@ private:
 	//배경음
 	int music_type;
 
-	bool on_savemenu, on_loadmenu;	//메뉴 호출 여부
-
 	//영역 선택
 	bool area_select;
-
 
 	//글자색, 그림자, 폰트, 메시지 스피트
 	int text_rgb[3];
@@ -132,7 +129,8 @@ private:
 	char font_name[20];
 	int message_speed;	
 
-	bool enable_save;	//세이브 가능 여부
+	BOOL text_skip;
+	BOOL text_auto;
 
 	//출력
 	CTextDlg m_dlg;
@@ -245,6 +243,12 @@ public:
 
 	//변수맵 지우기
 	void ClearValueMap();
+
+	//스킵, 오토
+	void SetTextSkip(BOOL on_off);
+	void SetTextAuto(BOOL on_off);
+	BOOL GetTextSkip();
+	BOOL GetTextAuto();
 
 	//생성자&소멸자
 	CScript(char* script_file);
