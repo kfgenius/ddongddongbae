@@ -10,7 +10,8 @@ CTextDlg::CTextDlg(unsigned int vbuffer_size)
 	dlg_buffer = new char[buffer_size];		//대화 내용 버퍼
 	text_buffer = new char[buffer_size];	//현재까지 출력한 내용의 버퍼
 
-	lock=FALSE;
+	lock = FALSE;
+	text_auto = FALSE;
 }
 
 CTextDlg::~CTextDlg()
@@ -224,7 +225,7 @@ int CTextDlg::Printing()
 	else
 	{
 		//다음으로
-		if(keyboard_control && GetKey(vkey_enter) || mouse_control && LeftDown())
+		if((keyboard_control && GetKey(vkey_enter)) || (mouse_control && LeftDown()) || text_auto)
 		{
 			text_buffer[0] = NULL;	//텍스트 버퍼 지우기
 
@@ -285,4 +286,14 @@ void CTextDlg::Lock()
 void CTextDlg::UnLock()
 {
 	lock=FALSE;
+}
+
+void CTextDlg::SetTextAuto(BOOL on_off)
+{
+	text_auto = on_off;
+}
+
+BOOL CTextDlg::GetTextAuto()
+{
+	return text_auto;
 }

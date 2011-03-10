@@ -27,8 +27,8 @@ CGameProcessManager::CGameProcessManager()
 
 	//시작 프로세스를 넣자
 	NewProcess(proc_mainmenu);
-	NewProcess(proc_logo);
 	NewProcess(proc_story);
+	NewProcess(proc_logo);
 }
 
 //소멸자
