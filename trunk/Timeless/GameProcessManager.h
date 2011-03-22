@@ -10,7 +10,8 @@ enum ProcessID
 {
 	proc_logo,
 	proc_mainmenu,
-	proc_story
+	proc_story,
+	proc_game_map
 };
 
 //게임 데이터
