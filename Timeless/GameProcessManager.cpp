@@ -4,6 +4,7 @@
 #include "Logo.h"
 #include "MainMenu.h"
 #include "Story.h"
+#include "GameMap.h"
 
 //답 종류
 #define FINAL_ANSWER_MAX	4
@@ -26,9 +27,7 @@ CGameProcessManager::CGameProcessManager()
 	InitPlayData();
 
 	//시작 프로세스를 넣자
-	NewProcess(proc_mainmenu);
-	NewProcess(proc_story);
-	NewProcess(proc_logo);
+	NewProcess(proc_game_map);
 }
 
 //소멸자
@@ -88,6 +87,9 @@ CProcess* CGameProcessManager::CreateProcess(ProcessStack* p_stack)
 							 break;
 
 		case proc_story : return (CProcess*)new CStory;
+							 break;
+
+		case proc_game_map : return (CProcess*)new CGameMap;
 							 break;
 	}
 	

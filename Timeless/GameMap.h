@@ -1,14 +1,18 @@
 #pragma once
 
 #include "Tile.h"
+#include "GameProcess.h"
 
-class CGameMap
+class CGameMap : public CGameProcess
 {
 private:
 	CTile** tile;
-	void Draw();
 
 public:
+	void Control();
+	void Process();
+	void Render();
+
 	CGameMap(void);
 	~CGameMap(void);
 };
