@@ -4,5 +4,5 @@
 #include "InputDlg.h"
 #include "Command.h"
 #include "Animation.h"
-#include "SearchMap.h"
+//#include "SearchMap.h"
 #include "Files.h"
