@@ -1,22 +1,17 @@
-//#include <vector>
-
-//using namespace std;
-
-//맵 한계
-/*#define LAYER_MAX	3
-#define MAP_XMAX	80
-#define MAP_YMAX	60
-#define TILESIZE	32
-#define TILE_MAX	120
-
-//유닛 정보
-#define UNIT_MAX	128
-*/
 //유닛 방향
 #define DIR_UP		0
 #define DIR_LEFT	1
 #define DIR_DOWN	2
 #define DIR_RIGHT	3
+
+//이동 방식
+#define NORMAL_MOVE		0	//보통
+#define WATER_MOVE		1	//물
+#define FIRE_MOVE		2	//불
+#define SPECIAL_MOVE	3	//유격대
+#define SKY_MOVE		4	//비행
+#define GHOST_MOVE		5	//유령
+
 
 /////////////////////////////
 //맵 에디터에서 넘어오는 값
@@ -55,6 +50,9 @@ private:
 	int move_speed;	//이동용 스피드(일시적)
 	int dir;		//바라보는 방향
 
+	//맵 정보
+	int tile_size;	//맵의 타일 크기, 생성시 넣어 준다.
+
 public:
 	//능력치
 	int lv, exp, next_exp;
@@ -71,7 +69,7 @@ public:
 	int event_no;
 
 	//유닛 배치, 삭제 관련
-	void Set(int id);
+	void Set(int id, int team, int tile_size);
 	void Die();
 	bool GetLife();
 

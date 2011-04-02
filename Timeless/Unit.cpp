@@ -2,36 +2,6 @@
 #include "hash.h"
 
 #include <stdio.h>
-//#include "donglib.h"
-
-//맵 관련
-/*#define UNIT_Y		40
-#define UNIT_PY		8	//유닛은 세로가 40이므로 8픽셀 위에 찍음
-
-//그림 이름
-#define PIC_MAP		"Map"
-#define PIC_TILE1	"tile1"
-#define PIC_TILE2	"tile2"
-
-//이벤트 종류
-#define EVENT_NONE		-1
-#define EVENT_GO_OUT	999
-
-//애니 번호
-#define HERO			0
-#define ANI_TILE		128
-
-//애니메이션
-CAnimation ani;*/
-#define TILESIZE	32
-
-//이동 보너스
-#define NORMAL_MOVE		0	//보통
-#define WATER_MOVE		1	//물
-#define FIRE_MOVE		2	//불
-#define SPECIAL_MOVE	3	//유격대
-#define SKY_MOVE		4	//비행
-#define GHOST_MOVE		5	//유령
 
 ////////////////////////////////////////////////////////////
 // CUnit 메소드
@@ -55,19 +25,17 @@ int unit_data[][20] = {
 
 CUnit::CUnit()
 {
-	life=false;
-	moving=false;
+	life = false;
+	moving = false;
 	SetPos(0,0);
 }
 
 //설정
-void CUnit::Set(int id)
+void CUnit::Set(int id, int team, int tile_size)
 {
 	life = true;
 	this->id = id;
-
-	if(id<6)team = 0;
-	else team = 1;
+	this->team = team;
 
 	char unit_name[20];
 	sprintf(unit_name, "Unit%d", id);
@@ -83,6 +51,9 @@ void CUnit::Set(int id)
 	//공통 초기값
 	ap = 100;
 	hp = hp_max;
+
+	//맵 타일의 크기 알아오기
+	this->tile_size = tile_size;
 }
 
 //사망
@@ -131,12 +102,12 @@ int CUnit::GetPY()
 
 int CUnit::GetRealX()
 {
-	return x * TILESIZE + px;
+	return x * tile_size + px;
 }
 
 int CUnit::GetRealY()
 {
-	return y * TILESIZE + py;
+	return y * tile_size + py;
 }
 
 //방향 얻기, 설정
@@ -200,22 +171,22 @@ bool CUnit::Move(int dir)
 	if(dir == DIR_LEFT)
 	{
 		--x;
-		px=TILESIZE;
+		px = tile_size;
 	}
 	else if(dir == DIR_UP)
 	{
 		--y;
-		py=TILESIZE;
+		py = tile_size;
 	}
 	else if(dir == DIR_RIGHT)
 	{
 		++x;
-		px=-TILESIZE;
+		px = -tile_size;
 	}
 	else if(dir == DIR_DOWN)
 	{
 		++y;
-		py=-TILESIZE;
+		py = -tile_size;
 	}
 
 	moving = true;
