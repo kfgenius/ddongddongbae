@@ -57,6 +57,7 @@ CSRPG::CSRPG()
 	//맵 로드
 	Load(INIT_MAP_NAME, false);
 	SetAutoHeroXY(0);
+	InitScroll(HERO);
 	m_script = new CScript(INIT_MAP_NAME);
 	m_script->SetPage(0);
 }
@@ -192,11 +193,7 @@ bool CSRPG::Load(char* map_name, bool battle)
 
 	//기타 초기화
 	active_unit = -1;
-
-	//주인공 위치 초기화
-	unit[HERO].SetPos(0, 0);
-	InitScroll(HERO);
-	event_no=-1;
+	event_no = EVENT_NONE;
 
 	return true;
 }
@@ -298,12 +295,10 @@ int CSRPG::Crush(int x, int y)
 	if(x<0 || y<0 || x>=x_size || y>=y_size)return EVENT_GO_OUT;
 
 	//유닛 이벤트
-	if(map[x][y].unit!=0xff)//return GetUnit(map[x][y].unit)->GetEventNo();
+	if(map[x][y].unit!=0xff)
 	{
-		CUnit* unit;
-		unit = GetUnit(map[x][y].unit);
-		int ev_no = unit->GetEventNo();
-		return ev_no;
+		CUnit* unit = GetUnit(map[x][y].unit);
+		return unit->GetEventNo();
 	}
 
 	//지형 이벤트
@@ -344,7 +339,7 @@ void CSRPG::UnitMove(int id,  int dir)
 	if(id==HERO)
 	{
 		event_no = Crush(new_x, new_y);
-		if(event_no == 0)event_no = -1;	//0번 이벤트는 무시(특수 이벤트)
+		//if(event_no == 0)event_no = EVENT_NONE;	//0번 이벤트는 무시(특수 이벤트)
 	}
 
 	//이동 속도 구하기, 이동 할 수 없으면 원래 위치로
@@ -400,8 +395,13 @@ void CSRPG::Focus(int unit_id)
 //조작
 void CSRPG::Control()
 {
-	if(battle)BattleControl();
-		else NormalControl();
+	InitEvent();
+
+	if(!m_script->IsReady())
+	{
+		if(battle)BattleControl();
+			else NormalControl();
+	}
 }
 
 //평상시 조작
@@ -537,8 +537,6 @@ void CSRPG::BattleControl()
 
 void CSRPG::Process()
 {
-	InitEvent();
-
 	//유닛들 행동
 	for(int i=0; i<unit_max; ++i)unit[i].Action();
 
@@ -552,9 +550,10 @@ void CSRPG::Process()
 	ani.Process();
 
 	//이벤트 처리
-	int event_no = GetEventNo();
-	if(event_no >= 0)m_script->SetPage(event_no);
-	m_script->Scripting();
+	if(event_no >= 0)
+	{
+		m_script->SetPage(event_no);
+	}
 }
 
 void CSRPG::Render()
@@ -565,17 +564,17 @@ void CSRPG::Render()
 	jdd->DrawPicture(backbuffer, PIC_MAP, 0, 0, &screen_rect);
 
 	//찍을 범위
-	int start_x = scroll_x/32;
-	int start_y = scroll_y/32;
-	int end_x = Min(start_x+20, x_size-1);
-	int end_y = Min(start_y+15, y_size-1);
+	int start_x = Max((scroll_x / 32) - 1, 0);
+	int start_y = Max((scroll_y / 32) - 1, 0);
+	int end_x = Min(start_x + 21, x_size - 1);
+	int end_y = Min(start_y + 16, y_size - 1);
 
 	//2층 레이어
-	for(int j=start_y; j<=end_y; ++j)
-	for(int i=start_x; i<=end_x; ++i)
+	for(int j = start_y; j <= end_y; ++j)
+	for(int i = start_x; i <= end_x; ++i)
 	{
-		int px = i*TILESIZE-scroll_x;
-		int py = j*TILESIZE-scroll_y;
+		int px = i * TILESIZE - scroll_x;
+		int py = j * TILESIZE - scroll_y;
 
 		//2층
 		if(map[i][j].object!=0xff)
@@ -591,9 +590,7 @@ void CSRPG::Render()
 			int p = map[i][j].unit;
 			if(unit[p].move_bonus < SKY_MOVE)
 			{
-				char unit_name[20];
-				sprintf(unit_name, "Unit%d", unit[p].GetID());
-				ani.GetAni(p)->Draw("backbuffer", unit_name, px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
+				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
 			}
 		}
 	}
@@ -652,6 +649,8 @@ void CSRPG::Render()
 
 	//명령 선택
 	if(battle && mode==1)result = command.CommandSelecting();
+
+	m_script->Scripting();
 }
 
 void CSRPG::SetHeroXY(int x, int y)
@@ -674,7 +673,8 @@ void CSRPG::SetAutoHeroXY(int ev)
 	if(map[i][j].evnt == ev)	//해당 이벤트 위치에 주인공 배치
 	{
 		unit[HERO].SetPos(i, j);
-		map[i][j].unit = HERO;
+		map[i][j].unit = HERO;	//유닛 맵에 주인공 배치
+		map[i][j].evnt = 0xff;
 		quit=true;
 	}
 
@@ -732,7 +732,7 @@ void CSRPG::LoadGame(FILE *load_fp)
 //이벤트 초기화
 void CSRPG::InitEvent()
 {
-	event_no = -1;
+	event_no = EVENT_NONE;
 }
 
 //이벤트 번호 얻기
