@@ -58,19 +58,31 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
     switch ( msg )
     {
-		case WM_LBUTTONDOWN  :	if(mouse_control)LButton=TRUE;
+		case WM_LBUTTONDOWN  :	if(mouse_control)
+								{
+									LButton=TRUE;
+								}
 								SetCapture(hwnd);
 								break;
 
-		case WM_RBUTTONDOWN  :	if(mouse_control)RButton=TRUE;
+		case WM_RBUTTONDOWN  :	if(mouse_control)
+								{
+									RButton=TRUE;
+								}
 								SetCapture(hwnd);
 								break;
 
-		case WM_LBUTTONUP    :	if(mouse_control)LButton=FALSE;
+		case WM_LBUTTONUP    :	if(mouse_control)
+								{
+									LButton=FALSE;
+								}
 								ReleaseCapture();
 								break;
 
-		case WM_RBUTTONUP    :	if(mouse_control)RButton=FALSE;
+		case WM_RBUTTONUP    :	if(mouse_control)
+								{
+									RButton=FALSE;
+								}
 								ReleaseCapture();
 								break;
 
@@ -83,30 +95,48 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 								}
 								break;
 
-		case MM_MCINOTIFY    :	if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL )_MidiReplay();
+		case MM_MCINOTIFY    :	if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL )
+								{
+									_MidiReplay();
+								}
 								break;
 
 		case WM_DESTROY 	 :	_CrtDumpMemoryLeaks();
 								break;
 
 		case WM_SYSCOMMAND	 :  //닫기 메시지 가로채기
-								if(wParam==SC_CLOSE)
+								if(wParam == SC_CLOSE)
 								{
-									wParam=0;
-									gameover=TRUE;
+									wParam = 0;
+									gameover = TRUE;
 								}
 								break;
 
-		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)activate=false;
-								else activate=true;
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)
+								{
+									activate=false;
+								}
+								else
+								{
+									activate=true;
+								}
 								break;
 
-		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+		case WM_MOVE		 :	if(jdd)
+								{
+									jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								}
 								break;
 		
-		case WM_ACTIVATE	 : if(LOWORD(wParam))activate=true;
-								else activate=false;
-							   break;
+		case WM_ACTIVATE	 :	if(LOWORD(wParam))
+								{
+									activate=true;
+								}
+								else
+								{
+									activate=false;
+								}
+								break;
 	}
 
 	return DefWindowProc(wnd,msg,wParam,lParam);

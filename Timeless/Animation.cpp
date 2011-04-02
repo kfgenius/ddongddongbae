@@ -181,13 +181,18 @@ void CAnimationData::DrawEx(int dest, int src, int x, int y, DWORD dwFlags, int 
 void CAnimation::CreateAnimation(int id, int x, int y, AniType vtype, int vframe_max, int vdelay_max)
 {
 	//만약 이미 생성되어 있다면 지우기
+	DeleteAnimation(id);
+
+	anidata[id] = new CAnimationData(x, y, vtype, vframe_max, vdelay_max);
+}
+
+void CAnimation::DeleteAnimation(int id)
+{
 	if(anidata[id] != NULL)
 	{
 		delete anidata[id];
 		anidata[id] = NULL;
 	}
-
-	anidata[id] = new CAnimationData(x, y, vtype, vframe_max, vdelay_max);
 }
 
 void CAnimation::Process()

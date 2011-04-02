@@ -73,6 +73,7 @@ private:
 
 public:
 	void CreateAnimation(int id, int x, int y, AniType vtype=ani_normal, int vframe_max=0, int vdelay_max=0);
+	void DeleteAnimation(int id);
 	void Process();	//애니메이션을 진행하는 함수(이것을 실행하지 않으면 움직이지 않음)
 	CAnimationData* GetAni(int id);
 

@@ -130,6 +130,7 @@ CScript::CScript(char* script_file)
 	message_speed = 4;
 	text_skip = false;
 	text_auto = false;
+	ready = FALSE;
 }
 
 //대화내용 비우기
@@ -476,6 +477,8 @@ BOOL CScript::SetPage(int no)
 	else
 	{
 		script_no=m_BookmarkHash[no];	//스크립트 시작점
+		m_script.clear();
+		ready = TRUE;
 		return TRUE;
 	}
 }
@@ -487,8 +490,8 @@ void CScript::Scripting()
 		gameover = TRUE;
 		return;
 	}
-	//게임 종료 상태이면 스크립트를 처리하지 않음
-	else if(gameover)
+	//게임 종료 상태이거나 준비가 되지 않았으면 스크립트를 처리하지 않음
+	else if(gameover || !ready)
 	{
 		return;
 	}
@@ -1047,10 +1050,10 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 			temp_command.value[4] = 480;
 		}
 	}
-	else if(temp_command.id==hash("모험"))
+	/*else if(temp_command.id==hash("모험"))
 	{
 		if(value_id<1)temp_command.value[0] = -1;	//좌표를 안 적으면 자동 지정
-	}
+	}*/
 
 	//명령문을 큐에 넣음
 	m_script->push_back(temp_command);
@@ -2168,9 +2171,9 @@ int CScript::ComGotoByArea(COMMAND_PTR it)
 //계속 대기
 int CScript::ComInfinity(COMMAND_PTR it)
 {
-	event_no=-1;	//이벤트 초기화
+	ready = FALSE;
 
-	return RUN_NOTEND;
+	return RUN_END;
 }
 
 //스크립트 끝내기
@@ -2203,4 +2206,10 @@ BOOL CScript::GetTextSkip()
 BOOL CScript::GetTextAuto()
 {
 	return m_dlg.GetTextAuto();
+}
+
+//준비 상태 확인
+BOOL CScript::IsReady()
+{
+	return ready;
 }

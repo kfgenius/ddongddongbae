@@ -132,6 +132,8 @@ private:
 	BOOL text_skip;
 	BOOL text_auto;
 
+	BOOL ready;	//스크립트 실행 준비가 되었는지 여부
+
 	//출력
 	CTextDlg m_dlg;
 	CSelectDlg m_select;
@@ -146,9 +148,6 @@ private:
 	//사운드
 	map<int, ScriptSound> m_snd;
 	COgg* m_ogg;					//OGG 플레이어
-
-	//게임
-	int event_no;
 
 	//보조 명령
 	void Goto(int goto_page, int return_page);
@@ -249,6 +248,9 @@ public:
 	void SetTextAuto(BOOL on_off);
 	BOOL GetTextSkip();
 	BOOL GetTextAuto();
+
+	//스크립트 준비상태 확인
+	BOOL IsReady();
 
 	//생성자&소멸자
 	CScript(char* script_file);

@@ -39,7 +39,7 @@ CAnimation ani;*/
 //유닛 능력치 데이터
 int unit_data[][20] = {
 //   HP		힘	민첩이동력	이동보너스	
-	{30,	0,	12,	12,		GHOST_MOVE},	//휴가루
+	{30,	0,	12,	12,		NORMAL_MOVE},	//휴가루
 	{99,	0,	8,	12,		GHOST_MOVE},	//루시버
 	{30,	0,	9,	12,		FIRE_MOVE},		//가미얼
 	{20,	0,	10,	12,		WATER_MOVE},	//시크벨
