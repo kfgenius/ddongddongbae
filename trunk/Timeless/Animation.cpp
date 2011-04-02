@@ -210,9 +210,10 @@ CAnimationData* CAnimation::GetAni(int id)
 	if(anidata[id] == NULL)
 	{
 		OutputDebugString("잘못된 애니메이션 ID를 요청하셨습니다.\n");
-		OutputDebugString("에러를 막기 위해 임시 애니메이션 정보를 생성해서 보냅니다.\n");
+		exit(1);
+		//OutputDebugString("에러를 막기 위해 임시 애니메이션 정보를 생성해서 보냅니다.\n");
 		//anidata[id]=new CAnimationData(10, 10, ani_normal, 1, 1);
-		anidata[id] = new CAnimationData(640, 480, ani_exchange, 3, 1000);
+		//anidata[id] = new CAnimationData(640, 480, ani_exchange, 3, 1000);
 	}
 
 	return anidata[id];

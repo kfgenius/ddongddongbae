@@ -13,7 +13,6 @@
 #define TILESIZE	32
 #define TILE_MAX	120
 
-//유닛 정보
 #define UNIT_MAX	128
 
 //길찾기

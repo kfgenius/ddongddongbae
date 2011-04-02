@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="ks_c_5601-1987"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Timeless"
 	ProjectGUID="{235984A4-8D06-4D84-95D2-A2E52B420AC3}"
 	RootNamespace="Jugde"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -69,8 +68,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ShootDBproto.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -90,6 +87,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -146,8 +146,6 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -167,6 +165,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -229,6 +230,10 @@
 					</File>
 					<File
 						RelativePath=".\Han.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Hash.cpp"
 						>
 					</File>
 					<File
@@ -301,6 +306,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="SRPG"
+				>
+				<File
+					RelativePath=".\SRPG.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Unit.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="헤더 파일"
@@ -367,6 +384,10 @@
 					</File>
 					<File
 						RelativePath=".\Han.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Hash.h"
 						>
 					</File>
 					<File
@@ -440,6 +461,18 @@
 				</File>
 				<File
 					RelativePath=".\ProcessManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SRPG"
+				>
+				<File
+					RelativePath=".\SRPG.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Unit.h"
 					>
 				</File>
 			</Filter>

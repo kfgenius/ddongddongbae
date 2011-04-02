@@ -471,7 +471,7 @@ BOOL CScript::SetPage(int no)
 {
 	if(!enable || m_BookmarkHash.find(no) == m_BookmarkHash.end())	//정상적인 실행이 안 될 때 종료
 	{
-		gameover = TRUE;
+		//gameover = TRUE;
 		return FALSE;
 	}
 	else

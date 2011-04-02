@@ -22,13 +22,14 @@
 //애니메이션
 CAnimation ani;
 
-//이동 보너스
-#define NORMAL_MOVE		0	//보통
-#define WATER_MOVE		1	//물
-#define FIRE_MOVE		2	//불
-#define SPECIAL_MOVE	3	//유격대
-#define SKY_MOVE		4	//비행
-#define GHOST_MOVE		5	//유령
+//팀
+enum
+{
+	party_ally,
+	party_enemy,
+	party_neutral
+};
+
 
 //명령
 char* battle_commands[] = {"공격", "마법", "휴식", "대기"};
@@ -47,6 +48,7 @@ CSRPG::CSRPG()
 	jpi.SetColorKey(JColor(0,0,255));
 	jdd->LoadPicture(PIC_TILE1, "User\\tile1.gif", &jpi, true);
 	jdd->LoadPicture(PIC_TILE2, "User\\tile2.gif", &jpi, true);	//2층 타일
+	jdd->LoadPicture("BLUE", "DATA\\blue.gif", &jpi, true);	//2층 타일
 	CreateUnit();
 
 	//명령용 창
@@ -55,7 +57,7 @@ CSRPG::CSRPG()
 	command.comdlg.SetOpacity(0.7f);
 
 	//맵 로드
-	Load(INIT_MAP_NAME, false);
+	Load(INIT_MAP_NAME, true);
 	SetAutoHeroXY(0);
 	InitScroll(HERO);
 	m_script = new CScript(INIT_MAP_NAME);
@@ -104,19 +106,19 @@ bool CSRPG::Load(char* map_name, bool battle)
 		fread(&map[i][j].evnt, sizeof(char), 1, fp);
 
 	//주인공 데이터 초기화
-	unit[HERO].Set(HERO);
+	unit[HERO].Set(HERO, party_ally, TILESIZE);
 	ani.CreateAnimation(HERO, 32, 40, ani_exchange, 3, 20);
-	ani.GetAni(HERO)->SetWalk(40, 120, 0, 80);
+	ani.GetAni(HERO)->SetWalk(0, 80, 120, 40);
 
 	//유닛 데이터 초기화
 	unit_max=1;
 
 	for(int j=0; j<y_size; ++j)
 	for(int i=0; i<x_size; ++i)
-	if(map[i][j].unit!=0xff)
+	if(map[i][j].unit != 0xff)
 	{
 		//유닛이 서있을 장소에 유닛 배치
-		unit[unit_max].Set(map[i][j].unit);
+		unit[unit_max].Set(map[i][j].unit, party_enemy, TILESIZE);
 		unit[unit_max].SetPos(i, j);
 		unit[unit_max].SetDir(/*rand()%4*/DIR_DOWN);
 		
@@ -455,28 +457,28 @@ void CSRPG::BattleControl()
 		//조종할 수 있는 아군
 		if(mode==0)
 		{
-			if(unit[active_unit].team==0)
+			if(unit[active_unit].team == party_ally)
 			{
 				//이동
-				if(GetKey(vkey_up,0))
+				if(GetKey(vkey_up, 0))
 				{
 					if(!_GetKeyState(VK_SHIFT))UnitMove(active_unit, DIR_UP);
 						else unit[active_unit].SetDir(DIR_UP);
 					ani.GetAni(active_unit)->SetDirection((WalkDirection)unit[active_unit].GetDir());
 				}
-				else if(GetKey(vkey_down,0))
+				else if(GetKey(vkey_down, 0))
 				{
 					if(!_GetKeyState(VK_SHIFT))UnitMove(active_unit, DIR_DOWN);
 						else unit[active_unit].SetDir(DIR_DOWN);
 					ani.GetAni(active_unit)->SetDirection((WalkDirection)unit[active_unit].GetDir());
 				}
-				else if(GetKey(vkey_left,0))
+				else if(GetKey(vkey_left, 0))
 				{
 					if(!_GetKeyState(VK_SHIFT))UnitMove(active_unit, DIR_LEFT);
 						else unit[active_unit].SetDir(DIR_LEFT);
 					ani.GetAni(active_unit)->SetDirection((WalkDirection)unit[active_unit].GetDir());
 				}
-				else if(GetKey(vkey_right,0))
+				else if(GetKey(vkey_right, 0))
 				{
 					if(!_GetKeyState(VK_SHIFT))UnitMove(active_unit, DIR_RIGHT);
 						else unit[active_unit].SetDir(DIR_RIGHT);
@@ -484,11 +486,19 @@ void CSRPG::BattleControl()
 				}
 				else if(GetKey(vkey_enter))
 				{
-					//명령창 생성
+					//명령창 위치
 					int px = unit[active_unit].GetRealX()+TILESIZE-scroll_x;
 					int py = unit[active_unit].GetRealY()+TILESIZE-scroll_y;
-					if(px+100 > SCREEN_X)px-=100+TILESIZE;
-					if(py+80 > SCREEN_Y)py-=100+TILESIZE;
+					if(px + 100 > SCREEN_X)
+					{
+						px -= 100 + TILESIZE;
+					}
+					if(py + 80 > SCREEN_Y)
+					{
+						py -= 100 + TILESIZE;
+					}
+
+					//명령창 생성
 					command.comdlg.SetDlg(px, py, 100, 4);
 					command.Init(battle_commands);
 					command.AddCom(1);
@@ -520,7 +530,7 @@ void CSRPG::BattleControl()
 	for(int i=0; i<unit_max; ++i)
 	if(unit[i].ap >= 100 && unit[i].GetLife())
 	{
-		if(unit[i].team>0)continue;
+		if(unit[i].team != party_ally)continue;
 		SetActiveUnit(i);
 		SetStartPoint(unit[i].GetX(), unit[i].GetY(), unit[i].move);
 		moveable = true;
