@@ -1,6 +1,4 @@
-//말빨동굴 프로세스 기본형
-//2010. 7. 31
-//박동흥
+//게임 프로세스 기본형
 
 #pragma once
 
@@ -14,11 +12,13 @@ public:
 	//프로세스
 	CScript* m_script;
 
-	//조작, 처리, 출력
-	virtual void Control()PURE;
-	virtual void Process()PURE;
-	virtual void Render()PURE;
+	//프로세스
+	virtual void BeginProcess();
+	virtual void Control();
+	virtual void Process();
+	virtual void Render();
+	virtual void EndProcess();
 
 	CGameProcess(void);
-	~CGameProcess(void);
+	virtual ~CGameProcess(void);
 };
