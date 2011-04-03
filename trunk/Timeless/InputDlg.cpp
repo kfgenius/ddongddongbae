@@ -45,13 +45,13 @@ void CInputDlg::Clear()
 char* CInputDlg::Input()
 {
 	//뒷배경 잠시 저장(투명도 있는 대화창일 때 겹쳐 쓰면서 투명도가 없어지는 것을 방지
-	jdd->DrawPicture("CommonBlank", backbuffer, 0, 0, NULL);
+	jdd->DrawPicture("_CommonBlank", backbuffer, 0, 0, NULL);
 
 	while(1)
 	{
 		if(!ProcessMessage())break;		//윈도우 메세지 처리
 
-		jdd->DrawPicture(backbuffer, "CommonBlank", 0, 0, NULL);
+		jdd->DrawPicture(backbuffer, "_CommonBlank", 0, 0, NULL);
 		if(Inputing())break;	//입력이 끝나면 중단
 
 		jdd->Render();

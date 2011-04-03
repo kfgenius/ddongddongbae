@@ -146,6 +146,3 @@ BOOL RightDown();
 
 //HY신명조일때 각 캐릭터들의 길이를 돌려주는 함수
 int GetCharLength(char tmp_char);
-
-//메인 초기화
-BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode);

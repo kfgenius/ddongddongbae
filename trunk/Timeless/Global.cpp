@@ -25,7 +25,7 @@ BOOL mouse_control;	//마우스 사용 여부
 BOOL keyboard_control;	//키보드 사용 여부
 
 int MouseX, MouseY;	//마우스 좌표
-BOOL LButton=FALSE, RButton=FALSE;	//마우스 클릭여부
+BOOL LButton = FALSE, RButton = FALSE;	//마우스 클릭여부
 BOOL left_click=FALSE, right_click=FALSE;	//마우스 클릭은 한번만 검사하기 위한 변수
 BOOL mouse_move=FALSE;
 
@@ -302,10 +302,10 @@ void ClearScreen()
 //페이드 인/아웃
 void FadeOut(int delay)
 {
-	jdd->DrawPicture("CommonBlank", backbuffer, 0, 0, NULL);
+	jdd->DrawPicture("_CommonBlank", backbuffer, 0, 0, NULL);
 	for(int fade=0; fade<=256; fade+=8)
 	{
-		jdd->ApplyColorMatrix(backbuffer, "CommonBlank", 0, 0, NULL, CM_fadeout(fade));
+		jdd->ApplyColorMatrix(backbuffer, "_CommonBlank", 0, 0, NULL, CM_fadeout(fade));
 		jdd->Render();
 		Sleep(delay);
 	}
@@ -315,10 +315,10 @@ void FadeOut(int delay)
 //다음 장면을 그린 후 FadeIn을 해주세요. WhiteOut도 마찬가지
 void FadeIn(int delay)
 {
-	jdd->DrawPicture("CommonBlank", backbuffer, 0, 0, NULL);
+	jdd->DrawPicture("_CommonBlank", backbuffer, 0, 0, NULL);
 	for(int fade=256; fade>=0; fade-=8)
 	{
-		jdd->ApplyColorMatrix(backbuffer, "CommonBlank", 0, 0, NULL, CM_fadeout(fade));
+		jdd->ApplyColorMatrix(backbuffer, "_CommonBlank", 0, 0, NULL, CM_fadeout(fade));
 		jdd->Render();
 		Sleep(delay);
 	}
@@ -327,10 +327,10 @@ void FadeIn(int delay)
 //화이트 인/아웃
 void WhiteOut(int delay)
 {
-	jdd->DrawPicture("CommonBlank", backbuffer, 0, 0, NULL);
+	jdd->DrawPicture("_CommonBlank", backbuffer, 0, 0, NULL);
 	for(int fade=0; fade<=256; fade+=8)
 	{
-		jdd->ApplyColorMatrix(backbuffer, "CommonBlank", 0, 0, NULL, CM_whiteout(fade));
+		jdd->ApplyColorMatrix(backbuffer, "_CommonBlank", 0, 0, NULL, CM_whiteout(fade));
 		jdd->Render();
 		Sleep(delay);
 	}
@@ -338,100 +338,11 @@ void WhiteOut(int delay)
 
 void WhiteIn(int delay)
 {
-	jdd->DrawPicture("CommonBlank", backbuffer, 0, 0, NULL);
+	jdd->DrawPicture("_CommonBlank", backbuffer, 0, 0, NULL);
 	for(int fade=256; fade>=0; fade-=8)
 	{
-		jdd->ApplyColorMatrix(backbuffer, "CommonBlank", 0, 0, NULL, CM_whiteout(fade));
+		jdd->ApplyColorMatrix(backbuffer, "_CommonBlank", 0, 0, NULL, CM_whiteout(fade));
 		jdd->Render();
 		Sleep(delay);
 	}
-}
-
-
-////////////////////////////////////////////////////////////
-//초기화 작업(매번 바뀌지 않으니까 main에서 donglib로 옮겼음
-BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode)
-{
-	jdd=CreateDirectDraw();
-
-	HINSTANCE hInstance=(HINSTANCE)0x00400000;
-
-	WNDCLASS wc={0};
-	wc.hIcon=LoadIcon(hInstance,"ICON2.ico");
-	wc.hCursor=LoadCursor(hInstance,IDC_ARROW);
-	wc.lpfnWndProc=WndProc;
-	wc.hInstance=hInstance;
-	wc.style=CS_HREDRAW|CS_VREDRAW;
-	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszClassName="Game";
-	RegisterClass(&wc);
-
-	//창 모드
-	if(window_mode)
-	{
-		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
-		ws &= ~WS_THICKFRAME;
-		ws &= ~WS_MAXIMIZEBOX;
-
-		RECT crt;
-		SetRect(&crt, 0, 0, SCREEN_X, SCREEN_Y);
-		AdjustWindowRect(&crt, ws, FALSE);
-
-		hwnd = CreateWindow("Game", window_name, ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
-	    ShowCursor( TRUE );
-	}
-	//전체 화면
-	else
-	{
-		hwnd = CreateWindow("Game", window_name, WS_POPUP|WS_VISIBLE, 0, 0, SCREEN_X, SCREEN_Y, NULL, NULL, hInstance, NULL);
-	    ShowCursor( FALSE );
-	}
-
-	jdd->Initialize(NULL,hwnd,SCREEN_X,SCREEN_Y,16,true,window_mode);
-
-	//그래픽 초기화
-	backbuffer=jdd->GetBackBuffer();
-	global_font=jdd->CreateFont("궁서",20);
-	
-	//로딩에 긴 시간이 걸릴 때를 대비한 화면
-	if(jdd->LoadPicture("CommonLoading", "Loading.jpg", NULL, TRUE) || jdd->LoadPicture("CommonLoading", "Loading.gif", NULL, TRUE))
-	{
-		jdd->DrawPicture(backbuffer, "CommonLoading", 0, 0, NULL);
-		jdd->Render();
-		jdd->DeleteSurface("CommonLoading");
-	}
-
-	//임시 서페이스 생성
-	JPictureInfo jpi;
-	jpi.SetWidth(SCREEN_X);
-	jpi.SetHeight(SCREEN_Y);
-	jdd->CreateSurface("CommonBlank", &jpi, TRUE);
-	
-	jdd->SetFrameRate(100,TRUE);
-	jdd->SetVerticalSync(FALSE);
-
-	//대화창용
-	jdd->LoadPicture("_dlgbox", "DATA\\_dlgbox.gif", NULL, TRUE);
-
-	//사운드 초기화
-	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
-	{
-		if (SoundOBJ->SetCooperativeLevel(hwnd,DSSCL_PRIORITY)!=DS_OK) return FALSE;
-
-		memset(&DSB_desc,0,sizeof(DSBUFFERDESC));
-		DSB_desc.dwSize = sizeof(DSBUFFERDESC);
-		DSB_desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
-
-		if (SoundOBJ->CreateSoundBuffer(&DSB_desc,&SoundDSB,NULL)!=DS_OK) return FALSE;
-		SoundDSB -> SetVolume(0);
-		SoundDSB -> SetPan(0);
-	}
-
-	//기타 초기화
-	srand( (unsigned)time( NULL ) );
-	keyboard_control=use_keyboard;
-	mouse_control=use_mouse;
-	gameover=FALSE;
-
-	return TRUE;
 }
