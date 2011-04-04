@@ -14,6 +14,9 @@
 //애니 번호
 #define ANI_TILE		UNIT_TYPE_MAX
 
+//이동 불가
+#define MOVE_DISABLE	9999
+
 ///////////////////////////////////////////////////////////
 // CGameMap 메소드
 
@@ -44,11 +47,12 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 	fread(&data_type,sizeof(char),11,fp);
 	data_type[11]=NULL;
 
-	//휴가루맵이 아님
+	//휴가루 맵이 아님
 	if(strcmp(data_type,"HYUGARU2MAP")!=0)
 	{
 		fclose(fp);
-		return false;
+		OutputDebugString("정상적인 맵파일이 아닙니다.");
+		return;
 	}
 
 	//맵 크기
@@ -56,29 +60,29 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 	fread(&y_size, sizeof(char), 1, fp);
 
 	//1F 데이터
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	{
 		fread(&map[i][j].ground, sizeof(char), 1, fp);
 	}
 
 	//2F 데이터
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	{
 		fread(&map[i][j].object, sizeof(char), 1, fp);
 	}
 
 	//유닛 데이터
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	{
 		fread(&map[i][j].unit, sizeof(char), 1, fp);
 	}
 
 	//이벤트 맵 데이터
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	{
 		fread(&map[i][j].event_no, sizeof(char), 1, fp);
 	}
@@ -91,8 +95,8 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 	//유닛 데이터 초기화
 	unit_max = HERO + 1;
 
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	if(map[i][j].unit != 0xff)
 	{
 		//유닛이 서있을 장소에 유닛 배치
@@ -126,14 +130,14 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 		char head[9];
 		fread(head, sizeof(char), 8, fp);
 		head[8] = NULL;
-		if(strcmp(head, "MAPATTR0")==0)
+		if(strcmp(head, "MAPATTR0") == 0)
 		{
 			//타일 속성값
-			for(int i=0; i<2; ++i)
+			for(int i = 0; i < 2; ++i)
 			{
-				fread(tile_mov[i], sizeof(int), TILE_MAX, fp);
-				fread(tile_attr[i], sizeof(int), TILE_MAX, fp);
-				fread(tile_damage[i], sizeof(int), TILE_MAX, fp);
+				fread(tile_mov[i], sizeof(int), TILE_TYPE_MAX, fp);
+				fread(tile_attr[i], sizeof(int), TILE_TYPE_MAX, fp);
+				fread(tile_damage[i], sizeof(int), TILE_TYPE_MAX, fp);
 			}
 			//유닛 속성값
 			fread(unitdata, sizeof(CUnitData), TILE_MAX, fp);
@@ -142,11 +146,17 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 		}
 
 		//설정값을 이동값으로 변환
-		for(int j=0; j<2; ++j)
-		for(int i=0; i<TILE_MAX; ++i)
+		for(int j = 0; j < 2; ++j)
+		for(int i = 0; i < TILE_MAX; ++i)
 		{
-			if(tile_mov[j][i]==0)tile_mov[j][i]=99;
-			else tile_mov[j][i]=tile_mov[j][i];
+			if(tile_mov[j][i] == 0)
+			{
+				tile_mov[j][i] = 99;
+			}
+			else
+			{
+				tile_mov[j][i] = tile_mov[j][i];
+			}
 		}
 
 		fclose(fp);
@@ -155,27 +165,32 @@ CGameMap::CGameMap(char* map_name, char* tile1_name, char* tile2_name)
 	//읽기 실패하면 초기화
 	if(!read_success)
 	{
-		for(int j=0; j<2; ++j)
-		for(int i=0; i<TILE_MAX; ++i)
-			tile_mov[j][i]=tile_attr[j][i]=tile_damage[j][i]=99;
+		for(int j = 0; j < 2; ++j)
+		for(int i = 0; i < TILE_MAX; ++i)
+		{
+			tile_mov[j][i] = tile_attr[j][i] = tile_damage[j][i] = 99;
+		}
 	}
 
 	//이동용 맵 생성
-	for(int j=0; j<y_size; ++j)
-	for(int i=0; i<x_size; ++i)
+	for(int j = 0; j < y_size; ++j)
+	for(int i = 0; i < x_size; ++i)
 	{
-		if(map[i][j].object!=0xff)map[i][j].move = tile_mov[1][map[i][j].object];
-		else map[i][j].move = tile_mov[0][map[i][j].ground];
+		if(map[i][j].object != 0xff)
+		{
+			map[i][j].move = tile_mov[1][map[i][j].object];
+		}
+		else
+		{
+			map[i][j].move = tile_mov[0][map[i][j].ground];
+		}
 		
 		//이동력 0이면 이동 불가 지형
-		if(map[i][j].move == 99)map[i][j].move = MOVE_DISABLE;
+		if(map[i][j].move == 99)
+		{
+			map[i][j].move = MOVE_DISABLE;
+		}
 	}
-
-	//기타 초기화
-	active_unit = -1;
-	event_no = EVENT_NONE;
-
-	return true;
 }
 
 CGameMap::~CGameMap()
@@ -248,8 +263,8 @@ void CGameMap::DrawGround()
 	{
 		if(map[i][j].object != 0xff)
 		{
-			SetRect(&tile_rect, map[i][j].object*TILE_SIZE, 8, (map[i][j].object+1)*TILE_SIZE, UNIT_Y);
-			jdd->DrawPicture(PIC_MAP, PIC_TILE2, i*TILE_SIZE, j*TILE_SIZE, &tile_rect);
+			SetRect(&tile_rect, map[i][j].object * TILE_SIZE, 8, (map[i][j].object + 1) * TILE_SIZE, UNIT_HEIGHT);
+			jdd->DrawPicture(PIC_MAP, PIC_TILE2, i * TILE_SIZE, j * TILE_SIZE, &tile_rect);
 		}
 	}
 }
@@ -287,38 +302,6 @@ void CGameMap::Focus(int unit_id)
 	}
 }
 
-void CGameMap::Render()
-{
-	//3층 레이어
-	for(int j=start_y; j<=end_y; ++j)
-	for(int i=start_x; i<=end_x; ++i)
-	{
-		int px = i*TILE_SIZE-scroll_x;
-		int py = j*TILE_SIZE-scroll_y;
-
-		//비행 유닛
-		if(map[i][j].unit!=0xff)
-		{
-			int p = map[i][j].unit;
-			if(unit[p].move_bonus >= SKY_MOVE)
-			{
-				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
-			}
-		}
-		//활성화된 유닛
-		if(active_unit>=0 && i == unit[active_unit].GetX() && j == unit[active_unit].GetY())
-		{
-			int p = active_unit;
-			ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
-		}
-	}
-
-	//명령 선택
-	if(battle && mode==1)result = command.CommandSelecting();
-
-	m_script->Scripting();
-}
-
 //1층 타일 출력
 void CGameMap::Draw1F()
 {
@@ -331,10 +314,10 @@ void CGameMap::Draw1F()
 void CGameMap::Draw2F()
 {
 	//찍을 범위
-	int start_x = Max((scroll_x / 32) - 1, 0);
-	int start_y = Max((scroll_y / 32) - 1, 0);
-	int end_x = Min(start_x + 21, x_size - 1);
-	int end_y = Min(start_y + 16, y_size - 1);
+	int start_x = Max((scroll_x / TILE_SIZE) - 1, 0);
+	int start_y = Max((scroll_y / TILE_SIZE) - 1, 0);
+	int end_x = Min(start_x + (SCREEN_WIDTH / TILE_SIZE) + 1, x_size - 1);
+	int end_y = Min(start_y + (SCREEN_HEIGHT / TILE_SIZE) + 1, y_size - 1);
 
 	//2층 레이어
 	for(int j = start_y; j <= end_y; ++j)
@@ -363,14 +346,47 @@ void CGameMap::Draw2F()
 	}
 }
 
-void CGameMap::DrawNormalUnit()
+void CGameMap::Draw3F()
 {
+	//찍을 범위
+	int start_x = Max((scroll_x / TILE_SIZE) - 1, 0);
+	int start_y = Max((scroll_y / TILE_SIZE) - 1, 0);
+	int end_x = Min(start_x + (SCREEN_WIDTH / TILE_SIZE) + 1, x_size - 1);
+	int end_y = Min(start_y + (SCREEN_HEIGHT / TILE_SIZE) + 1, y_size - 1);
+
+	//3층 레이어
+	for(int j = start_y; j <= end_y; ++j)
+	for(int i = start_x; i <= end_x; ++i)
+	{
+		int px = i * TILE_SIZE - scroll_x;
+		int py = j * TILE_SIZE - scroll_y;
+
+		//비행 유닛
+		if(map[i][j].unit != 0xff)
+		{
+			int p = map[i][j].unit;
+			if(unit[p].move_bonus >= SKY_MOVE)
+			{
+				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
+			}
+		}
+		
+		//활성화된 유닛
+		/*if(active_unit >= 0 && i == unit[active_unit].GetX() && j == unit[active_unit].GetY())
+		{
+			int p = active_unit;
+			ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
+		}*/
+	}
 }
 
-void CGameMap::DrawFlyUnit()
+//맵 데이터 얻기
+TileData GetMapData(int x, int y)
 {
+	return &map[x][y];
 }
 
+//주인공 위치 설정
 void CGameMap::SetHeroXY(int x, int y)
 {
 	x = MaxMin(x, 0, x_size-1);
@@ -379,6 +395,7 @@ void CGameMap::SetHeroXY(int x, int y)
 	map[x][y].unit = HERO;
 }
 
+//주인공 위치를 이벤트 번호로 자동 배치
 void CGameMap::SetAutoHeroXY(int ev)
 {
 	//일단 주인공을 맵 밖에 둠

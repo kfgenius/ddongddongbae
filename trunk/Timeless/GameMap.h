@@ -25,6 +25,8 @@ struct TileData
 	unsigned char object;	//위의 물건
 	unsigned char unit;		//서 있는 유닛
 	unsigned char event_no;	//이벤트
+
+	int move;	//소모되는 이동력
 };
 
 struct MapPoint
@@ -73,8 +75,10 @@ public:
 	//맵 출력
 	void Draw1F();
 	void Draw2F();
-	void DrawNormalUnit();
-	void DrawFlyUnit();
+	void Draw3F();
+
+	//맵 데이터
+	TileData* GetMapData(int x, int y);
 
 	//유닛 관련
 	void SetHeroXY(int x, int y);	//주인공 좌표 지정

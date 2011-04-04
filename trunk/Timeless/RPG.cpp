@@ -5,10 +5,13 @@
 
 CRPG::CRPG()
 {
+	m_game_map = new CGameMap("MAP\\MAP60", "USER\\tile1.gif", "USER\\tile2.gif");
 }
 
 CRPG::~CRPG()
 {
+	delete m_game_map;
+	m_game_map = NULL;
 }
 
 //조작
@@ -65,12 +68,24 @@ void CRPG::Process()
 }
 
 //이동 가능성
-int CGameMap::GetMoveSpeed(int x, int y)
+int CRPG::GetMoveSpeed(int x, int y)
 {
 	if(x<0 || y<0 || x>=x_size || y>=y_size)return 0;
 
-	if(map[x][y].unit!=0xff)return 0;									//유닛이 있으면 이동 불가능
-	else if(map[x][y].object!=0xff)return TILESIZE/(2<<map[x][y].move);	//2층 타일에 의한 이동
-	else if(tile_attr[0][map[x][y].ground]>0)return 0;					//평상시엔 일반 길 외에는 이동 불가능
-	else return TILESIZE/(2<<map[x][y].move);							//일반 1층 타일 이동
+	if(m_game_map->GetMapData(x,y)->unit != 0xff)
+	{
+		return 0;									//유닛이 있으면 이동 불가능
+	}
+	else if(map[x][y].object != 0xff)
+	{
+		return TILESIZE / (2 << m_game_map->GetMapData(x,y)->move);	//2층 타일에 의한 이동
+	}
+	else if(tile_attr[0][m_game_map->GetMapData(x,y)->ground] > 0)
+	{
+		return 0;									//평상시엔 일반 길 외에는 이동 불가능
+	}
+	else
+	{
+		return TILE_SIZE / (2 << m_game_map->GetMapData(x,y)->move);	//일반 1층 타일 이동
+	}
 }
