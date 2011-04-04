@@ -91,7 +91,7 @@ CProcess* CGameProcessManager::CreateProcess(ProcessStack* p_stack)
 		case proc_story : return (CProcess*)new CStory;
 							 break;
 
-		case proc_game_map : return (CProcess*)new CGameMap;
+		case proc_game_map : return (CProcess*)new CSRPG;
 							 break;
 	}
 	

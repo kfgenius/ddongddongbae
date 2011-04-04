@@ -22,9 +22,11 @@ public:
 	virtual void ChangeMode(int mode);
 
 	//조작, 처리, 출력
+	virtual void BeginProcess()PURE;
 	virtual void Control()PURE;
 	virtual void Process()PURE;
 	virtual void Render()PURE;
+	virtual void EndProcess()PURE;
 
 	//생성자, 소멸자
 	CProcess(void);
