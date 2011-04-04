@@ -32,7 +32,7 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 		ws &= ~WS_MAXIMIZEBOX;
 
 		RECT crt;
-		SetRect(&crt, 0, 0, SCREEN_X, SCREEN_Y);
+		SetRect(&crt, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		AdjustWindowRect(&crt, ws, FALSE);
 
 		hwnd = CreateWindow("Game", window_name, ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
@@ -41,11 +41,11 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	//전체 화면
 	else
 	{
-		hwnd = CreateWindow("Game", window_name, WS_POPUP|WS_VISIBLE, 0, 0, SCREEN_X, SCREEN_Y, NULL, NULL, hInstance, NULL);
+		hwnd = CreateWindow("Game", window_name, WS_POPUP|WS_VISIBLE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, NULL, NULL, hInstance, NULL);
 	    ShowCursor( FALSE );
 	}
 
-	jdd->Initialize(NULL,hwnd,SCREEN_X,SCREEN_Y,16,true,window_mode);
+	jdd->Initialize(NULL,hwnd,SCREEN_WIDTH,SCREEN_HEIGHT,16,true,window_mode);
 
 	//그래픽 초기화
 	backbuffer=jdd->GetBackBuffer();
@@ -61,8 +61,8 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 
 	//임시 서페이스 생성
 	JPictureInfo jpi;
-	jpi.SetWidth(SCREEN_X);
-	jpi.SetHeight(SCREEN_Y);
+	jpi.SetWidth(SCREEN_WIDTH);
+	jpi.SetHeight(SCREEN_HEIGHT);
 	jdd->CreateSurface("_CommonBlank", &jpi, TRUE);
 	
 	jdd->SetFrameRate(100,TRUE);

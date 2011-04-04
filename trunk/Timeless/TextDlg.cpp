@@ -268,12 +268,12 @@ void CTextDlg::ShowText()
 	//그림자
 	if(b_shadow)
 	{
-		SetRect(&shadow_rect, x+1, y+1, SCREEN_X, SCREEN_Y);
+		SetRect(&shadow_rect, x+1, y+1, SCREEN_WIDTH, SCREEN_HEIGHT);
 		jdd->DrawText(backbuffer, text_buffer, *text_font, &shadow_rect, JColor(0,0,0));
 	}
 	
 	//글자
-	SetRect(&text_rect, x, y, SCREEN_X, SCREEN_Y);
+	SetRect(&text_rect, x, y, SCREEN_WIDTH, SCREEN_HEIGHT);
 	jdd->DrawText(backbuffer, text_buffer, *text_font, &text_rect, text_color);
 }
 

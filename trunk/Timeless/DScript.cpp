@@ -248,8 +248,8 @@ void CScript::Load(char* script_file)
 
 	//기타
 	area_select = false;
-	m_valuemap[area_x_hash] = SCREEN_X/2;
-	m_valuemap[area_y_hash] = SCREEN_Y/2;
+	m_valuemap[area_x_hash] = SCREEN_WIDTH/2;
+	m_valuemap[area_y_hash] = SCREEN_HEIGHT/2;
 	music_type = -1;
 }
 
@@ -2127,7 +2127,7 @@ int CScript::ComSelectArea(COMMAND_PTR it)
 	}
 	else if(GetKey(vkey_right, 1))
 	{
-		m_valuemap[area_x_hash] = Min(m_valuemap[area_x_hash]+5, SCREEN_X);
+		m_valuemap[area_x_hash] = Min(m_valuemap[area_x_hash]+5, SCREEN_WIDTH);
 	}
 	//상하이동
 	if(GetKey(vkey_up, 1))
@@ -2136,7 +2136,7 @@ int CScript::ComSelectArea(COMMAND_PTR it)
 	}
 	else if(GetKey(vkey_down, 1))
 	{
-		m_valuemap[area_y_hash] = Min(m_valuemap[area_y_hash]+5, SCREEN_Y);
+		m_valuemap[area_y_hash] = Min(m_valuemap[area_y_hash]+5, SCREEN_HEIGHT);
 	}
 
 	//마우스로 커서이동

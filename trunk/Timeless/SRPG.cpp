@@ -489,11 +489,11 @@ void CSRPG::BattleControl()
 					//명령창 위치
 					int px = unit[active_unit].GetRealX()+TILESIZE-scroll_x;
 					int py = unit[active_unit].GetRealY()+TILESIZE-scroll_y;
-					if(px + 100 > SCREEN_X)
+					if(px + 100 > SCREEN_WIDTH)
 					{
 						px -= 100 + TILESIZE;
 					}
-					if(py + 80 > SCREEN_Y)
+					if(py + 80 > SCREEN_HEIGHT)
 					{
 						py -= 100 + TILESIZE;
 					}

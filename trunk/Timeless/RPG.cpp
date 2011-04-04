@@ -51,7 +51,7 @@ void CRPG::Process()
 	{
 		static int delay;
 		++delay;
-		if(delay>100)
+		if(delay > 100)
 		{
 			int dir = rand()%4;
 			UnitMove(i, dir);
@@ -62,4 +62,15 @@ void CRPG::Process()
 
 	//포커스
 	InitScroll(HERO);
+}
+
+//이동 가능성
+int CGameMap::GetMoveSpeed(int x, int y)
+{
+	if(x<0 || y<0 || x>=x_size || y>=y_size)return 0;
+
+	if(map[x][y].unit!=0xff)return 0;									//유닛이 있으면 이동 불가능
+	else if(map[x][y].object!=0xff)return TILESIZE/(2<<map[x][y].move);	//2층 타일에 의한 이동
+	else if(tile_attr[0][map[x][y].ground]>0)return 0;					//평상시엔 일반 길 외에는 이동 불가능
+	else return TILESIZE/(2<<map[x][y].move);							//일반 1층 타일 이동
 }

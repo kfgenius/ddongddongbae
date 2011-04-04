@@ -24,8 +24,8 @@
 #define N_FOUR		4
 #define N_FIVE		5
 
-#define SCREEN_X	640
-#define SCREEN_Y	480
+#define SCREEN_WIDTH	640
+#define SCREEN_HEIGHT	480
 
 //사용되는 키보드의 키 숫자
 #define ALL_KEYS 94
