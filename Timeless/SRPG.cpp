@@ -22,15 +22,6 @@
 //애니메이션
 CAnimation ani;
 
-//팀
-enum
-{
-	party_ally,
-	party_enemy,
-	party_neutral
-};
-
-
 //명령
 char* battle_commands[] = {"공격", "마법", "휴식", "대기"};
 CCommand command(battle_commands, 0, 0, 630, 4);

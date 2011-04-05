@@ -3,7 +3,6 @@
 #pragma once
 
 #include "process.h"
-#include "donglib.h"
 #include "dscript.h"
 
 class CGameProcess :public CProcess
@@ -13,11 +12,7 @@ public:
 	CScript* m_script;
 
 	//프로세스
-	virtual void BeginProcess();
-	virtual void Control();
-	virtual void Process();
-	virtual void Render();
-	virtual void EndProcess();
+	virtual void Process()PURE;
 
 	CGameProcess(void);
 	virtual ~CGameProcess(void);

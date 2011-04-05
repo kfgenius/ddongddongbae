@@ -13,23 +13,3 @@ CGameProcess::~CGameProcess(void)
 		m_script = NULL;
 	}
 }
-
-void BeginProcess()
-{
-}
-
-void Control()
-{
-}
-
-void Process()
-{
-}
-
-void Render()
-{
-}
-
-void EndProcess()
-{
-}
