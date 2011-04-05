@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "Unit.h"
-#include "Animation.h"
+#include "GameProcess.h"
 
 //맵 한계
 #define LAYER_MAX			3
@@ -16,6 +16,14 @@
 
 //주인공 ID
 #define HERO	0
+
+//팀
+enum
+{
+	party_ally,
+	party_enemy,
+	party_neutral
+};
 
 //////////////////////////////
 //타일 정보
@@ -37,19 +45,11 @@ struct MapPoint
 
 //////////////////////////////
 //게임 클래스
-class CGameMap
+class CGameMap : public CGameProcess
 {
 private:
-	//맵 정보
-	char map_name[80];
-	unsigned char x_size, y_size;
-	TileData map[MAP_WIDTH_MAX][MAP_HEIGHT_MAX];
-
-	//타일 속성
-	int tile_mov[2][TILE_TYPE_MAX];		//필요한 이동력
-	int tile_attr[2][TILE_TYPE_MAX];		//속성
-	int tile_damage[2][TILE_TYPE_MAX];	//대미지
-	CUnitData unitdata[UNIT_TYPE_MAX];
+	//타일 종류 한계
+	int tile_type_max;
 
 	//애니메이션
 	CAnimation ani;
@@ -72,10 +72,24 @@ private:
 	void Focus(int unit_id);		//스크롤을 유닛으로 자연스럽게 이동
 
 public:
+	//맵 정보
+	char map_name[80];
+	unsigned char x_size, y_size;
+	TileData map[MAP_WIDTH_MAX][MAP_HEIGHT_MAX];
+
+	//타일 속성
+	int tile_mov[2][TILE_TYPE_MAX];		//필요한 이동력
+	int tile_attr[2][TILE_TYPE_MAX];		//속성
+	int tile_damage[2][TILE_TYPE_MAX];	//대미지
+	CUnitData unitdata[UNIT_TYPE_MAX];
+
 	//맵 출력
 	void Draw1F();
 	void Draw2F();
 	void Draw3F();
+
+	//이동 속도 얻기
+	int GetMoveSpeed(int x, int y);
 
 	//맵 데이터
 	TileData* GetMapData(int x, int y);

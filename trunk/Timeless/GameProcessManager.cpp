@@ -59,11 +59,7 @@ bool CGameProcessManager::Process()
 	//현 프로세스 처리
 	if(GetCurrentProcess())
 	{
-		GetCurrentProcess()->BeginProcess();	//한 프로세스 시작부
-		GetCurrentProcess()->Control();			//입력 처리
 	    GetCurrentProcess()->Process();			//프로세스 처리
-		GetCurrentProcess()->Render();			//출력 처리
-		GetCurrentProcess()->EndProcess();		//한 프로세스 종료부
 	}
 
 	return true;
