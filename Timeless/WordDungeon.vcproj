@@ -310,10 +310,6 @@
 				Name="SRPG"
 				>
 				<File
-					RelativePath=".\GameMap.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\RPG.cpp"
 					>
 				</File>
@@ -475,10 +471,6 @@
 			<Filter
 				Name="SRPG"
 				>
-				<File
-					RelativePath=".\GameMap.h"
-					>
-				</File>
 				<File
 					RelativePath=".\RPG.h"
 					>

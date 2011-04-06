@@ -4,6 +4,7 @@
 #include "Logo.h"
 #include "MainMenu.h"
 #include "Story.h"
+#include "RPG.h"
 #include "SRPG.h"
 
 //답 종류
@@ -27,7 +28,10 @@ CGameProcessManager::CGameProcessManager()
 	InitPlayData();
 
 	//시작 프로세스를 넣자
-	NewProcess(proc_game_map);
+	NewProcess(proc_rpg, "MAP\\MAP61", "User\\tile1.gif", "User\\tile2.gif");
+	NewProcess(proc_srpg, "MAP\\MAP60", "User\\tile1.gif", "User\\tile2.gif");
+	//NewProcess(proc_story);
+	//NewProcess(proc_logo);
 }
 
 //소멸자
@@ -75,6 +79,11 @@ CProcess* CGameProcessManager::CreateProcess(ProcessStack* p_stack)
 	const int ex3 = p_stack->ex3;
 	const int ex4 = p_stack->ex4;
 
+	char* str1 = p_stack->str1;
+	char* str2 = p_stack->str2;
+	char* str3 = p_stack->str3;
+	char* str4 = p_stack->str4;
+
 	//새 프로세스 생성
 	switch(proc_id)
 	{
@@ -87,8 +96,11 @@ CProcess* CGameProcessManager::CreateProcess(ProcessStack* p_stack)
 		case proc_story : return (CProcess*)new CStory;
 							 break;
 
-		case proc_game_map : return (CProcess*)new CSRPG;
-							 break;
+		case proc_rpg : return (CProcess*)new CRPG(str1, str2, str3);
+						 break;
+
+		case proc_srpg : return (CProcess*)new CSRPG(str1, str2, str3);
+						 break;
 	}
 	
 	return NULL;

@@ -15,11 +15,6 @@ CLogo::~CLogo(void)
 }
 
 
-//조작
-void CLogo::Control()
-{
-}
-
 //처리
 void CLogo::Process()
 {
@@ -29,13 +24,11 @@ void CLogo::Process()
 		FadeOut();
 		Stop();
 	}
-}
 
-//보여주기
-void CLogo::Render()
-{
 	if(game_time < FADE_DELAY)
 	{
 		jdd->DrawPicture(backbuffer, "Logo", 0, 0, NULL);
 	}
+
+	CGameProcess::Process();
 }

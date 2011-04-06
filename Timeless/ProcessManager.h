@@ -16,6 +16,10 @@ struct ProcessStack
 	int ex2;
 	int ex3;
 	int ex4;
+	char* str1;
+	char* str2;
+	char* str3;
+	char* str4;
 
 	CProcess* p_process;
 };
@@ -37,6 +41,7 @@ public:
 
 	//프로세스 스택 제어
 	virtual void NewProcess(int proc_id, int ex1 = 0, int ex2 = 0, int ex3 = 0, int ex4 = 0);
+	virtual void NewProcess(int proc_id, char* str1, char* str2 = NULL, char* str3 = NULL, char* str4 = NULL);
 	virtual void StopCurrentProcess();
 	virtual void ClearAllProcess();
 

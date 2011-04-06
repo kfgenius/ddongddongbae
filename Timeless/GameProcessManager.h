@@ -11,7 +11,8 @@ enum ProcessID
 	proc_logo,
 	proc_mainmenu,
 	proc_story,
-	proc_game_map
+	proc_rpg,
+	proc_srpg
 };
 
 //게임 데이터

@@ -133,6 +133,7 @@ private:
 	BOOL text_auto;
 
 	BOOL ready;	//스크립트 실행 준비가 되었는지 여부
+	BOOL end;	//스크립트 종료 신호
 
 	//출력
 	CTextDlg m_dlg;
@@ -249,8 +250,9 @@ public:
 	BOOL GetTextSkip();
 	BOOL GetTextAuto();
 
-	//스크립트 준비상태 확인
+	//스크립트 준비/종료 상태 확인
 	BOOL IsReady();
+	BOOL IsEnd();
 
 	//생성자&소멸자
 	CScript(char* script_file);

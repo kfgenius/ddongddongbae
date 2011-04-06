@@ -61,10 +61,35 @@ void CProcessManager::NewProcess(int proc_id, int ex1, int ex2, int ex3, int ex4
 	stack[stack_count].ex2 = ex2;
 	stack[stack_count].ex3 = ex3;
 	stack[stack_count].ex4 = ex4;
+	stack[stack_count].str1 = NULL;
+	stack[stack_count].str2 = NULL;
+	stack[stack_count].str3 = NULL;
+	stack[stack_count].str4 = NULL;
 	stack[stack_count].p_process = NULL;
 
 	++stack_count;
 }
+
+void CProcessManager::NewProcess(int proc_id, char* str1, char* str2, char* str3, char* str4)
+{
+	//스택이 가득 참
+	if(stack_count >= STACK_MAX - 1)
+	{
+		printf("Warning : Stack is full");
+		return;	
+	}
+
+	//스택에 넣기
+	stack[stack_count].proc_id = proc_id;
+	stack[stack_count].str1 = str1;
+	stack[stack_count].str2 = str2;
+	stack[stack_count].str3 = str3;
+	stack[stack_count].str4 = str4;
+	stack[stack_count].p_process = NULL;
+
+	++stack_count;
+}
+
 
 //스택 제거
 void CProcessManager::StopCurrentProcess()
