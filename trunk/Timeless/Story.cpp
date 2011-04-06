@@ -31,7 +31,7 @@ CStory::~CStory(void)
 	jdd->DeleteSurface("Cursor");
 }
 
-void CStory::Control()
+void CStory::Process()
 {
 	//오토
 	if(MouseX >= AUTO_X && MouseY >= AUTO_Y && MouseX < AUTO_X + AUTO_WIDTH && MouseY < AUTO_Y + AUTO_HEIGHT)
@@ -64,15 +64,10 @@ void CStory::Control()
 			}
 		}
 	}
-}
 
-void CStory::Process()
-{
+	//스크립트 처리
 	m_script->Scripting();
-}
 
-void CStory::Render()
-{
 	//오토 버튼
 	if(m_script->GetTextAuto())
 	{
@@ -95,4 +90,6 @@ void CStory::Render()
 
 	//커서
 	jdd->DrawPicture(backbuffer, "Cursor", MouseX, MouseY, NULL);
+
+	CGameProcess::Process();
 }

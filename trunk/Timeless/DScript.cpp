@@ -131,6 +131,7 @@ CScript::CScript(char* script_file)
 	text_skip = false;
 	text_auto = false;
 	ready = FALSE;
+	end = FALSE;
 }
 
 //대화내용 비우기
@@ -463,15 +464,14 @@ void CScript::UnLoad()
 	_MidiStop();
 	if(m_ogg)m_ogg->StopOgg();
 
-	enable=FALSE;
+	enable = FALSE;
 }
 
 //스크립트 페이지 지정
 BOOL CScript::SetPage(int no)
 {
-	if(!enable || m_BookmarkHash.find(no) == m_BookmarkHash.end())	//정상적인 실행이 안 될 때 종료
+	if(!enable || m_BookmarkHash.find(no) == m_BookmarkHash.end())	//해당 페이지를 찾을 수 없음
 	{
-		//gameover = TRUE;
 		return FALSE;
 	}
 	else
@@ -557,7 +557,7 @@ void CScript::Scripting()
 	//에러 검사
 	if(script_no < 0 || (script_no >= snrs && m_script.empty()) || !enable)
 	{
-		gameover = TRUE;
+		end = TRUE;
 	}
 }
 
@@ -2179,7 +2179,7 @@ int CScript::ComInfinity(COMMAND_PTR it)
 //스크립트 끝내기
 int CScript::ComEnd(COMMAND_PTR it)
 {
-	gameover = TRUE;
+	end = TRUE;
 
 	return RUN_CLEAR;
 }
@@ -2212,4 +2212,10 @@ BOOL CScript::GetTextAuto()
 BOOL CScript::IsReady()
 {
 	return ready;
+}
+
+//종료 상태 확인
+BOOL CScript::IsEnd()
+{
+	return end;
 }

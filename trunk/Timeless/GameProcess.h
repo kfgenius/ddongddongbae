@@ -8,12 +8,13 @@
 class CGameProcess :public CProcess
 {
 public:
-	//프로세스
+	//스크립트
 	CScript* m_script;
 
 	//프로세스
-	virtual void Process()PURE;
+	virtual void Process();
 
+	//생성자, 소멸자
 	CGameProcess(void);
 	virtual ~CGameProcess(void);
 };

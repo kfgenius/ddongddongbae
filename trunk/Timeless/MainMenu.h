@@ -8,9 +8,7 @@ private:
 	char title_name[20];
 
 public:
-	void Control();
 	void Process();
-	void Render();
 
 	CMainMenu(void);
 	~CMainMenu(void);

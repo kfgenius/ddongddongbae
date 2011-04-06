@@ -21,11 +21,6 @@ CMainMenu::~CMainMenu(void)
 	jdd->DeleteSurface("Cursor");
 }
 
-//조작
-void CMainMenu::Control()
-{
-}
-
 //처리
 void CMainMenu::Process()
 {
@@ -48,11 +43,8 @@ void CMainMenu::Process()
 	{
 		game_time = 0;
 	}
-}
 
-//보여주기
-void CMainMenu::Render()
-{
+	//보여주기
 	if(game_time == 1)
 	{
 		jdd->DrawPicture(backbuffer, "Title1", 0, 0, NULL);
@@ -63,4 +55,6 @@ void CMainMenu::Render()
 		jdd->DrawPicture(backbuffer, title_name, 0, 0, NULL);
 		jdd->DrawPicture(backbuffer, "Cursor", MouseX, MouseY, NULL);
 	}
+
+	CGameProcess::Process();
 }
