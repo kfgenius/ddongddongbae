@@ -601,6 +601,7 @@ void CloseDialog(HWND hDlgWnd)
 	ShowWindow(hDlgWnd, SW_HIDE);
 	open_dialog = false;
 	LButton = RButton = false;
+	redraw = true;
 }
 
 //새로운 맵 만들기 속성창 메시지 처리
@@ -1632,24 +1633,39 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		case WM_CLOSE		 :	gameover=TRUE;
 								break;
 
-		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)activate=false;
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)
+								{
+									activate=false;
+								}
 								else
 								{
 									activate=true;
-									redraw=true;
 								}
 								break;
 
-		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
-								redraw = true;
+		case WM_MOVE		 :	if(jdd)
+								{
+									jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								}
+								break;
+
+		case WM_PAINT		 :	if(jdd)
+								{
+									jdd->DrawPicture(backbuffer, dest_surface, 0, 0, NULL);
+									jdd->Render();
+								}
 								break;
 		
+
 		case WM_ACTIVATE	 : if(LOWORD(wParam))
 							   {
 								   activate=true;
-								   redraw=true;
 							   }
-							   else activate=false;
+							   else
+							   {
+								   activate=false;
+							   }
+
 							   break;
 	}
 
