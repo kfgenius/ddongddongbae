@@ -3,7 +3,14 @@
 
 //명령
 char* battle_commands[] = {"공격", "마법", "휴식", "대기"};
-CCommand command(battle_commands, 0, 0, 630, 4);
+
+enum
+{
+	mode_control_unit,
+	mode_enemy_action,
+	mode_command_select,
+	mode_next_unit
+};
 
 ////////////////////////////////////////////////////////////
 // CSRPG 메소드
@@ -11,10 +18,14 @@ CCommand command(battle_commands, 0, 0, 630, 4);
 CSRPG::CSRPG(char* map_name, char* tile1_name, char* tile2_name) : CRPG(map_name, tile1_name, tile2_name)
 {
 	jdd->LoadPicture("BLUE", "DATA\\blue.gif", NULL, true);	//이동 가능 영역
+
+	command = new CCommand(battle_commands, 0, 0, 630, 4);
 }
 
 CSRPG::~CSRPG()
 {
+	delete command;
+	command = NULL;
 }
 
 //이동 가능성
@@ -33,7 +44,7 @@ void CSRPG::Control()
 	if(active_unit >=0)
 	{
 		//조종할 수 있는 아군
-		if(mode==0)
+		if(mode == mode_control_unit)
 		{
 			if(unit[active_unit].team == party_ally)
 			{
@@ -77,22 +88,25 @@ void CSRPG::Control()
 					}
 
 					//명령창 생성
-					command.comdlg.SetDlg(px, py, 100, 4);
-					command.Init(battle_commands);
-					command.AddCom(1);
-					command.AddCom(2);
-					command.AddCom(3);
+					command->comdlg.SetDlg(px, py, 100, 4);
+					command->Init(battle_commands);
+					command->AddCom(1);
+					command->AddCom(2);
+					command->AddCom(3);
 
-					mode = 1;
+					mode = mode_command_select;
 				}
 			}
 		}
 		//명령 선택
-		else if(mode==1)
+		else if(mode == mode_command_select)
 		{
-			if(result != -1)mode=2;
+			if(result != -1)
+			{
+				mode = mode_next_unit;
+			}
 		}
-		else if(mode==2)
+		else if(mode == mode_next_unit)
 		{
 			//다른 유닛에게 차례를 넘김
 			map[unit[active_unit].GetX()][unit[active_unit].GetY()].unit = active_unit;
@@ -109,11 +123,16 @@ void CSRPG::Control()
 	{
 		if(unit[i].ap >= 100 && unit[i].GetLife())
 		{
-			if(unit[i].team != party_ally)continue;
+			//적의 움직임
+			if(unit[i].team != party_ally)
+			{
+				continue;
+			}
+
 			SetActiveUnit(i);
 			SetStartPoint(unit[i].GetX(), unit[i].GetY(), unit[i].move);
 			moveable = true;
-			mode = 0;
+			mode = mode_control_unit;
 			break;
 		}
 	}
@@ -215,9 +234,9 @@ void CSRPG::Process()
 	}
 
 	//명령 선택
-	if(mode == 1)
+	if(mode == mode_command_select)
 	{
-		result = command.CommandSelecting();
+		result = command->CommandSelecting();
 	}
 
 	m_script->Scripting();
