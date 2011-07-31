@@ -4,30 +4,30 @@
 #include "donglib.h"
 #include "GameProcessManager.h"
 
-bool window_mode=true;
+bool window_mode = TRUE;
 
 ////////////////////////////////////////////////////////////
 //초기화 작업
 BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode)
 {
-	jdd=CreateDirectDraw();
+	jdd = CreateDirectDraw();
 
-	HINSTANCE hInstance=(HINSTANCE)0x00400000;
+	HINSTANCE hInstance = (HINSTANCE)0x00400000;
 
-	WNDCLASS wc={0};
-	wc.hIcon=LoadIcon(hInstance,"ICON2.ico");
-	wc.hCursor=LoadCursor(hInstance,IDC_ARROW);
-	wc.lpfnWndProc=WndProc;
-	wc.hInstance=hInstance;
-	wc.style=CS_HREDRAW|CS_VREDRAW;
-	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszClassName="Game";
+	WNDCLASS wc = {0};
+	wc.hIcon = LoadIcon(hInstance,"ICON2.ico");
+	wc.hCursor = LoadCursor(hInstance,IDC_ARROW);
+	wc.lpfnWndProc = WndProc;
+	wc.hInstance = hInstance;
+	wc.style = CS_HREDRAW|CS_VREDRAW;
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszClassName = "Game";
 	RegisterClass(&wc);
 
 	//창 모드
 	if(window_mode)
 	{
-		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
+		LONG ws = WS_OVERLAPPEDWINDOW|WS_VISIBLE;
 		ws &= ~WS_THICKFRAME;
 		ws &= ~WS_MAXIMIZEBOX;
 
@@ -45,11 +45,11 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	    ShowCursor( FALSE );
 	}
 
-	jdd->Initialize(NULL,hwnd,SCREEN_WIDTH,SCREEN_HEIGHT,16,true,window_mode);
+	jdd->Initialize(NULL, hwnd, SCREEN_WIDTH, SCREEN_HEIGHT, 16, TRUE, window_mode);
 
 	//그래픽 초기화
-	backbuffer=jdd->GetBackBuffer();
-	global_font=jdd->CreateFont("궁서",20);
+	backbuffer = jdd->GetBackBuffer();
+	global_font = jdd->CreateFont("궁서",20);
 	
 	//로딩에 긴 시간이 걸릴 때를 대비한 화면
 	if(jdd->LoadPicture("CommonLoading", "Loading.jpg", NULL, TRUE) || jdd->LoadPicture("CommonLoading", "Loading.gif", NULL, TRUE))
@@ -65,31 +65,36 @@ BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool w
 	jpi.SetHeight(SCREEN_HEIGHT);
 	jdd->CreateSurface("_CommonBlank", &jpi, TRUE);
 	
-	jdd->SetFrameRate(100,TRUE);
+	jdd->SetFrameRate(100, TRUE);
 	jdd->SetVerticalSync(FALSE);
+
+	JPictureInfo jpi2;
+	jpi2.SetColorKey(BLACK);
+	jpi2.SetOpacity(0.5f);
 
 	//대화창용
 	jdd->LoadPicture("_dlgbox", "DATA\\_dlgbox.gif", NULL, TRUE);
+	jdd->LoadPicture("CommonSelect", "DATA\\CommonSelect.gif", &jpi2, TRUE);
 
 	//사운드 초기화
 	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
 	{
-		if (SoundOBJ->SetCooperativeLevel(hwnd,DSSCL_PRIORITY)!=DS_OK) return FALSE;
+		if (SoundOBJ->SetCooperativeLevel(hwnd,DSSCL_PRIORITY) != DS_OK) return FALSE;
 
-		memset(&DSB_desc,0,sizeof(DSBUFFERDESC));
+		memset(&DSB_desc, 0, sizeof(DSBUFFERDESC));
 		DSB_desc.dwSize = sizeof(DSBUFFERDESC);
 		DSB_desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
 
-		if (SoundOBJ->CreateSoundBuffer(&DSB_desc,&SoundDSB,NULL)!=DS_OK) return FALSE;
+		if (SoundOBJ->CreateSoundBuffer(&DSB_desc, &SoundDSB, NULL) != DS_OK) return FALSE;
 		SoundDSB -> SetVolume(0);
 		SoundDSB -> SetPan(0);
 	}
 
 	//기타 초기화
 	srand( (unsigned)time( NULL ) );
-	keyboard_control=use_keyboard;
-	mouse_control=use_mouse;
-	gameover=FALSE;
+	keyboard_control = use_keyboard;
+	mouse_control = use_mouse;
+	gameover = FALSE;
 
 	return TRUE;
 }
@@ -203,11 +208,11 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)
 								{
-									activate=false;
+									activate=FALSE;
 								}
 								else
 								{
-									activate=true;
+									activate=TRUE;
 								}
 								break;
 
@@ -219,11 +224,11 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		
 		case WM_ACTIVATE	 :	if(LOWORD(wParam))
 								{
-									activate=true;
+									activate=TRUE;
 								}
 								else
 								{
-									activate=false;
+									activate=FALSE;
 								}
 								break;
 	}

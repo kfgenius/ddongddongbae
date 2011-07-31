@@ -2,7 +2,7 @@
 
 #pragma warning(disable:4244)
 
-#define ERROR_CHECK		if(idx < 0 || idx >= HASH_SIZE)return false; if(!table[idx]) return false
+#define ERROR_CHECK		if(idx < 0 || idx >= HASH_SIZE)return FALSE; if(!table[idx]) return FALSE
 
 static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 {
@@ -38,7 +38,7 @@ static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 bool JDirectDrawImp::SavePicture(int idx,char* type,char* filename)
 {
 	ERROR_CHECK;
-	Render(true);
+	Render(TRUE);
 
 	DisableGraphics(idx);
 	WCHAR wsz[1001];
@@ -50,7 +50,7 @@ bool JDirectDrawImp::SavePicture(int idx,char* type,char* filename)
 
 	LPDIRECTDRAWSURFACE7 surf7=NULL;
 	table[joblist->surf1]->GetSurface()->QueryInterface(IID_IDirectDrawSurface7,(void**)&surf7);
-	if(!surf7) return false;
+	if(!surf7) return FALSE;
 
 	Image* img=new Bitmap(surf7);
 	img->Save(wsz,&clsid);
@@ -65,7 +65,7 @@ bool JDirectDrawImp::GetPictureInfo(int idx,JPictureInfo* buffer)
 	ERROR_CHECK;
 
 	*buffer=*table[idx];
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::SetPictureInfo(int idx,JPictureInfo* buffer)
@@ -104,7 +104,7 @@ bool JDirectDrawImp::DeleteSurface(int idx)
 
 bool JDirectDrawImp::ApplyColorMatrix(int iddest,int idsrc,int px,int py,LPRECT pRect,const ColorMatrix2& matrix)
 {
-	if(!table[idsrc] || !table[iddest]) return false;
+	if(!table[idsrc] || !table[iddest]) return FALSE;
 
 	JobItem* p=new JobItem;
 	p->type=JobItem::ApplyColorMatrix;
@@ -124,7 +124,7 @@ bool JDirectDrawImp::ApplyColorMatrix(int iddest,int idsrc,int px,int py,LPRECT 
 
 bool JDirectDrawImp::DrawPicture(int iddest,int idsrc,int px,int py,LPRECT pRect)
 {
-	if(!table[idsrc] || !table[iddest]) return false;
+	if(!table[idsrc] || !table[iddest]) return FALSE;
 
 	JobItem* p=new JobItem;
 	p->type=JobItem::DrawPicture;
@@ -143,7 +143,7 @@ bool JDirectDrawImp::DrawPicture(int iddest,int idsrc,int px,int py,LPRECT pRect
 
 bool JDirectDrawImp::DrawPictureEx(int iddest,int idsrc,int px,int py,LPRECT pRect,DWORD dwFlags)
 {
-	if(!table[idsrc] || !table[iddest]) return false;
+	if(!table[idsrc] || !table[iddest]) return FALSE;
 
 	JobItem* p=new JobItem;
 	p->type=JobItem::DrawStretchedPicture;
@@ -185,8 +185,8 @@ bool JDirectDrawImp::DrawPictureEx(int iddest,int idsrc,int px,int py,LPRECT pRe
 
 bool JDirectDrawImp::DrawStretchedPicture(int iddest,int idsrc,LPRECT destRect,LPRECT srcRect)
 {
-	if(!table[idsrc] || !table[iddest]) return false;
-	if(!destRect || !srcRect) return false;
+	if(!table[idsrc] || !table[iddest]) return FALSE;
+	if(!destRect || !srcRect) return FALSE;
 
 	JobItem* p=new JobItem;
 	p->type=JobItem::DrawStretchedPicture;
@@ -203,7 +203,7 @@ bool JDirectDrawImp::DrawStretchedPicture(int iddest,int idsrc,LPRECT destRect,L
 
 bool JDirectDrawImp::Blur(int iddest,int idsrc,int px,int py,LPRECT pRect,BlurSize blursize)
 {
-	if(!table[idsrc] || !table[iddest]) return false;
+	if(!table[idsrc] || !table[iddest]) return FALSE;
 
 	JobItem* p=new JobItem;
 	p->type=JobItem::Blur;
@@ -332,14 +332,14 @@ bool JDirectDrawImp::DrawPie(int idx,JBrush pBrush,LPRECT pRect,float fStartAngl
 
 bool JDirectDrawImp::GetPixel(int idx,int px,int py,JColor* pColor)
 {
-	Render(true);
-	if(!pColor) return false;
+	Render(TRUE);
+	if(!pColor) return FALSE;
 
 	DisableGraphics(idx);
 
 	LPDIRECTDRAWSURFACE7 surf7=NULL;
 	table[joblist->surf1]->GetSurface()->QueryInterface(IID_IDirectDrawSurface7,(void**)&surf7);
-	if(!surf7) return false;
+	if(!surf7) return FALSE;
 
 	Bitmap* bmp=new Bitmap(surf7);
 	Color color;
@@ -350,7 +350,7 @@ bool JDirectDrawImp::GetPixel(int idx,int px,int py,JColor* pColor)
 	pColor->r=color.GetRed();
 	pColor->g=color.GetGreen();
 	pColor->b=color.GetBlue();
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::SetPixel(int idx,int px,int py,JColor pColor)

@@ -6,7 +6,7 @@ CLogo::CLogo(void)
 {
 	game_time = 0;
 
-	jdd->LoadPicture("Logo", "DATA\\Logo.png", NULL, true);
+	jdd->LoadPicture("Logo", "DATA\\Logo.png", NULL, TRUE);
 }
 
 CLogo::~CLogo(void)

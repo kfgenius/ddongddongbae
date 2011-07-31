@@ -2,7 +2,7 @@
 
 CProcess::CProcess(void)
 {
-	stop = false;
+	stop = FALSE;
 }
 
 CProcess::~CProcess(void)
@@ -18,7 +18,7 @@ bool CProcess::IsStop()
 //프로세스 정지
 void CProcess::Stop()
 {
-	stop = true;
+	stop = TRUE;
 }
 
 //모드 얻기

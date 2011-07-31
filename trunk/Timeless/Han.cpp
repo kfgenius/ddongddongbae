@@ -250,7 +250,7 @@ CHan::CHan()
 	//검색 속도 향상을 위한 빨리가기
 	int mp=0;
 	char* check_text[19]={"가","까","나","다","따","라","마","바","빠","사","싸","아","자","짜","차","카","타","파","하"};
-	for(unsigned int i=0; i<HAN_MAX; ++i)
+	for(unsigned int i=0; i<HAN_MAX; i++)
 	{
 		if(strcmp(han1[i*2], check_text[mp])==0)
 		{
@@ -279,7 +279,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 	strcpy(han, "");
 
 	//한글에 대치 안 되는 대문자를 소문자로 바꿈
-	for(unsigned int i=0; i<strlen(text); ++i)
+	for(unsigned int i=0; i<strlen(text); i++)
 	{
 		if(han_area[i]==0)continue;
 		if(text[i]>='A' && text[i]<='Z' && text[i]!='Q' && text[i]!='W' && text[i]!='E'	&& text[i]!='R'
@@ -287,7 +287,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 	}
 
 	//모음, 자음 한글 아님 여부 확인(자음 인 부분을 포인트로 두어서 변환에 도움이 되게 함)
-	for(unsigned int i=1; i<strlen(text); ++i)
+	for(unsigned int i=1; i<strlen(text); i++)
 	{
 		//자음인지 모음인지 구분
 		for(int j=0; j<33; ++j)
@@ -298,7 +298,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 					begin[pp]=i-1;
 					if(pp>0)end[pp-1]=i-2;
 					++pp;
-					++i;	//이중 모음의 경우를 생각해서 다음을 넘김(이중 모음을 끊어 읽어 글자가 되는 경우는 없으므로 예: 뒷산(O) 두ㅣㅅ산(X))
+					i++;	//이중 모음의 경우를 생각해서 다음을 넘김(이중 모음을 끊어 읽어 글자가 되는 경우는 없으므로 예: 뒷산(O) 두ㅣㅅ산(X))
 				}
 				break;
 			}
@@ -306,7 +306,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 	if(pp>0)end[pp-1]=(unsigned int)strlen(text)-1;
 
 	//포인트 조정(한글인 부분만 해석)
-	for(unsigned int i=0; i<pp; ++i)
+	for(unsigned int i=0; i<pp; i++)
 	{
 		char buffer[10];
 		int bp=0;
@@ -357,7 +357,7 @@ char* CHan::EngToHan(char* text, char* han_area)
 
 	//변환
 	unsigned int pp2=0;
-	for(unsigned int i=0; i<strlen(text); ++i)
+	for(unsigned int i=0; i<strlen(text); i++)
 	{
 		while(begin[pp2]==9999)++pp2;
 

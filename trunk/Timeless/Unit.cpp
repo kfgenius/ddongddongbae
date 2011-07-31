@@ -2,6 +2,7 @@
 #include "hash.h"
 
 #include <stdio.h>
+#include <windows.h>
 
 ////////////////////////////////////////////////////////////
 // CUnit 메소드
@@ -25,15 +26,15 @@ int unit_data[][20] = {
 
 CUnit::CUnit()
 {
-	life = false;
-	moving = false;
+	life = FALSE;
+	moving = FALSE;
 	SetPos(0,0);
 }
 
 //설정
 void CUnit::Set(int id, int team, int tile_size)
 {
-	life = true;
+	life = TRUE;
 	this->id = id;
 	this->team = team;
 
@@ -59,7 +60,7 @@ void CUnit::Set(int id, int team, int tile_size)
 //사망
 void CUnit::Die()
 {
-	life = false;
+	life = FALSE;
 }
 
 //생존 상태 얻기
@@ -153,7 +154,7 @@ void CUnit::SetPos(int x, int y)
 	this->x = x;
 	this->y = y;
 	px = py = 0;
-	moving = false;
+	moving = FALSE;
 }
 
 //이동 속도 지정
@@ -165,7 +166,7 @@ void CUnit::SetMoveSpeed(int move_speed)
 //이동
 bool CUnit::Move(int dir)
 {
-	if(moving)return false;
+	if(moving)return FALSE;
 	this->dir = dir;
 
 	if(dir == DIR_LEFT)
@@ -189,8 +190,8 @@ bool CUnit::Move(int dir)
 		py = -tile_size;
 	}
 
-	moving = true;
-	return true;
+	moving = TRUE;
+	return TRUE;
 }
 
 void CUnit::Action()
@@ -218,5 +219,5 @@ void CUnit::Action()
 		py += move_speed;
 	}
 	//이동이 끝나면 키 입력 가능
-	else moving = false;
+	else moving = FALSE;
 }

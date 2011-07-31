@@ -71,7 +71,7 @@ BOOL IncludeValue(char* str)
 void ToSmallCase(char* str)
 {
 	size_t strmax = strlen(str);
-	for(size_t i=0; i<strmax; ++i)
+	for(size_t i=0; i<strmax; i++)
 		if(str[i] >= 'A' && str[i] <= 'Z')str[i]+=0x20;
 }
 
@@ -99,7 +99,7 @@ CScriptCommand::CScriptCommand()
 	ZeroMemory(value, sizeof(int)*SCRIPT_VALUE_MAX);
 	text=NULL;
 	strcpy(buffer,"");
-	first=false;
+	first=FALSE;
 }
 
 /////////////////////////////////////////////////////
@@ -123,13 +123,13 @@ CScript::CScript(char* script_file)
 		else m_ogg = NULL;
 
 	//기타
-	debug_mode = false;	
+	debug_mode = FALSE;	
 	text_rgb[0]=text_rgb[1]=text_rgb[2]=0;
-	text_shadow=false;
+	text_shadow=FALSE;
 	strcpy(font_name, "궁서");
 	message_speed = 4;
-	text_skip = false;
-	text_auto = false;
+	text_skip = FALSE;
+	text_auto = FALSE;
 	ready = FALSE;
 	end = FALSE;
 }
@@ -173,7 +173,7 @@ void CScript::Load(char* script_file)
 		//책갈피 읽기
 		int mark_count;
 		fread(&mark_count,sizeof(int),1,fp);
-		for(int i=0; i<mark_count; ++i)
+		for(int i=0; i<mark_count; i++)
 		{
 			int temp_bookmark, temp_no;
 			fread(&temp_no,sizeof(int),1,fp);
@@ -195,7 +195,7 @@ void CScript::Load(char* script_file)
 
 			//해독
 			int i;
-			for(i=0; i<text_size/2; ++i)
+			for(i=0; i<text_size/2; i++)
 			{
 				char b1, b2;
 				b1=buffer[i*2];
@@ -248,7 +248,7 @@ void CScript::Load(char* script_file)
 	strcpy(m_textmap[bgm_hash].buffer, "");
 
 	//기타
-	area_select = false;
+	area_select = FALSE;
 	m_valuemap[area_x_hash] = SCREEN_WIDTH/2;
 	m_valuemap[area_y_hash] = SCREEN_HEIGHT/2;
 	music_type = -1;
@@ -264,11 +264,11 @@ void CScript::LoadFromTxt()
 	long max=ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	bool note=false;
-	bool content=false;
+	bool note=FALSE;
+	bool content=FALSE;
 	int cp=0;
 
-	bool is_text=false;	//""안의 내용인지 확인
+	bool is_text=FALSE;	//""안의 내용인지 확인
 
 	while(ftell(fp) < max)
 	{
@@ -280,11 +280,11 @@ void CScript::LoadFromTxt()
 			if(content)
 			{
 				dlg_no++;
-				content=note=false;
+				content=note=FALSE;
 			}
 
 			cp=0;
-			is_text=false;
+			is_text=FALSE;
 
 			continue;
 		}
@@ -296,7 +296,7 @@ void CScript::LoadFromTxt()
 		else if(cp==0 && t=='^')
 		{
 			mark_no=0;
-			bool ignore=false;
+			bool ignore=FALSE;
 			do{
 				fread(&t, sizeof(char), 1, fp);
 
@@ -309,7 +309,7 @@ void CScript::LoadFromTxt()
 					}
 					else
 					{
-						ignore=true;
+						ignore=TRUE;
 					}
 				}
 			}while(t!='\n' && ftell(fp) < max);
@@ -317,7 +317,7 @@ void CScript::LoadFromTxt()
 			continue;
 		}
 
-		content=true;	//내용 있음
+		content=TRUE;	//내용 있음
 
 		//내용 복사
 		if(!note)
@@ -330,7 +330,7 @@ void CScript::LoadFromTxt()
 				if(t=='/')
 				{
 					if(cp==0)dlg_no--;
-					note=true;
+					note=TRUE;
 				}
 				//주석 아님, 그리고 줄 바꿈
 				else if(t=='\n')
@@ -338,9 +338,9 @@ void CScript::LoadFromTxt()
 					dlg[dlg_no]+=old_t;
 
 					dlg_no++;
-					content=note=false;
+					content=note=FALSE;
 					cp=0;
-					is_text=false;
+					is_text=FALSE;
 				}
 				//주석 아님
 				else
@@ -366,13 +366,13 @@ void CScript::LoadFromTxt()
 	//마지막 명령이 내용이 있는지 검사
 	if(dlg_no>=0)
 	{
-		bool content = false;
+		bool content = FALSE;
 		size_t strmax = dlg[dlg_no].length();
 		for(size_t i=0; i<strmax; i++)
 		{
 			if(dlg[dlg_no][i] != ' ' && dlg[dlg_no][i] != 0x09)
 			{
-				content = true;
+				content = TRUE;
 				break;
 			}
 		}
@@ -407,7 +407,7 @@ void CScript::LoadFromTxt()
 	enable=TRUE;
 
 	//메모리 제거
-	for(int i=0; i<10000; ++i)dlg[i].clear();
+	for(int i=0; i<10000; i++)dlg[i].clear();
 }
 
 void CScript::UnLoad()
@@ -415,7 +415,7 @@ void CScript::UnLoad()
 	//스크립트 메모리 해체
 	if(snr)
 	{
-		for(int i=0; i<snrs; ++i)
+		for(int i=0; i<snrs; i++)
 			if(snr[i]!=NULL)
 			{
 				delete[] snr[i];
@@ -438,8 +438,8 @@ void CScript::UnLoad()
 	std::map<int, ScriptText>::iterator tit;
 	for(tit = m_textmap.begin(); tit!=m_textmap.end(); ++tit)
 	{
-		(tit->second).show = false;
-		(tit->second).shadow = false;
+		(tit->second).show = FALSE;
+		(tit->second).shadow = FALSE;
 		(tit->second).color = JColor(0,0,0);
 	}
 
@@ -657,14 +657,14 @@ void CScript::ConvertString(char *result, char* source)
 
 	size_t strmax = strlen(source);
 
-	for(size_t i=0; i<strmax; ++i)
+	for(size_t i=0; i<strmax; i++)
 	{
 		//숫자 변수
 		if(source[i] == '[')
 		{
 			//변수 부분을 읽어 들임
-			size_t start_point=++i;
-			for(; i < strmax; ++i)
+			size_t start_point=i++;
+			for(; i < strmax; i++)
 			{
 				if(source[i]==']')	//이중, 삼중 괄호인지 검사
 				{
@@ -695,8 +695,8 @@ void CScript::ConvertString(char *result, char* source)
 		else if(source[i] == '{')
 		{
 			//변수 부분을 읽어 들임
-			size_t start_point=++i;
-			for(; i < strmax; ++i)
+			size_t start_point=i++;
+			for(; i < strmax; i++)
 			{
 				if(source[i]=='}')	//이중, 삼중 괄호인지 검사
 				{
@@ -748,7 +748,7 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 	{
 		//변수 이름 읽어들이기
 		int i;
-		for(i=1; snr[no][i] != NULL; ++i)
+		for(i=1; snr[no][i] != NULL; i++)
 		{
 			if(snr[no][i]==']')
 			{
@@ -826,7 +826,7 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 	{
 		//문자 변수 이름 읽어들이기
 		int i;
-		for(i=1; snr[no][i] != NULL; ++i)
+		for(i=1; snr[no][i] != NULL; i++)
 		{
 			if(snr[no][i]=='}')
 			{
@@ -896,8 +896,8 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 			int text_id = hash(buffer);
 			if(m_textmap.find(text_id)==m_textmap.end())
 			{
-				m_textmap[text_id].show = false;
-				m_textmap[text_id].shadow = false;
+				m_textmap[text_id].show = FALSE;
+				m_textmap[text_id].shadow = FALSE;
 				m_textmap[text_id].color = JColor(0,0,0);
 			}
 
@@ -932,7 +932,7 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 	int value_id=0;		//상수일 경우 몇번째인지 확인
 	size_t i;			//현재 읽고 있는 위치
 	size_t strmax = strlen(snr[no]);	//문자열 크기
-	for(i=1; i < strmax; ++i)
+	for(i=1; i < strmax; i++)
 	{
 		if(snr[no][i]==' ' || snr[no][i]==0x09)break;
 
@@ -952,7 +952,7 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 	}
 
 	//값 읽어 들이기
-	for(; i < strmax; ++i)
+	for(; i < strmax; i++)
 	{
 		//상수 읽기
 		if(snr[no][i]>='0' && snr[no][i]<='9' || snr[no][i]=='-')
@@ -960,7 +960,7 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 			int value_length=1;
 			char* start_point = &snr[no][i++];
 
-			for(; i < strmax && snr[no][i]>='0' && snr[no][i]<='9'; ++i)++value_length;	//길이 계산
+			for(; i < strmax && snr[no][i]>='0' && snr[no][i]<='9'; i++)++value_length;	//길이 계산
 
 			//숫자 복사
 			strncpy(buffer, start_point, value_length);
@@ -977,9 +977,9 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 		else if(snr[no][i]=='"')
 		{
 			int value_length=0;
-			char* start_point = &snr[no][++i];
+			char* start_point = &snr[no][i++];
 
-			for(;  i < strmax && snr[no][i]!='"'; ++i)++value_length;	//길이 계산
+			for(;  i < strmax && snr[no][i]!='"'; i++)++value_length;	//길이 계산
 
 			//문자 복사
 			strncpy(temp_command.buffer, start_point, value_length);
@@ -998,9 +998,9 @@ BOOL CScript::ReadScript(vector<CScriptCommand> *m_script, int no)	//리턴하는 값
 		{
 			int value_length=0;
 			//i++;
-			char* start_point = &snr[no][++i];
+			char* start_point = &snr[no][i++];
 
-			for(; i < strmax && snr[no][i]!=']'; ++i)++value_length;	//길이 계산
+			for(; i < strmax && snr[no][i]!=']'; i++)++value_length;	//길이 계산
 
 			//변수 이름 복사
 			strncpy(buffer, start_point, value_length);
@@ -1064,7 +1064,7 @@ void CScript::DebugMode()
 {
 	if(!debug_mode)
 	{
-		if(debug_fp = fopen("bug_repot.txt", "wt"))debug_mode = true;
+		if(debug_fp = fopen("bug_repot.txt", "wt"))debug_mode = TRUE;
 	}
 }
 
@@ -1086,7 +1086,7 @@ void CScript::RunScript()
 			pi.SetOpacity((pit->second).opacity);
 			jdd->SetPictureInfo((pit->second).id, &pi);
 
-			for(int i=0; i<pit->second.loop; ++i)
+			for(int i=0; i<pit->second.loop; i++)
 			{
 				if((pit->second).ani)	//애니메이션인 경우
 				{
@@ -1243,7 +1243,7 @@ int CScript::ComPrint(COMMAND_PTR it)
 		if(strcmp(it->buffer, "")==0)m_dlg.MakeText(it->text);
 			else m_dlg.MakeText(it->buffer);
 
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//대화 출력
@@ -1281,7 +1281,7 @@ int CScript::ComSelect(COMMAND_PTR it)
 			else m_select.MakeSelection(it->buffer);
 		m_select.SetSelect(0);	//위치 초기화
 
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//선택이 끝날 때까지 선택창 표시
@@ -1304,7 +1304,7 @@ int CScript::ComInputNum(COMMAND_PTR it)
 	{
 		m_input.SetFlag(FLAG_NUMBER);
 		m_input.Clear();
-		it->first=true;
+		it->first=TRUE;
 	}
 
 	//입력
@@ -1339,7 +1339,7 @@ int CScript::ComInputText(COMMAND_PTR it)
 	{
 		m_input.SetFlag(FLAG_TEXT | FLAG_NUMBER | FLAG_MARK);
 		m_input.Clear();
-		it->first=true;
+		it->first=TRUE;
 	}
 
 	//입력
@@ -1360,8 +1360,8 @@ int CScript::ComInputText(COMMAND_PTR it)
 			strcpy(m_textmap[hash(it->buffer)].buffer, input_buffer);
 			if(m_textmap.find(hash(it->buffer))==m_textmap.end())
 			{
-				m_textmap[hash(it->buffer)].show = false;
-				m_textmap[hash(it->buffer)].shadow = false;
+				m_textmap[hash(it->buffer)].show = FALSE;
+				m_textmap[hash(it->buffer)].shadow = FALSE;
 				m_textmap[hash(it->buffer)].color = JColor(0,0,0);
 			}
 		}
@@ -1417,7 +1417,7 @@ int CScript::ComMoveText(COMMAND_PTR it)
 		move_y = (double)it->value[1] / (double)it->value[2];
 		p_text->rx = (double)p_text->x;
 		p_text->ry = (double)p_text->y;
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//이동
@@ -1439,14 +1439,14 @@ int CScript::ComMoveText(COMMAND_PTR it)
 int CScript::ComTextColor(COMMAND_PTR it)
 {
 	//문자맵에 존재하는지 검사
-	ScriptText* p_text = GetTextPoint(it, false);
+	ScriptText* p_text = GetTextPoint(it, FALSE);
 
 	if(hash(it->buffer) == 0)	//전체 글자색 변경
 	{
 		m_dlg.SetTextColor(it->value[0], it->value[1], it->value[2]);
 		m_select.SetTextColor(it->value[0], it->value[1], it->value[2]);
 		m_input.SetTextColor(it->value[0], it->value[1], it->value[2]);
-		for(int i=0; i<3; ++i)text_rgb[i] = it->value[i];
+		for(int i=0; i<3; i++)text_rgb[i] = it->value[i];
 	}
 	else if(p_text)	//특정 글자색 변경
 	{
@@ -1462,18 +1462,18 @@ int CScript::ComTextColor(COMMAND_PTR it)
 int CScript::ComShowShadow(COMMAND_PTR it)
 {
 	//문자맵에 존재하는지 검사
-	ScriptText* p_text = GetTextPoint(it, false);
+	ScriptText* p_text = GetTextPoint(it, FALSE);
 
 	if(hash(it->buffer) == 0)	//전체 글자 그림자
 	{
 		m_dlg.ShowShadow();
 		m_select.ShowShadow();
 		m_input.ShowShadow();
-		text_shadow = true;
+		text_shadow = TRUE;
 	}
 	else if(p_text)
 	{
-		p_text->shadow = true;	//특정 글자 그림자
+		p_text->shadow = TRUE;	//특정 글자 그림자
 	}
 
 	return RUN_END;
@@ -1483,16 +1483,16 @@ int CScript::ComShowShadow(COMMAND_PTR it)
 int CScript::ComHideShadow(COMMAND_PTR it)
 {
 	//문자맵에 존재하는지 검사
-	ScriptText* p_text = GetTextPoint(it, false);
+	ScriptText* p_text = GetTextPoint(it, FALSE);
 
 	if(hash(it->buffer) == 0)	//전체 글자 그림자
 	{
 		m_dlg.HideShadow();
 		m_select.HideShadow();
 		m_input.HideShadow();
-		text_shadow = false;
+		text_shadow = FALSE;
 	}
-	else if(!p_text)p_text->shadow = false;	//특정 글자 그림자
+	else if(!p_text)p_text->shadow = FALSE;	//특정 글자 그림자
 
 	return RUN_END;
 }
@@ -1564,8 +1564,8 @@ int CScript::ComPicture(COMMAND_PTR it)
 		return RUN_END;
 	}
 
-	bool load_first = false;	//맨 처음으로 그림을 읽어오는지 여부
-	if(m_pic.find(it->value[0]) == m_pic.end())load_first=true;
+	bool load_first = FALSE;	//맨 처음으로 그림을 읽어오는지 여부
+	if(m_pic.find(it->value[0]) == m_pic.end())load_first=TRUE;
 	ScriptPicture* p_pic = &m_pic[it->value[0]];	//사용중인 그림 포인터
 
 	JPictureInfo pi;
@@ -1573,7 +1573,7 @@ int CScript::ComPicture(COMMAND_PTR it)
 	{
 		//로드된 것이 없으면 파일로 찾기
 		pi.SetColorKey(JColor(0, 0, 255));
-		if(!jdd->LoadPicture(it->buffer, it->buffer, &pi, true))
+		if(!jdd->LoadPicture(it->buffer, it->buffer, &pi, TRUE))
 		{
 			DebugMode();
 			fprintf(debug_fp, "%s(%d) - %s", script_file, it->snr_no, snr[it->snr_no]);
@@ -1659,7 +1659,7 @@ int CScript::ComMovePicture(COMMAND_PTR it)
 		m_move_y[it->value[0]] = (double)it->value[2] / (double)it->value[3];
 		p_pic->rx = (double)p_pic->x;
 		p_pic->ry = (double)p_pic->y;
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//이동
@@ -1710,7 +1710,7 @@ int CScript::ComPictureOpacity(COMMAND_PTR it)
 	{
 		it->value[2] = Max(it->value[2], 1);	//지연시간은 최소 1
 		change = (((float)it->value[1]/100) - p_pic->opacity)/(float)it->value[2];
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	if(it->value[2]>0)
@@ -1768,7 +1768,7 @@ int CScript::ComScreenEffect(COMMAND_PTR it)
 		it->value[3] = Max(it->value[3], 1);	//지연시간은 최소 1
 		screen_change = (double)(it->value[2] - it->value[1])/(double)it->value[3];
 		now_screen = (double)it->value[1];
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//변화
@@ -1819,7 +1819,7 @@ int CScript::ComPlayBGM(COMMAND_PTR it)
 			fputs(" : OGG 파일을 읽을 수 없습니다.\n", debug_fp);
 			music_type = MUSIC_OGG;
 		}
-		else m_ogg->PlayOgg(true);
+		else m_ogg->PlayOgg(TRUE);
 	}
 	else
 	{
@@ -2114,10 +2114,10 @@ int CScript::ComSelectArea(COMMAND_PTR it)
 	//초기 설정
 	if(!it->first)
 	{
-		area_select = true;
+		area_select = TRUE;
 		if(it->buffer)strcpy(m_textmap[area_cursor_hash].buffer, it->buffer);
 
-		it->first = true;
+		it->first = TRUE;
 	}
 
 	//좌우이동
@@ -2150,7 +2150,7 @@ int CScript::ComSelectArea(COMMAND_PTR it)
 	//선택
 	if(GetKey(vkey_enter) || mouse_control && LeftDown())
 	{
-		area_select = false;
+		area_select = FALSE;
 		return RUN_CLEAR;
 	}
 

@@ -15,12 +15,12 @@ CStory::CStory(void)
 	JPictureInfo jpi;
 	jpi.SetColorKey(JColor(0, 0, 0));
 
-	jdd->LoadPicture("Cursor", "DATA\\cursor.png", &jpi, true);
+	jdd->LoadPicture("Cursor", "DATA\\cursor.png", &jpi, TRUE);
 
-	jdd->LoadPicture("AutoOff", "DATA\\대화창-오토-OFF.png", NULL, true);
-	jdd->LoadPicture("AutoOn", "DATA\\대화창-오토-ON.png", NULL, true);
-	jdd->LoadPicture("SkipOff", "DATA\\대화창-스킵-OFF.png", NULL, true);
-	jdd->LoadPicture("SkipOn", "DATA\\대화창-스킵-ON.png", NULL, true);
+	jdd->LoadPicture("AutoOff", "DATA\\대화창-오토-OFF.png", NULL, TRUE);
+	jdd->LoadPicture("AutoOn", "DATA\\대화창-오토-ON.png", NULL, TRUE);
+	jdd->LoadPicture("SkipOff", "DATA\\대화창-스킵-OFF.png", NULL, TRUE);
+	jdd->LoadPicture("SkipOn", "DATA\\대화창-스킵-ON.png", NULL, TRUE);
 
 	m_script = new CScript("script\\테스트");
 	m_script->SetPage(0);

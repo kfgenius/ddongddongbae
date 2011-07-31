@@ -33,6 +33,12 @@
 //키 상태 받기
 #define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey ))
 
+//색상
+#define BLACK	JColor(0, 0, 0)
+#define RED		JColor(255, 0, 0)
+#define GREEN	JColor(0, 255, 0)
+#define BLUE	JColor(0, 0, 255)
+
 /*--------------------------------
 		전역 변수 선언부분
 --------------------------------*/
@@ -66,7 +72,7 @@ extern BOOL mouse_move;	//마우스 이동 여부
 --------------------------------*/
 
 //초기화 작업
-BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode=false);
+BOOL MainInitialize(char* window_name, BOOL use_keyboard, BOOL use_mouse, bool window_mode=FALSE);
 
 //윈도우 메세지 처리
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam);

@@ -11,7 +11,7 @@
 #define MAP_HEIGHT_MAX		60
 #define TILE_SIZE			32
 #define TILE_SOURCE_SIZE	48
-#define TILE_TYPE_MAX		18
+#define TILE_TYPE_MAX		120
 
 //À¯´Ö ÇÑ°è
 #define UNIT_TYPE_MAX		128
