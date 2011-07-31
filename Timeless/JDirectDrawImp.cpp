@@ -66,11 +66,11 @@ __int64 ref;
 #define EPSILON 1.0f/256
 #define F_EQ(x,y) ((x-EPSILON)<(y) && (y)<(x+EPSILON))
 
-#define DDC(X) if((lasterr=X)!=DD_OK) { lasterrmsg=DXGetErrorString9(lasterr); return false; }
+#define DDC(X) if((lasterr=X)!=DD_OK) { lasterrmsg=DXGetErrorString9(lasterr); return FALSE; }
 
 void DDEnumDevices();
 
-JDirectDrawImp::JDirectDrawImp() : lpDD(NULL), bProxy(NULL), lasterr(DD_OK), joblist(NULL), backbufferkey(hash(GetBackBuffer())), vsync(false), lpDD7(NULL)
+JDirectDrawImp::JDirectDrawImp() : lpDD(NULL), bProxy(NULL), lasterr(DD_OK), joblist(NULL), backbufferkey(hash(GetBackBuffer())), vsync(FALSE), lpDD7(NULL)
 {
 	DDEnumDevices();
 	memset(table,0,sizeof(table));
@@ -92,8 +92,8 @@ JDirectDrawImp::~JDirectDrawImp()
 
 bool JDirectDrawImp::Initialize(uint devid,HWND hwnd,uint width,uint height,uint bpp,bool sysmem,bool window_mode)
 {
-	if(devid>dd_devcount) return false;
-	if(lpDD) return false;
+	if(devid>dd_devcount) return FALSE;
+	if(lpDD) return FALSE;
 	DDC(DirectDrawCreate(devid==0?NULL:&dd_devguids[devid],&lpDD,NULL));
 	DDC(lpDD->QueryInterface(IID_IDirectDraw7,(void**)&lpDD7));
 
@@ -172,28 +172,28 @@ bool JDirectDrawImp::Initialize(uint devid,HWND hwnd,uint width,uint height,uint
 	info.SetSurface(lpDDTempMask);
 #define TEMPMASK "________Temporary Mask"
 	AddSurface(TEMPMASK,&info);
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::Cleanup()
 {
-	Render(false);
+	Render(FALSE);
 
-	bool clean = true;
+	bool clean = TRUE;
 
 	if(lpDDBackSurface)
 	{
 		lpDDBackSurface->Release();
 		lpDDBackSurface = NULL;
 	}
-	else clean=false;
+	else clean=FALSE;
 
 	if(lpDDPriSurface)
 	{
 		lpDDPriSurface->Release();
 		lpDDPriSurface = NULL;
 	}
-	else clean=false;
+	else clean=FALSE;
 
 	for(int lp=0;lp<HASH_SIZE;lp++)
 	if(table[lp])
@@ -207,14 +207,14 @@ bool JDirectDrawImp::Cleanup()
 		lpDD7->Release();
 		lpDD7=NULL;
 	}
-	else clean=false;
+	else clean=FALSE;
 
 	if(lpDD)
 	{
 		lpDD->Release();
 		lpDD = NULL;
 	}
-	else clean=false;
+	else clean=FALSE;
 
 	return clean;
 }
@@ -236,8 +236,8 @@ bool JDirectDrawImp::AddJobList(JobItem* p)
 		last=p;
 		p->next=NULL;
 	}
-	if(fpsfreq==0) return Render(true,false);
-	return true;
+	if(fpsfreq==0) return Render(TRUE,FALSE);
+	return TRUE;
 }
 
 LPDIRECTDRAWSURFACE JDirectDrawImp::CreateSurface(DWORD width,DWORD height,bool sysmem)
@@ -257,19 +257,19 @@ LPDIRECTDRAWSURFACE JDirectDrawImp::CreateSurface(DWORD width,DWORD height,bool 
 
 bool JDirectDrawImp::CreateSurface(char* name,JPictureInfo* picinfo,bool sysmem,int* pid)
 {
-	Render(true,false);
+	Render(TRUE,FALSE);
 	int idx=hash(name);
-	if(table[idx]) return false;
+	if(table[idx]) return FALSE;
 
 	LPDIRECTDRAWSURFACE surf=CreateSurface(picinfo->GetWidth(),picinfo->GetHeight(),sysmem);
-	if(surf==NULL) return false;
+	if(surf==NULL) return FALSE;
 
 	table[idx]=new JPictureInfo(*picinfo);
 	table[idx]->SetSurface(surf);
 
 	if(pid) *pid=idx;
 
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::LoadPicture(int idx,char* filename,JPictureInfo* picinfo,bool sysmem,bool createsurface)
@@ -277,13 +277,13 @@ bool JDirectDrawImp::LoadPicture(int idx,char* filename,JPictureInfo* picinfo,bo
 	static WCHAR wfilename[1001];
 	MultiByteToWideChar(CP_ACP,0,filename,-1,wfilename,1000);
 	Image* img=Image::FromFile(wfilename);
-	if(img==NULL) return false;
-	if(img->GetLastStatus()!=Ok) { delete img; return false; }
+	if(img==NULL) return FALSE;
+	if(img->GetLastStatus()!=Ok) { delete img; return FALSE; }
 	
 	if(createsurface)
 	{
 		LPDIRECTDRAWSURFACE surf=CreateSurface(img->GetWidth(),img->GetHeight(),sysmem);
-		if(surf==NULL) return false;
+		if(surf==NULL) return FALSE;
 
 		if(picinfo) table[idx]=new JPictureInfo(*picinfo); else table[idx]=new JPictureInfo;
 		table[idx]->SetWidth(img->GetWidth());
@@ -296,19 +296,19 @@ bool JDirectDrawImp::LoadPicture(int idx,char* filename,JPictureInfo* picinfo,bo
 	DisableGraphics(idx);
 	delete img;
 
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::LoadPicture(int idx,IStream* stream,JPictureInfo* picinfo,bool sysmem,bool createsurface)
 {
 	Image* img=Bitmap::FromStream(stream);
-	if(img==NULL) return false;
-	if(img->GetLastStatus()!=Ok) { delete img; return false; }
+	if(img==NULL) return FALSE;
+	if(img->GetLastStatus()!=Ok) { delete img; return FALSE; }
 	
 	if(createsurface)
 	{
 		LPDIRECTDRAWSURFACE surf=CreateSurface(img->GetWidth(),img->GetHeight(),sysmem);
-		if(surf==NULL) return false;
+		if(surf==NULL) return FALSE;
 
 		if(picinfo) table[idx]=new JPictureInfo(*picinfo); else table[idx]=new JPictureInfo;
 		table[idx]->SetWidth(img->GetWidth());
@@ -321,14 +321,14 @@ bool JDirectDrawImp::LoadPicture(int idx,IStream* stream,JPictureInfo* picinfo,b
 	DisableGraphics(idx);
 	delete img;
 
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::LoadPicture(char* name,char* filename,JPictureInfo* picinfo,bool sysmem,int* pid)
 {
-	Render(true,false);
+	Render(TRUE,FALSE);
 	int idx=hash(name);
-	if(table[idx]) return false;
+	if(table[idx]) return FALSE;
 
 	bool ret=LoadPicture(idx,filename,picinfo,sysmem);
 	if(ret && pid) *pid=idx;
@@ -337,9 +337,9 @@ bool JDirectDrawImp::LoadPicture(char* name,char* filename,JPictureInfo* picinfo
 
 bool JDirectDrawImp::LoadPicture(char* name,IStream* stream,JPictureInfo* picinfo,bool sysmem,int* pid)
 {
-	Render(true,false);
+	Render(TRUE,FALSE);
 	int idx=hash(name);
-	if(table[idx]) return false;
+	if(table[idx]) return FALSE;
 
 	bool ret=LoadPicture(idx,stream,picinfo,sysmem);
 	if(ret && pid) *pid=idx;
@@ -349,12 +349,12 @@ bool JDirectDrawImp::LoadPicture(char* name,IStream* stream,JPictureInfo* picinf
 bool JDirectDrawImp::AddSurface(char* name,JPictureInfo* picinfo,int* pid)
 {
 	int idx=hash(name);
-	if(table[idx]) return false;
-	if(picinfo->GetSurface()==NULL) return false;
+	if(table[idx]) return FALSE;
+	if(picinfo->GetSurface()==NULL) return FALSE;
 
 	table[idx]=new JPictureInfo(*picinfo);
 	if(pid) *pid=idx;
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::SavePicture(char* name,char* type,char* filename)
@@ -436,8 +436,8 @@ bool JDirectDrawImp::DrawText(char* szDest,char* szText,JFont font,int px,int py
 
 bool JDirectDrawImp::MeasureText(char* text,JFont font,LPRECT pRect)
 {
-	if(!table[backbufferkey]) return false;
-	if(!pRect) return false;
+	if(!table[backbufferkey]) return FALSE;
+	if(!pRect) return FALSE;
 
 	EnableGraphics(backbufferkey);
 
@@ -449,7 +449,7 @@ bool JDirectDrawImp::MeasureText(char* text,JFont font,LPRECT pRect)
 	pRect->right=(int)size.cx;
 	pRect->bottom=(int)size.cy;
 
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::DrawLine(char* szDest,JBrush pBrush,int sx,int sy,int ex,int ey,float width)
@@ -548,31 +548,31 @@ bool JDirectDrawImp::RestoreAllSurfaces()
 		table[lp]->GetSurface()->Restore();
 		if(table[lp]->GetSourceType()==PicInfo_FileSource)
 		{
-			LoadPicture(lp,table[lp]->GetFileSource(),NULL,false,false);
+			LoadPicture(lp,table[lp]->GetFileSource(),NULL,FALSE,FALSE);
 		} else {
-			LoadPicture(lp,table[lp]->GetStreamSource(),NULL,false,false);
+			LoadPicture(lp,table[lp]->GetStreamSource(),NULL,FALSE,FALSE);
 		}
 	}
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::EnableGraphics(int idx)
 {
-	if(grptable[idx]) return true;
-	if(!table[idx]) return false;
+	if(grptable[idx]) return TRUE;
+	if(!table[idx]) return FALSE;
 	DDC(table[idx]->GetSurface()->GetDC(&dctable[idx]));
 	SetBkMode(dctable[idx],TRANSPARENT);
 	grptable[idx]=new Graphics(dctable[idx]);
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::DisableGraphics(int idx)
 {
-	if(!table[idx]) return false;
+	if(!table[idx]) return FALSE;
 	delete grptable[idx];
 	grptable[idx]=NULL;
 	table[idx]->GetSurface()->ReleaseDC(dctable[idx]);
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::DrawPictureAuto(int id1,int id2,int idoverride,char* maskoverride)
@@ -637,7 +637,7 @@ bool JDirectDrawImp::DrawPictureAuto(int id1,int id2,int idoverride,char* maskov
 			over->GetColorKey());
 		break;
 	}
-	return true;
+	return TRUE;
 }
 
 static DWORD Convert16Color(DWORD color32,int type16)
@@ -1024,13 +1024,13 @@ bool JDirectDrawImp::Render(bool bDraw,bool bFlip)
 			}
 		}
 	}
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::SetVerticalSync(bool bVSync)
 {
 	vsync=bVSync;
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::SetFrameRate(int iFPS,bool bBlocking)
@@ -1038,7 +1038,7 @@ bool JDirectDrawImp::SetFrameRate(int iFPS,bool bBlocking)
 	if(iFPS==0 || iFPS>100)
 	{
 		fpsfreq=0;
-		fpsblock=false;
+		fpsblock=FALSE;
 	}
 	else
 	{
@@ -1046,12 +1046,12 @@ bool JDirectDrawImp::SetFrameRate(int iFPS,bool bBlocking)
 		fpsblock=bBlocking;
 		QueryPerformanceCounter((LARGE_INTEGER*)&lastdraw);
 	}
-	return true;
+	return TRUE;
 }
 
 bool JDirectDrawImp::Render()
 {
-	if(fpsfreq==0) return Render(true);
+	if(fpsfreq==0) return Render(TRUE);
 	__int64 ctime;
 	if(fpsblock)
 	{
@@ -1063,18 +1063,18 @@ bool JDirectDrawImp::Render()
 			Sleep(0);
 		}
 		lastdraw=ctime;
-		bool ret=Render(true);
+		bool ret=Render(TRUE);
 		return ret;
 	} else {
 		QueryPerformanceCounter((LARGE_INTEGER*)&ctime);
 		if(ctime-lastdraw>=fpsfreq)
 		{
 			lastdraw=ctime;
-			Render(true);
-			return true;
+			Render(TRUE);
+			return TRUE;
 		} else {
-			Render(false,false);
-			return false;
+			Render(FALSE,FALSE);
+			return FALSE;
 		}
 	}
 }

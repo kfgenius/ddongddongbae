@@ -5,21 +5,26 @@
 #include "dlg.h"
 #include "Global.h"
 
+#define DLG_COLOR_KEY	BLUE
+
 /////////////////////////////////////////////////////
 //기본 대화 처리 클래스 메소드
 #define DLG_TILE_SIZE	10
 
 CDlg::CDlg()
 {
-	//값 초기화
-	setting=setting2=FALSE;
-	b_shadow=FALSE;
-	dlgbox=NULL;
-	show_dlgbox=FALSE;
+	is_set_dlg = FALSE;
+	is_set_content = FALSE;
+	is_shadow = FALSE;
+	dlgbox = NULL;
+	is_show_dlgbox = FALSE;
+	
 	SetTextColor(0, 0, 0);
-	text_font=&global_font;
-	frame_x=frame_y=10;
-	opacity=1.0f;
+	
+	text_font = &global_font;
+	frame_x = 10;
+	frame_y = 10;
+	opacity = 1.0f;
 }
 
 CDlg::~CDlg()
@@ -41,15 +46,15 @@ void CDlg::MakeDlgBox(char* dlgbox)
 	}
 
 	//새로운 대화창 생성
-	pi.SetWidth((frame_x * 2) + (width * 10));
-	pi.SetHeight((frame_y * 2) + (line * 20));
-	pi.SetColorKey(JColor(0,0,255));
+	pi.SetWidth((frame_x * 2) + (width * DLG_WIDTH_ONE));
+	pi.SetHeight((frame_y * 2) + (line * DLG_LINE_ONE));
+	pi.SetColorKey(DLG_COLOR_KEY);
 	pi.SetOpacity(opacity);
-	jdd->CreateSurface(dlgbox, &pi, true);
+	jdd->CreateSurface(dlgbox, &pi, TRUE);
 
 	//바탕은 투명색
 	JBrush blue_brush;
-	blue_brush = jdd->CreateBrush(JColor(0,0,255));
+	blue_brush = jdd->CreateBrush(DLG_COLOR_KEY);
 	RECT pic_rect;
 	SetRect(&pic_rect, 0, 0, (frame_x * 2) + (width * DLG_TILE_SIZE), (frame_y * 2) + (line * DLG_TILE_SIZE * 2));
 	jdd->DrawRect(dlgbox, blue_brush, &pic_rect);
@@ -58,34 +63,55 @@ void CDlg::MakeDlgBox(char* dlgbox)
 	//대화창 미리 그리기
 	RECT src_rect[3];
 	
-	for(int i = -1; i <= line * 2; ++i)
+	for(int i = -1; i <= line * 2; i++)
 	{
 		int tmp_y;
 		//위, 아래, 중간
-		if(i == -1)tmp_y=0;
-			else if(i == line * 2)tmp_y = frame_y * 2;
-			else tmp_y = frame_y;
+		if(i == -1)
+		{
+			tmp_y = 0;
+		}
+		else if(i == line * 2)
+		{
+			tmp_y = frame_y * 2;
+		}
+		else
+		{
+			tmp_y = frame_y;
+		}
 
 		//좌, 중, 우
-		for(int j = 0; j < 3; ++j)SetRect(&src_rect[j], frame_x * j, tmp_y, frame_x * (j + 1), tmp_y + frame_y);
+		for(int j = 0; j < 3; ++j)
+		{
+			SetRect(&src_rect[j], frame_x * j, tmp_y, frame_x * (j + 1), tmp_y + frame_y);
+		}
 
 		//그리기
 		for(int j = -1; j <= width; ++j)
 		{
-			if(j == -1)jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[0]);
-				else if(j == width)jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE,&src_rect[2]);
-				else jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[1]);
+			if(j == -1)
+			{
+				jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[0]);
+			}
+			else if(j == width)
+			{
+				jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE,&src_rect[2]);
+			}
+			else
+			{
+				jdd->DrawPicture(dlgbox,"_dlgbox", (j + 1) * DLG_TILE_SIZE, (i + 1) * DLG_TILE_SIZE, &src_rect[1]);
+			}
 		}
 	}
 
 	this->dlgbox = dlgbox;
-	show_dlgbox = TRUE;
+	is_show_dlgbox = TRUE;
 }
 
 //대화창 이동
 void CDlg::Move(int mov_x, int mov_y)
 {
-	if(!setting || !setting2)
+	if(!is_set_dlg || !is_set_content)
 	{
 		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
 		return;
@@ -106,31 +132,31 @@ void CDlg::SetDlgBox(char* dlgbox)
 {
 	//사용자가 지정한 대화창 쓰기
 	this->dlgbox = dlgbox;
-	show_dlgbox = TRUE;
+	is_show_dlgbox = TRUE;
 }
 
 void CDlg::SetFont(JFont *font)
 {
-	if(font==NULL)
+	if(font == NULL)
 	{
 		printf("Warning : 폰트가 존재하지 않습니다.");
 		return;
 	}
 
-	text_font=font;
+	text_font = font;
 }
 
 void CDlg::DrawDlg()
 {
 	//초기화가 안 되어 있으면 리턴
-	if(!setting)
+	if(!is_set_dlg)
 	{
 		printf("Warning : 대화창이 초기화 되어 있지 않습니다.");
 		return;
 	}
 
 	//대화창 출력
-	if(show_dlgbox && dlgbox != NULL)
+	if(is_show_dlgbox && dlgbox != NULL)
 	{
 		jdd->DrawPicture(backbuffer, dlgbox, x - frame_x, y - frame_y, NULL);
 	}
@@ -139,23 +165,23 @@ void CDlg::DrawDlg()
 //그림자 보이기 숨기기
 void CDlg::ShowShadow()
 {
-	b_shadow = true;
+	is_shadow = TRUE;
 }
 
 void CDlg::HideShadow()
 {
-	b_shadow = false;
+	is_shadow = FALSE;
 }
 
 //글상자 보이기 숨기기
 void CDlg::ShowDlg()
 {
-	show_dlgbox = true;
+	is_show_dlgbox = TRUE;
 }
 
 void CDlg::HideDlg()
 {
-	show_dlgbox = false;
+	is_show_dlgbox = FALSE;
 }
 
 //마우스가 대화창 위에 있는지 검사

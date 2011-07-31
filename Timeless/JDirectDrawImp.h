@@ -124,29 +124,29 @@ protected:
 	bool EnableGraphics(int idx);
 	bool DisableGraphics(int idx);
 	bool DrawPictureAuto(int id1,int id2,int idoverride=0,char* maskoverride=NULL);
-	bool LoadPicture(int idx,char* filename,JPictureInfo* picinfo,bool sysmem,bool createsurface=true);
-	bool LoadPicture(int idx,IStream* stream,JPictureInfo* picinfo,bool sysmem,bool createsurface=true);
+	bool LoadPicture(int idx,char* filename,JPictureInfo* picinfo,bool sysmem,bool createsurface=TRUE);
+	bool LoadPicture(int idx,IStream* stream,JPictureInfo* picinfo,bool sysmem,bool createsurface=TRUE);
 public:
 	JDirectDrawImp();
 	virtual ~JDirectDrawImp();
 
-	virtual bool Initialize(uint devid,HWND hwnd,uint width,uint height,uint bpp,bool sysmem=false, bool window_mode=FALSE);
+	virtual bool Initialize(uint devid,HWND hwnd,uint width,uint height,uint bpp,bool sysmem=FALSE, bool window_mode=FALSE);
 	virtual bool Cleanup();
 
 	int GetID(char* name);
 	
 	// Immediate
-	virtual bool CreateSurface	(char* name,JPictureInfo* picinfo,bool sysmem=false,int* pid=NULL);
+	virtual bool CreateSurface	(char* name,JPictureInfo* picinfo,bool sysmem=FALSE,int* pid=NULL);
 	virtual bool AddSurface		(char* name,JPictureInfo* picinfo,int *pid=NULL);
-	virtual bool LoadPicture	(char* name,char* filename,JPictureInfo* picinfo=NULL,bool sysmem=false,int* pid=NULL);
-	virtual bool LoadPicture	(char* name,IStream* stream,JPictureInfo* picinfo=NULL,bool sysmem=false,int* pid=NULL);
+	virtual bool LoadPicture	(char* name,char* filename,JPictureInfo* picinfo=NULL,bool sysmem=FALSE,int* pid=NULL);
+	virtual bool LoadPicture	(char* name,IStream* stream,JPictureInfo* picinfo=NULL,bool sysmem=FALSE,int* pid=NULL);
 	virtual bool GetPictureInfo	(char* name,JPictureInfo* buffer);
 	virtual bool GetPixel		(char* szSrc,int px,int py,JColor* pColor);
 	virtual bool GetPictureInfo	(int hID,JPictureInfo* buffer);
 	virtual bool GetPixel		(int hSrc,int px,int py,JColor* pColor);
 	virtual bool MeasureText	(char* text,JFont font,LPRECT pRect);
 	virtual JBrush CreateBrush(JColor jColor,float fOpacity=1.0f);
-	virtual JFont CreateFont(char* szFace,int iHeight,bool bBold=false,bool bItalic=false,bool bUnderline=false,bool bStrikeout=false,bool bAntiAlias=false);
+	virtual JFont CreateFont(char* szFace,int iHeight,bool bBold=FALSE,bool bItalic=FALSE,bool bUnderline=FALSE,bool bStrikeout=FALSE,bool bAntiAlias=FALSE);
 
 	// Queueable(Name Based)
 	virtual bool ApplyColorMatrix(char* szDest	,char* szSrc	,int px,int py					,LPRECT pRect,const ColorMatrix2& matrix);
@@ -159,7 +159,7 @@ public:
 	virtual bool DrawText		(char* szDest	,char* szText	,JFont pFont					,LPRECT pRect,JColor color);
 	virtual bool DrawText		(char* szDest	,char* szText	,JFont pFont					,int px,int py,JColor color);
 	virtual bool DrawLine		(char* szDest	,JBrush pBrush	,int sx,int sy	,int ex,int ey	,float width);
-	//  Setting width=0.0f will fill the shape
+	//  is_set_dlg width=0.0f will fill the shape
 	virtual bool DrawRect		(char* szDest	,JBrush pBrush	,LPRECT pRect					,float width);
 	virtual bool DrawPolygon	(char* szDest	,JBrush pBrush	,int* ppx,int* ppy	,int pcount	,float width);
 	virtual bool DrawEllipse	(char* szDest	,JBrush pBrush	,LPRECT pRect					,float width);
@@ -180,7 +180,7 @@ public:
 	virtual bool DrawText		(int hDest		,char* szText	,JFont pFont					,LPRECT pRect,JColor color);
 	virtual bool DrawText		(int hDest		,char* szText	,JFont pFont					,int px,int py,JColor color);
 	virtual bool DrawLine		(int hDest		,JBrush pBrush	,int sx,int sy	,int ex,int ey	,float width);
-	//  Setting width=0.0f will fill the shape
+	//  is_set_dlg width=0.0f will fill the shape
 	virtual bool DrawRect		(int hDest		,JBrush pBrush	,LPRECT pRect					,float width);
 	virtual bool DrawPolygon	(int hDest		,JBrush pBrush	,int* ppx,int* ppy	,int pcount	,float width);
 	virtual bool DrawEllipse	(int hDest		,JBrush pBrush	,LPRECT pRect					,float width);
@@ -198,9 +198,9 @@ public:
 	virtual int GetBackBufferID();
 
 	virtual bool RestoreAllSurfaces();
-	virtual bool SetVerticalSync(bool bVSync=true);
-	virtual bool SetFrameRate(int iFPS,bool bBlocking=true);
-	virtual bool Render(bool bDraw,bool bFlip=true);
+	virtual bool SetVerticalSync(bool bVSync=TRUE);
+	virtual bool SetFrameRate(int iFPS,bool bBlocking=TRUE);
+	virtual bool Render(bool bDraw,bool bFlip=TRUE);
 	virtual bool Render();
 
 	virtual HRESULT GetLastError();

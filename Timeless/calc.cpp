@@ -291,8 +291,8 @@ int CEvaluator::Evaluate(EVALTYPE& res, EVALTYPE *pVar, UINT *pvcg) const
 			if(cs->pos==1) { //first operand is determined
 				EVALTYPE &ea=cs[1].calval[0], &ev=cs->calval[cs->loc];
 				switch(op) {
-				case AND: if(!ea) { ev=0; goto Q; } break; //unconditionally false
-				case OR: if(ea) { ev=1; goto Q; } break; //unconditionally true
+				case AND: if(!ea) { ev=0; goto Q; } break; //unconditionally FALSE
+				case OR: if(ea) { ev=1; goto Q; } break; //unconditionally TRUE
 				case CONDITIONAL: //decide which token to evaluate
 					cs[1].pt=cs->pt->pOper[ea ? 1:2], cs[1].loc=cs->pos; goto P;
 				}

@@ -136,5 +136,5 @@ bool CProcessManager::Process()
    		StopCurrentProcess();
 	}
 
-	return true;
+	return TRUE;
 }

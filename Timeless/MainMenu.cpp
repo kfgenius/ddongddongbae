@@ -5,10 +5,10 @@ CMainMenu::CMainMenu(void)
 	JPictureInfo jpi;
 	jpi.SetColorKey(JColor(0, 0, 0));
 
-	jdd->LoadPicture("Title1", "DATA\\Title1.png", NULL, true);
-	jdd->LoadPicture("Title2", "DATA\\Title2.png", NULL, true);
-	jdd->LoadPicture("Title3", "DATA\\Title3.png", NULL, true);
-	jdd->LoadPicture("Cursor", "DATA\\cursor.png", &jpi, true);
+	jdd->LoadPicture("Title1", "DATA\\Title1.png", NULL, TRUE);
+	jdd->LoadPicture("Title2", "DATA\\Title2.png", NULL, TRUE);
+	jdd->LoadPicture("Title3", "DATA\\Title3.png", NULL, TRUE);
+	jdd->LoadPicture("Cursor", "DATA\\cursor.png", &jpi, TRUE);
 
 	game_time = 0;
 }

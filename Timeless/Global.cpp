@@ -220,7 +220,7 @@ int keypush[ALL_KEYS];
 
 BOOL GetKey(ValidKey key, int delay)
 {
-	if(!activate)return false;
+	if(!activate)return FALSE;
 
 	BOOL push;
 	if(delay==-1)push=FALSE;

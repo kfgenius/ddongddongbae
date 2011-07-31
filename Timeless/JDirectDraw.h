@@ -128,14 +128,14 @@ struct JDirectDraw
 
 	virtual ~JDirectDraw() {}
 
-	virtual bool Initialize(uint devid,HWND hwnd,uint width,uint height,uint bpp,bool sysmem=false,bool window_mode=FALSE) PURE;
+	virtual bool Initialize(uint devid,HWND hwnd,uint width,uint height,uint bpp,bool sysmem=FALSE,bool window_mode=FALSE) PURE;
 	virtual bool Cleanup() PURE;
 
 	virtual int GetID(char* name) PURE;
 
-	virtual bool CreateSurface(char* name,JPictureInfo* picinfo,bool system=false,int* pid=NULL) PURE;
-	virtual bool LoadPicture(char* name,char* filename,JPictureInfo* picinfo=NULL,bool sysmem=false,int* pid=NULL) PURE;
-	virtual bool LoadPicture(char* name,IStream* stream,JPictureInfo* picinfo=NULL,bool sysmem=false,int* pid=NULL) PURE;
+	virtual bool CreateSurface(char* name,JPictureInfo* picinfo,bool system=FALSE,int* pid=NULL) PURE;
+	virtual bool LoadPicture(char* name,char* filename,JPictureInfo* picinfo=NULL,bool sysmem=FALSE,int* pid=NULL) PURE;
+	virtual bool LoadPicture(char* name,IStream* stream,JPictureInfo* picinfo=NULL,bool sysmem=FALSE,int* pid=NULL) PURE;
 	virtual bool AddSurface(char* name,JPictureInfo* picinfo,int* pid=NULL) PURE;
 	virtual bool SavePicture(char* name,char* type,char* filename) PURE;
 	virtual bool SavePicture(int hID,char* type,char* filename) PURE;
@@ -188,7 +188,7 @@ struct JDirectDraw
 
 
 	virtual JBrush CreateBrush(JColor jColor,float fOpacity=1.0f) PURE;
-	virtual JFont CreateFont(char* szFace,int iHeight,bool bBold=false,bool bItalic=false,bool bUnderline=false,bool bStrikeout=false,bool bAntiAlias=false) PURE;
+	virtual JFont CreateFont(char* szFace,int iHeight,bool bBold=FALSE,bool bItalic=FALSE,bool bUnderline=FALSE,bool bStrikeout=FALSE,bool bAntiAlias=FALSE) PURE;
 	virtual bool DeleteBrush(JBrush brush) PURE;
 	virtual bool DeleteFont(JFont font) PURE;
 
@@ -196,8 +196,8 @@ struct JDirectDraw
 	virtual int GetBackBufferID() PURE;
 
 	virtual bool RestoreAllSurfaces() PURE;
-	virtual bool SetVerticalSync(bool bVSync=true) PURE;
-	virtual bool SetFrameRate(int iFPS,bool bBlocking=true) PURE;
+	virtual bool SetVerticalSync(bool bVSync=TRUE) PURE;
+	virtual bool SetFrameRate(int iFPS,bool bBlocking=TRUE) PURE;
 	virtual bool Render() PURE;
 
 	virtual HRESULT GetLastError() PURE;

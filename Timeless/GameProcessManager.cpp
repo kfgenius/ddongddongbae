@@ -22,13 +22,13 @@ CGameProcessManager::CGameProcessManager()
 	//그래픽 읽기
 	JPictureInfo jpi;
 	jpi.SetColorKey(JColor(0, 0, 255));
-	jdd->LoadPicture("SPRITE", "data\\sprite.gif", &jpi, true);
+	jdd->LoadPicture("SPRITE", "data\\sprite.gif", &jpi, TRUE);
 
 	//데이터 초기화
 	InitPlayData();
 
 	//시작 프로세스를 넣자
-	NewProcess(proc_rpg, "MAP\\MAP61", "User\\tile1.gif", "User\\tile2.gif");
+	NewProcess(proc_rpg, "MAP\\MAP00", "User\\tile1.gif", "User\\tile2.gif");
 	NewProcess(proc_srpg, "MAP\\MAP60", "User\\tile1.gif", "User\\tile2.gif");
 	//NewProcess(proc_story);
 	//NewProcess(proc_logo);
@@ -54,7 +54,7 @@ bool CGameProcessManager::Process()
 	//처리할 스택이 없으면 리턴
 	if(IsEmptyStack())
 	{
-		return false;
+		return FALSE;
 	}
 
 	//프로세스 처리
@@ -66,7 +66,7 @@ bool CGameProcessManager::Process()
 	    GetCurrentProcess()->Process();			//프로세스 처리
 	}
 
-	return true;
+	return TRUE;
 }
 
 //새로운 프로세스 생성

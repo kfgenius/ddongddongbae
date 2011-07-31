@@ -29,8 +29,8 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	//타일, 오브젝트, 유닛
 	JPictureInfo jpi, tpi;
 	jpi.SetColorKey(JColor(0,0,255));
-	jdd->LoadPicture(PIC_TILE1, tile1_name, &jpi, true);
-	jdd->LoadPicture(PIC_TILE2, tile2_name, &jpi, true);	//2층 타일
+	jdd->LoadPicture(PIC_TILE1, tile1_name, &jpi, TRUE);
+	jdd->LoadPicture(PIC_TILE2, tile2_name, &jpi, TRUE);	//2층 타일
 	CreateUnit();
 
 	//타일 수 계산
@@ -52,8 +52,8 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	}
 
 	char data_type[12];
-	fread(&data_type,sizeof(char),11,fp);
-	data_type[11]=NULL;
+	fread(&data_type, sizeof(char), 11, fp);
+	data_type[11] = NULL;
 
 	//휴가루 맵이 아님
 	if(strcmp(data_type,"HYUGARU2MAP")!=0)
@@ -70,40 +70,42 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	fread(&y_size, sizeof(char), 1, fp);
 
 	//1F 데이터
-	for(int j = 0; j < y_size; ++j)
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			fread(&map[i][j].ground, sizeof(char), 1, fp);
 		}
 	}
 
 	//2F 데이터
-	for(int j = 0; j < y_size; ++j)
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			fread(&map[i][j].object, sizeof(char), 1, fp);
 		}
 	}
 
 	//유닛 데이터
-	for(int j = 0; j < y_size; ++j)
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			fread(&map[i][j].unit, sizeof(char), 1, fp);
 		}
 	}
 
 	//이벤트 맵 데이터
-	for(int j = 0; j < y_size; ++j)
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			fread(&map[i][j].event_no, sizeof(char), 1, fp);
 		}
 	}
+
+	fclose(fp);
 
 	//주인공 데이터 초기화
 	unit[HERO].Set(HERO, party_ally, TILE_SIZE);
@@ -113,9 +115,9 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	//유닛 데이터 초기화
 	unit_max = HERO + 1;
 
-	for(int j = 0; j < y_size; ++j)
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			if(map[i][j].unit != 0xff)
 			{
@@ -134,7 +136,7 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 				ani.GetAni(unit_max)->SetWalk(0, 80, 120, 40);
 				ani.GetAni(unit_max)->SetDirection((WalkDirection)unit[unit_max].GetDir());
 
-				++unit_max;
+				unit_max++;
 			}
 		}
 	}
@@ -142,11 +144,9 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	//맵 미리 그리기
 	DrawGround();
 	
-	fclose(fp);
-
 	//맵 속성 불러오기
-	bool read_success = false;
-	if(fp=fopen("MAP\\map_attr.sav", "rb"))
+	bool read_success = FALSE;
+	if(fp = fopen("MAP\\map_attr.sav", "rb"))
 	{
 		//식별자
 		char head[9];
@@ -155,7 +155,7 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 		if(strcmp(head, "MAPATTR0") == 0)
 		{
 			//타일 속성값
-			for(int i = 0; i < 2; ++i)
+			for(int i = 0; i < 2; i++)
 			{
 				fread(tile_mov[i], sizeof(int), TILE_TYPE_MAX, fp);
 				fread(tile_attr[i], sizeof(int), TILE_TYPE_MAX, fp);
@@ -164,21 +164,17 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 			//유닛 속성값
 			fread(unitdata, sizeof(CUnitData), TILE_TYPE_MAX, fp);
 
-			read_success = true;
+			read_success = TRUE;
 		}
 
 		//설정값을 이동값으로 변환
-		for(int j = 0; j < 2; ++j)
+		for(int j = 0; j < 2; j++)
 		{
-			for(int i = 0; i < TILE_TYPE_MAX; ++i)
+			for(int i = 0; i < TILE_TYPE_MAX; i++)
 			{
 				if(tile_mov[j][i] == 0)
 				{
 					tile_mov[j][i] = 99;
-				}
-				else
-				{
-					tile_mov[j][i] = tile_mov[j][i];
 				}
 			}
 		}
@@ -189,19 +185,19 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 	//읽기 실패하면 초기화
 	if(!read_success)
 	{
-		for(int j = 0; j < 2; ++j)
+		for(int j = 0; j < 2; j++)
 		{
-			for(int i = 0; i < TILE_TYPE_MAX; ++i)
+			for(int i = 0; i < TILE_TYPE_MAX; i++)
 			{
 				tile_mov[j][i] = tile_attr[j][i] = tile_damage[j][i] = 99;
 			}
 		}
 	}
 
-	//이동용 맵 생성
-	for(int j = 0; j < y_size; ++j)
+	//이동력 맵 생성
+	for(int j = 0; j < y_size; j++)
 	{
-		for(int i = 0; i < x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			if(map[i][j].object != 0xff)
 			{
@@ -212,7 +208,7 @@ CRPG::CRPG(char* map_name, char* tile1_name, char* tile2_name)
 				map[i][j].move = tile_mov[0][map[i][j].ground];
 			}
 			
-			//이동력 0이면 이동 불가 지형
+			//필요 이동력 99이면 이동 불가 지형
 			if(map[i][j].move == 99)
 			{
 				map[i][j].move = MOVE_DISABLE;
@@ -257,10 +253,9 @@ void CRPG::CreateUnit()
 		{
 			fclose(fp);
 
-			//해당 유닛 파일에서 정면 모습 하나를 가져다 찍음
 			char unit_name[20];
 			sprintf(unit_name, "Unit%d", file_no);
-			jdd->LoadPicture(unit_name, src_file, &pi, true);
+			jdd->LoadPicture(unit_name, src_file, &pi, TRUE);
 
 			++file_no;
 		}
@@ -278,17 +273,17 @@ void CRPG::DrawGround()
 	JPictureInfo mpi;
 	mpi.SetWidth(x_size * TILE_SIZE);
 	mpi.SetHeight(y_size * TILE_SIZE);
-	jdd->CreateSurface(PIC_MAP, &mpi, true);
+	jdd->CreateSurface(PIC_MAP, &mpi, TRUE);
 
 	//타일
 	RECT tile_rect;
-	for(int k = 0; k < tile_type_max; ++k)
+	for(int k = 0; k < tile_type_max; k++)
 	{
 		SetRect(&tile_rect, k * TILE_SOURCE_SIZE, 0, (k + 1) * TILE_SOURCE_SIZE, TILE_SOURCE_SIZE);
 
-		for(int j=0; j<y_size; ++j)
+		for(int j=0; j<y_size; j++)
 		{
-			for(int i=0; i<x_size; ++i)
+			for(int i=0; i<x_size; i++)
 			{
 				if(map[i][j].ground == k)
 				{
@@ -299,9 +294,9 @@ void CRPG::DrawGround()
 	}
 
 	//오브젝트
-	for(int j=0; j<y_size; ++j)
+	/*for(int j = 0; j < y_size; j++)
 	{
-		for(int i=0; i<x_size; ++i)
+		for(int i = 0; i < x_size; i++)
 		{
 			if(map[i][j].object != 0xff)
 			{
@@ -309,7 +304,7 @@ void CRPG::DrawGround()
 				jdd->DrawPicture(PIC_MAP, PIC_TILE2, i * TILE_SIZE, j * TILE_SIZE, &tile_rect);
 			}
 		}
-	}
+	}*/
 }
 
 //이동 가능성
@@ -383,7 +378,7 @@ void CRPG::UnitMove(int id,  int dir)
 	int new_y = unit[id].GetY();
 
 	//충돌 이벤트
-	if(id==HERO)
+	if(id == HERO)
 	{
 		event_no = Crush(new_x, new_y);
 		//if(event_no == 0)event_no = EVENT_NONE;	//0번 이벤트는 무시(특수 이벤트)
@@ -465,7 +460,7 @@ void CRPG::Control()
 	}
 
 	//NPC 이동
-	for(int i = 0; i < unit_max; ++i)
+	for(int i = 0; i < unit_max; i++)
 	{
 		if(i != HERO)
 		{
@@ -500,9 +495,9 @@ void CRPG::Draw2F()
 	int end_y = Min(start_y + (SCREEN_HEIGHT / TILE_SIZE) + 1, y_size - 1);
 
 	//2층 레이어
-	for(int j = start_y; j <= end_y; ++j)
+	for(int j = start_y; j <= end_y; j++)
 	{
-		for(int i = start_x; i <= end_x; ++i)
+		for(int i = start_x; i <= end_x; i++)
 		{
 			int px = i * TILE_SIZE - scroll_x;
 			int py = j * TILE_SIZE - scroll_y;
@@ -511,7 +506,7 @@ void CRPG::Draw2F()
 			if(map[i][j].object!=0xff)
 			{
 				RECT tile_rect;
-				SetRect(&tile_rect, map[i][j].object*TILE_SIZE, 0, (map[i][j].object+1)*TILE_SIZE, 8);
+				SetRect(&tile_rect, map[i][j].object*TILE_SIZE, 0, (map[i][j].object+1)*TILE_SIZE, 40);
 				jdd->DrawPicture(backbuffer, PIC_TILE2, px, py-UNIT_PY, &tile_rect);
 			}
 
@@ -523,6 +518,13 @@ void CRPG::Draw2F()
 				{
 					ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
 				}
+			}
+
+			//활성화된 유닛
+			if(active_unit >= 0 && unit[active_unit].move_bonus < SKY_MOVE && i == unit[active_unit].GetX() && j == unit[active_unit].GetY())
+			{
+				int p = active_unit;
+				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
 			}
 		}
 	}
@@ -537,9 +539,9 @@ void CRPG::Draw3F()
 	int end_y = Min(start_y + (SCREEN_HEIGHT / TILE_SIZE) + 1, y_size - 1);
 
 	//3층 레이어
-	for(int j = start_y; j <= end_y; ++j)
+	for(int j = start_y; j <= end_y; j++)
 	{
-		for(int i = start_x; i <= end_x; ++i)
+		for(int i = start_x; i <= end_x; i++)
 		{
 			int px = i * TILE_SIZE - scroll_x;
 			int py = j * TILE_SIZE - scroll_y;
@@ -550,15 +552,15 @@ void CRPG::Draw3F()
 				int p = map[i][j].unit;
 				if(unit[p].move_bonus >= SKY_MOVE)
 				{
-					ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
+					ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
 				}
 			}
 			
 			//활성화된 유닛
-			if(active_unit >= 0 && i == unit[active_unit].GetX() && j == unit[active_unit].GetY())
+			if(active_unit >= 0 && unit[active_unit].move_bonus >= SKY_MOVE && i == unit[active_unit].GetX() && j == unit[active_unit].GetY())
 			{
 				int p = active_unit;
-				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px+unit[p].GetPX(), py+unit[p].GetPY()-UNIT_PY);
+				ani.GetAni(p)->Draw(jdd->GetBackBufferID(), unit[p].GetPictureID(), px + unit[p].GetPX(), py + unit[p].GetPY() - UNIT_PY);
 			}
 		}
 	}
@@ -577,7 +579,7 @@ void CRPG::Process()
 	}
 
 	//유닛들 행동
-	for(int i=0; i<unit_max; ++i)
+	for(int i=0; i<unit_max; i++)
 	{
 		unit[i].Action();
 	}
@@ -625,20 +627,25 @@ void CRPG::SetAutoHeroXY(int ev)
 	unit[HERO].SetPos(-1, 0);
 
 	//이벤트 맵 데이터
-	bool quit=false;
-	for(int j=0; j<y_size && !quit; ++j)
+	bool quit = FALSE;
+	for(int j = 0; j < y_size && !quit; j++)
 	{
-		for(int i=0; i<x_size && !quit; ++i)
-		if(map[i][j].event_no == ev)	//해당 이벤트 위치에 주인공 배치
+		for(int i = 0; i < x_size && !quit; i++)
 		{
-			unit[HERO].SetPos(i, j);
-			map[i][j].unit = HERO;	//유닛 맵에 주인공 배치
-			map[i][j].event_no = 0xff;
-			quit=true;
+			if(map[i][j].event_no == ev)	//해당 이벤트 위치에 주인공 배치
+			{
+				unit[HERO].SetPos(i, j);
+				map[i][j].unit = HERO;	//유닛 맵에 주인공 배치
+				map[i][j].event_no = 0xff;
+				quit = TRUE;
+			}
 		}
 	}
 
-	if(!quit)unit[HERO].SetPos(0, 0);
+	if(!quit)
+	{
+		SetHeroXY(0, 0);
+	}
 }
 
 CUnit* CRPG::GetUnit(int id)
@@ -649,7 +656,7 @@ CUnit* CRPG::GetUnit(int id)
 //해당 위치 유닛 찾기
 int CRPG::FindUnit(int x, int y)
 {
-	for(int i = 0; i < unit_max; ++i)
+	for(int i = 0; i < unit_max; i++)
 	{
 		if(unit[i].GetX() == x && unit[i].GetY() == y)
 		{

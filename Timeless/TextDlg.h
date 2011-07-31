@@ -18,7 +18,7 @@ private:
 
 public:
 	//持失切 社瑚切
-	CTextDlg(unsigned int vbuffer_size=1024);
+	CTextDlg(unsigned int vbuffer_size = TEXT_BUFFER_SIZE);
 	~CTextDlg();
 
 	void SetDlg(int vx, int vy, int vwidth, int vline);
