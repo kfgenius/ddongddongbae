@@ -39,7 +39,7 @@ void CEnemyObject::Draw()
 	}
 
 	//RenderManager::getInstance()->DrawCircle(x_, y_, radius_);
-	JBrush brush = jdd->CreateBrush(JColor(255, 255, 255), 1.0f);
+	JBrush brush = jdd->CreateBrush(JColor(0, 0, 255), 1.0f);
 	RECT rect;	
 	::SetRect(&rect, x_ - radius_, y_ - radius_, x_ + radius_, y_ + radius_);
 	jdd->DrawEllipse(backbuffer, brush, &rect, 1);
