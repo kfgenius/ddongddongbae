@@ -12,7 +12,14 @@ NoteMiniGameState::NoteMiniGameState()
 		m_note[i] = new CNoteObject(10);
 	}
 
+	for(int i = 0; i < ENEMY_MAX; i++)
+	{
+		m_enemy[i] = new CEnemyObject(10);
+	}
+
 	old_LButton = false;
+
+	m_enemy[0]->Set(100, 100);
 }
 
 NoteMiniGameState::~NoteMiniGameState()
@@ -34,7 +41,7 @@ void NoteMiniGameState::Process()
 		{
 			int y = (rand() % 5) + 1;
 			m_note[id]->Set(-10, SCREEN_HEIGHT - y * 20);
-			m_note[id]->SetGradient(0);
+			m_note[id]->SetAngle(0);
 		}
 
 		time = 0;
@@ -43,11 +50,6 @@ void NoteMiniGameState::Process()
 	for(int i = 0; i < NOTE_MAX; i++)
 	{
 		m_note[i]->Update();
-	}
-
-	if(LButton)
-	{
-		TouchesMove(MouseX, MouseY);
 	}
 
 	if(old_LButton == false && LButton == true)
@@ -63,6 +65,19 @@ void NoteMiniGameState::Process()
 		TouchesUp(MouseX, MouseY);
 	}
 
+	for(int i = 0; i < NOTE_MAX; i++)
+	{
+		if(m_note[i]->GetLife() == true)
+		{
+			for(int j = 0; j < ENEMY_MAX; j++)
+			{
+				if(m_enemy[j]->GetLife() == true && m_enemy[j]->IsCollision(m_note[i]))
+				{
+					m_enemy[j]->Die();
+				}
+			}
+		}
+	}
 	old_LButton = LButton;
 
 	Draw();
@@ -91,6 +106,11 @@ void NoteMiniGameState::RenderNormalState()
 	for(int i = 0; i < NOTE_MAX; i++)
 	{
 		m_note[i]->Draw();
+	}
+
+	for(int i = 0; i < ENEMY_MAX; i++)
+	{
+		m_enemy[i]->Draw();
 	}
 }
 

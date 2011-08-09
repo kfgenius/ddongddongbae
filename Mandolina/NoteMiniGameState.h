@@ -2,15 +2,15 @@
 #include "gameprocess.h"
 
 #include "NoteObject.h"
+#include "EnemyObject.h"
 
 class NoteMiniGameState :
 	public CGameProcess
 {
 	enum Defines
 	{
-		THROWED_OBJECT_MAX = 10,
-		EFFECT_MAX = 20,
-		NOTE_MAX = 20
+		NOTE_MAX = 20,
+		ENEMY_MAX = 10
 	};
 
 //methods
@@ -45,4 +45,5 @@ private:
 	bool old_LButton;
 
 	CNoteObject* m_note[NOTE_MAX];
+	CEnemyObject* m_enemy[ENEMY_MAX];
 };
