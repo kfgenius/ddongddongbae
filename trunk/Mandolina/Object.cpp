@@ -2,9 +2,13 @@
 
 #include "global.h"
 
-CObject::CObject()
-: life_(false)
+#include <math.h>
+
+CObject::CObject(float radius)
 {
+	life_ = false;
+	radius_ = radius;
+	radiusPow_ = radius * radius;
 }
 
 CObject::~CObject()
@@ -18,28 +22,26 @@ void CObject::Set(float x, float y)
 
 	life_ = true;
 	isDone_ = false;
-
-	SetRect();
 }
 
-float CObject::GetLeft()
+float CObject::GetX()
 {
-	return x_ + left_;
+	return x_;
 }
 
-float CObject::GetRight()
+float CObject::GetY()
 {
-	return x_ + width_;
+	return y_;
 }
 
-float CObject::GetTop()
+float CObject::GetRadius()
 {
-	return y_ + top_;
+	return radius_;
 }
 
-float CObject::GetBottom()
+float CObject::GetRadiusPow()
 {
-	return y_ + height_;
+	return radiusPow_;
 }
 
 bool CObject::GetLife()
@@ -57,6 +59,77 @@ void CObject::MoveDown(float y)
 	}
 }
 
+bool CObject::IsLineInSprite(float x1, float y1, float x2, float y2, float gradient, float intercept)
+{
+	if(life_ == false)
+	{
+		return false;
+	}
+
+	float a = x_;
+	float b = y_;
+	float c = gradient;
+	float d = intercept;
+	float e = d - b;
+
+	if (radius_ < 0)
+	{
+		return false;
+	}
+	else if (x1 != x2)
+	{
+		float D = (c * e - a) * (c * e - a) - (a * a + e * e - radiusPow_) * (c * c + 1);
+		if (D >= 0)
+		{
+			if ((a - c * e + sqrt(D)) / (c * c + 1) >= min(x1, x2) && (a - c * e - sqrt(D)) / (c * c + 1) <= max(x1, x2))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (y1 == y2)
+		{
+			if (sqrt((a - x1) * (a - x1) + (b - y1) * (b - y1)) <= radius_)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			float D = b * b - (x1 - a) * (x1 - a) - b * b + radiusPow_;
+			if (D >= 0)
+			{
+				if (b + sqrt(D) > min(y1, y2) && b - sqrt(D) < max(y1, y2))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+}
+
 bool CObject::IsCollision(CObject* object)
 {
 	if(life_ == false)
@@ -64,8 +137,13 @@ bool CObject::IsCollision(CObject* object)
 		return false;
 	}
 
-	if(GetRight() >= object->GetLeft() && GetLeft() <= object->GetRight()
-		&& GetBottom() >= object->GetTop() && GetTop() <= object->GetBottom())
+	float dx = object->GetX() - this->GetX();
+	float dy = object->GetY() - this->GetY();
+				
+	float distance = sqrtf(dx * dx + dy * dy);
+	float collision_distance = object->GetRadius() + this->GetRadius();
+
+	if(distance <= collision_distance)
 	{
 		return true;
 	}
@@ -83,14 +161,17 @@ void CObject::Die()
 	life_ = false;
 }
 
-void CObject::SetRect()
+bool CObject::IsInScreen()
 {
-	/*int rect[4];
-	spriteInstance_->GetCurrentFrameRect(rect);
-	left_ = (float)rect[0];
-	top_ = (float)rect[1];
-	width_ = (float)rect[2];
-	height_ = (float)rect[3];*/
+	const int margin = (int)radius_ + 100;
+
+	if(x_ < -margin || x_ > SCREEN_WIDTH + margin
+		|| y_ < -margin || y_ > SCREEN_HEIGHT + margin)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void CObject::Update()
@@ -99,4 +180,9 @@ void CObject::Update()
 
 void CObject::Draw()
 {
+}
+
+void CObject::SetAngle(float angle)
+{
+	angle_ = angle;
 }

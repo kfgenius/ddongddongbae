@@ -274,6 +274,14 @@
 				Name="프로세스"
 				>
 				<File
+					RelativePath=".\EnemyObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EnemyObject.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Logo.cpp"
 					>
 				</File>

@@ -15,16 +15,7 @@ public:
 
 	virtual void Set(float x, float y);
 
-	bool IsLineInSprite(float x1, float y1, float x2, float y2, float gradient, float intercept);
-
-	bool IsInScreen();
-
-	void SetGradient(float gradient);
 	void Bounce(float gradient);
-
-	float radius_;
-	float radiusPow_;
-	float angle_;
 
 	float touch_able;
 };
