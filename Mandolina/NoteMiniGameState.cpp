@@ -20,10 +20,13 @@ NoteMiniGameState::NoteMiniGameState()
 	old_LButton = false;
 
 	m_enemy[0]->Set(100, 100);
+
+	jdd->LoadPicture("back", "DATA/back.png", NULL, true);
 }
 
 NoteMiniGameState::~NoteMiniGameState()
 {
+	jdd->DeleteSurface("back");
 }
 
 void NoteMiniGameState::LoadSpriteFiles()
@@ -91,17 +94,7 @@ void NoteMiniGameState::Draw()
 //  ==== render =======
 void NoteMiniGameState::RenderNormalState()
 {
-	JBrush brush = jdd->CreateBrush(JColor(255, 255, 255), 1.0f);
-	JBrush brush2 = jdd->CreateBrush(JColor(0, 0, 0), 1.0f);
-	RECT rect;
-	::SetRect(&rect, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-	jdd->DrawRect(backbuffer, brush2, &rect);
-
-	for(int i = 1; i <= 5; i++)
-	{
-		//RenderManager::getInstance()->DrawLine(GamePoint(0, SCREEN_HEIGHT - 20 * i), GamePoint(SCREEN_WIDTH, SCREEN_HEIGHT - 20 * i));
-		jdd->DrawLine(backbuffer, brush, 0, SCREEN_HEIGHT - 20 * i, SCREEN_WIDTH, SCREEN_HEIGHT - 20 * i, 1);
-	}
+	jdd->DrawPicture(backbuffer, "back", 0, 0, NULL);
 
 	for(int i = 0; i < NOTE_MAX; i++)
 	{

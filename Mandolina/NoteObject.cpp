@@ -38,8 +38,7 @@ void CNoteObject::Draw()
 		return;
 	}
 
-	//RenderManager::getInstance()->DrawCircle(x_, y_, radius_);
-	JBrush brush = jdd->CreateBrush(JColor(255, 255, 255), 1.0f);
+	JBrush brush = jdd->CreateBrush(JColor(255, 0, 0), 1.0f);
 	RECT rect;	
 	::SetRect(&rect, (int)(x_ - radius_), (int)(y_ - radius_), (int)(x_ + radius_), (int)(y_ + radius_));
 	jdd->DrawEllipse(backbuffer, brush, &rect, 1);
