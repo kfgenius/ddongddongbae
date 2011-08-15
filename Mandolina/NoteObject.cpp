@@ -4,8 +4,7 @@
 
 #include "global.h"
 
-CNoteObject::CNoteObject(float radius)
-: CObject(radius)
+CNoteObject::CNoteObject()
 {
 }
 
@@ -15,38 +14,37 @@ CNoteObject::~CNoteObject()
 
 void CNoteObject::Update()
 {
-	if(life_ == false)
+	if(life == false)
 	{
 		return;
 	}
 
-	//x_ += cos(gradient_);
-	//y_ += sin(gradient_);
-	x_ += cosf(angle_);
-	y_ += sinf(angle_);
+	GoAhead();
 
 	if(IsInScreen() == false)
 	{
-		life_ = false;
+		life = false;
 	}
 }
 
 void CNoteObject::Draw()
 {
-	if(life_ == false)
+	if(life == false)
 	{
 		return;
 	}
 
+	CObject::Draw();
+
 	JBrush brush = jdd->CreateBrush(JColor(255, 0, 0), 1.0f);
 	RECT rect;	
-	::SetRect(&rect, (int)(x_ - radius_), (int)(y_ - radius_), (int)(x_ + radius_), (int)(y_ + radius_));
+	SetRect(&rect, (int)(x - radius), (int)(y - radius), (int)(x + radius), (int)(y + radius));
 	jdd->DrawEllipse(backbuffer, brush, &rect, 1);
 }
 
-void CNoteObject::Set(float x, float y)
+void CNoteObject::Set(float x, float y, CAttribute* attribute)
 {
-	CObject::Set(x, y);
+	CObject::Set(x, y, attribute);
 
 	touch_able = true;
 }

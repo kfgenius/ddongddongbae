@@ -4,81 +4,80 @@
 
 #include <math.h>
 
-CObject::CObject(float radius)
+CObject::CObject()
 {
-	life_ = false;
-	radius_ = radius;
-	radiusPow_ = radius * radius;
+	life = false;
 }
 
 CObject::~CObject()
 {
 }
 
-void CObject::Set(float x, float y)
+void CObject::GoAhead()
 {
-	x_ = x;
-	y_ = y;
+	x += cosf(angle);
+	y += sinf(angle);
+}
 
-	life_ = true;
-	isDone_ = false;
+void CObject::Set(float x, float y, CAttribute* attribute)
+{
+	this->x = x;
+	this->y = y;
+
+	life = true;
+
+	radius = attribute->radius;
+	radiusPow = radius * radius;
+	pic_name = attribute->pic_name;
+	cx = attribute->cx;
+	cy = attribute->cy;
 }
 
 float CObject::GetX()
 {
-	return x_;
+	return x;
 }
 
 float CObject::GetY()
 {
-	return y_;
+	return y;
 }
 
 float CObject::GetRadius()
 {
-	return radius_;
+	return radius;
 }
 
 float CObject::GetRadiusPow()
 {
-	return radiusPow_;
+	return radiusPow;
 }
 
 bool CObject::GetLife()
 {
-	return life_;
-}
-
-void CObject::MoveDown(float y)
-{
-	y_ += y;
-
-	if(y_ > SCREEN_HEIGHT)
-	{
-		life_ = false;
-	}
+	return life;
 }
 
 bool CObject::IsLineInSprite(float x1, float y1, float x2, float y2, float gradient, float intercept)
 {
-	if(life_ == false)
+	if(life == false)
 	{
 		return false;
 	}
 
-	float a = x_;
-	float b = y_;
+	float a = x;
+	float b = y;
 	float c = gradient;
 	float d = intercept;
 	float e = d - b;
 
-	if (radius_ < 0)
+	if (radius < 0)
 	{
 		return false;
 	}
 	else if (x1 != x2)
 	{
-		float D = (c * e - a) * (c * e - a) - (a * a + e * e - radiusPow_) * (c * c + 1);
+		float D = (c * e - a) * (c * e - a) - (a * a + e * e - radiusPow) * (c * c + 1);
 		if (D >= 0)
 		{
 			if ((a - c * e + sqrt(D)) / (c * c + 1) >= min(x1, x2) && (a - c * e - sqrt(D)) / (c * c + 1) <= max(x1, x2))
@@ -99,7 +98,7 @@ bool CObject::IsLineInSprite(float x1, float y1, float x2, float y2, float gradi
 	{
 		if (y1 == y2)
 		{
-			if (sqrt((a - x1) * (a - x1) + (b - y1) * (b - y1)) <= radius_)
+			if (sqrt((a - x1) * (a - x1) + (b - y1) * (b - y1)) <= radius)
 			{
 				return true;
 			}
@@ -110,7 +109,7 @@ bool CObject::IsLineInSprite(float x1, float y1, float x2, float y2, float gradi
 		}
 		else
 		{
-			float D = b * b - (x1 - a) * (x1 - a) - b * b + radiusPow_;
+			float D = b * b - (x1 - a) * (x1 - a) - b * b + radiusPow;
 			if (D >= 0)
 			{
 				if (b + sqrt(D) > min(y1, y2) && b - sqrt(D) < max(y1, y2))
@@ -132,7 +131,7 @@ bool CObject::IsLineInSprite(float x1, float y1, float x2, float y2, float gradi
 
 bool CObject::IsCollision(CObject* object)
 {
-	if(life_ == false)
+	if(life == false)
 	{
 		return false;
 	}
@@ -151,22 +150,17 @@ bool CObject::IsCollision(CObject* object)
 	return false;
 }
 
-void CObject::Done()
-{
-	isDone_ = true;
-}
-
 void CObject::Die()
 {
-	life_ = false;
+	life = false;
 }
 
 bool CObject::IsInScreen()
 {
-	const int margin = (int)radius_ + 100;
+	const int margin = (int)radius + 100;
 
-	if(x_ < -margin || x_ > SCREEN_WIDTH + margin
-		|| y_ < -margin || y_ > SCREEN_HEIGHT + margin)
+	if(x < -margin || x > SCREEN_WIDTH + margin
+		|| y < -margin || y > SCREEN_HEIGHT + margin)
 	{
 		return false;
 	}
@@ -180,9 +174,10 @@ void CObject::Update()
 
 void CObject::Draw()
 {
+	jdd->DrawPicture(backbuffer, pic_name, x + cx, y + cy, NULL);
 }
 
 void CObject::SetAngle(float angle)
 {
-	angle_ = angle;
+	this->angle = angle;
 }

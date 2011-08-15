@@ -9,24 +9,32 @@ NoteMiniGameState::NoteMiniGameState()
 
 	for(int i = 0; i < NOTE_MAX; i++)
 	{
-		m_note[i] = new CNoteObject(10);
+		m_note[i] = new CNoteObject();
 	}
 
 	for(int i = 0; i < ENEMY_MAX; i++)
 	{
-		m_enemy[i] = new CEnemyObject(10);
+		m_enemy[i] = new CEnemyObject();
 	}
 
 	old_LButton = false;
 
-	m_enemy[0]->Set(100, 100);
+	m_note_attribute = new CAttribute("note", 10, -10, -10);
+	m_mold_attribute = new CAttribute("mold", 20, -20, -20);
+
+	m_enemy[0]->Set(100, 100, m_mold_attribute);
 
 	jdd->LoadPicture("back", "DATA/back.png", NULL, true);
+	jdd->LoadPicture("note", "DATA/note.png", NULL, true);
+	jdd->LoadPicture("mold", "DATA/mold.png", NULL, true);
 }
 
 NoteMiniGameState::~NoteMiniGameState()
 {
 	jdd->DeleteSurface("back");
+
+	delete m_note_attribute;
+	delete m_mold_attribute;
 }
 
 void NoteMiniGameState::LoadSpriteFiles()
@@ -42,8 +50,8 @@ void NoteMiniGameState::Process()
 		int id = GetFreeNoteID();
 		if(id >= 0)
 		{
-			int y = (rand() % 5) + 1;
-			m_note[id]->Set(-10, SCREEN_HEIGHT - y * 20);
+			int y = (rand() % 4);
+			m_note[id]->Set(-10, SCREEN_HEIGHT - (y * 18 + 20), m_note_attribute);
 			m_note[id]->SetAngle(0);
 		}
 

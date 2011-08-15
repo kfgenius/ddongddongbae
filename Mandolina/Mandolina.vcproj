@@ -274,6 +274,14 @@
 				Name="프로세스"
 				>
 				<File
+					RelativePath=".\Attribute.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Attribute.h"
+					>
+				</File>
+				<File
 					RelativePath=".\EnemyObject.cpp"
 					>
 				</File>

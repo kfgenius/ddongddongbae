@@ -1,17 +1,40 @@
 #ifndef __OBJECT_H__
 #define __OBJECT_H__
 
+#include "Attribute.h"
+
 class CObject
 {
-//methods
+private:
+
+protected:
+	void GoAhead();
+
+	float x;
+	float y;
+
+	bool life;
+	bool isDone;
+
+	int doneAnim;
+
+	float radius;
+	float radiusPow;
+	float angle;
+
+	char* pic_name;
+
+	int cx;
+	int cy;
+
 public:
-	CObject(float radius);
+	CObject();
 	virtual ~CObject();
 
 	virtual void Update();
 	virtual void Draw();
 
-	virtual void Set(float x, float y);
+	virtual void Set(float x, float y, CAttribute* attribute);
 
 	virtual float GetX();
 	virtual float GetY();
@@ -19,32 +42,14 @@ public:
 	virtual float GetRadiusPow();
 
 	virtual bool GetLife();
-	virtual void MoveDown(float y);
 
 	virtual bool IsLineInSprite(float x1, float y1, float x2, float y2, float gradient, float intercept);
 	virtual bool IsCollision(CObject* object);
-	virtual void Done();
 	virtual void Die();
 
 	virtual bool IsInScreen();
 
 	void SetAngle(float angle);
-
-//member variable
-private:
-
-protected:
-	float x_;
-	float y_;
-
-	bool life_;
-	bool isDone_;
-
-	int doneAnim_;
-
-	float radius_;
-	float radiusPow_;
-	float angle_;
 };
 
 #endif //__OBJECT_H__
