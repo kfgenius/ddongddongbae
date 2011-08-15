@@ -33,6 +33,8 @@ private:
 	CNoteObject* m_note[NOTE_MAX];
 	CEnemyObject* m_enemy[ENEMY_MAX];
 
+	HSNDOBJ sound[4];
+
 protected:
 	virtual void TouchesDown(int x, int y);
 	virtual void TouchesUp(int x, int y);

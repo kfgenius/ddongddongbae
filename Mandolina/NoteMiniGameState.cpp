@@ -1,6 +1,8 @@
 #include "NoteMinigameState.h"
 #include "NoteMinigameSoundManager.h"
 
+#include "global.h"
+
 #include <math.h>
 
 NoteMiniGameState::NoteMiniGameState()
@@ -19,14 +21,25 @@ NoteMiniGameState::NoteMiniGameState()
 
 	old_LButton = false;
 
-	m_note_attribute = new CAttribute("note", 10, -10, -10);
-	m_mold_attribute = new CAttribute("mold", 20, -20, -20);
+	m_note_attribute = new CAttribute("note", 10, -8, -38);
+	m_mold_attribute = new CAttribute("mold", 28, -46, -26);
 
 	m_enemy[0]->Set(100, 100, m_mold_attribute);
 
+	JPictureInfo jpi;
+	jpi.SetColorKey(JColor(0, 0, 255));
+
 	jdd->LoadPicture("back", "DATA/back.png", NULL, true);
-	jdd->LoadPicture("note", "DATA/note.png", NULL, true);
-	jdd->LoadPicture("mold", "DATA/mold.png", NULL, true);
+	jdd->LoadPicture("note", "DATA/note.png", &jpi, true);
+	jdd->LoadPicture("mold", "DATA/mold.png", &jpi, true);
+
+	if(SoundOBJ)
+	{
+		sound[0] = SndObjCreate(SoundOBJ, "Sound/mi.wav", 2);
+		sound[1] = SndObjCreate(SoundOBJ, "Sound/ra.wav", 2);
+		sound[2] = SndObjCreate(SoundOBJ, "Sound/re.wav", 2);
+		sound[3] = SndObjCreate(SoundOBJ, "Sound/sol.wav", 2);
+	}
 }
 
 NoteMiniGameState::~NoteMiniGameState()
@@ -35,6 +48,11 @@ NoteMiniGameState::~NoteMiniGameState()
 
 	delete m_note_attribute;
 	delete m_mold_attribute;
+
+	for(int i = 0; i < 4; i++)
+	{
+		SndObjDestroy(sound[i]);
+	}
 }
 
 void NoteMiniGameState::LoadSpriteFiles()
@@ -53,6 +71,7 @@ void NoteMiniGameState::Process()
 			int y = (rand() % 4);
 			m_note[id]->Set(-10, SCREEN_HEIGHT - (y * 18 + 20), m_note_attribute);
 			m_note[id]->SetAngle(0);
+			_Play(sound[y]);
 		}
 
 		time = 0;
