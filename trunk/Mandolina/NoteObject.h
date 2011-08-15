@@ -7,13 +7,13 @@ class CNoteObject : public CObject
 {
 //methods
 public:
-	CNoteObject(float radius);
+	CNoteObject();
 	virtual ~CNoteObject();
 
 	virtual void Update();
 	virtual void Draw();
 
-	virtual void Set(float x, float y);
+	virtual void Set(float x, float y, CAttribute* attribute);
 
 	void Bounce(float gradient);
 

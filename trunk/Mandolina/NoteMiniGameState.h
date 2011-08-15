@@ -13,7 +13,31 @@ class NoteMiniGameState :
 		ENEMY_MAX = 10
 	};
 
-//methods
+private:
+	void RenderNormalState();
+
+	int GetFreeNoteID();
+
+	void NormalTouchesMove(int x, int y);
+
+	int old_x;
+	int old_y;
+	int origin_x;
+	int origin_y;
+
+	bool old_LButton;
+
+	CAttribute* m_note_attribute;
+	CAttribute* m_mold_attribute;
+
+	CNoteObject* m_note[NOTE_MAX];
+	CEnemyObject* m_enemy[ENEMY_MAX];
+
+protected:
+	virtual void TouchesDown(int x, int y);
+	virtual void TouchesUp(int x, int y);
+	virtual void TouchesMove(int x, int y);
+
 public:
 	NoteMiniGameState();
 	~NoteMiniGameState();
@@ -22,28 +46,4 @@ public:
 	virtual void Process();
 
 	void LoadSpriteFiles();
-
-protected:
-	virtual void TouchesDown(int x, int y);
-	virtual void TouchesUp(int x, int y);
-	virtual void TouchesMove(int x, int y);
-
-private:
-	void RenderNormalState();
-
-	int GetFreeNoteID();
-
-	void NormalTouchesMove(int x, int y);
-
-//member variable
-private:
-	int old_x;
-	int old_y;
-	int origin_x;
-	int origin_y;
-
-	bool old_LButton;
-
-	CNoteObject* m_note[NOTE_MAX];
-	CEnemyObject* m_enemy[ENEMY_MAX];
 };
