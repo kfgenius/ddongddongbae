@@ -5,6 +5,8 @@
 
 #include <math.h>
 
+static HSNDOBJ sound[4];
+
 NoteMiniGameState::NoteMiniGameState()
 {
 	LoadSpriteFiles();
@@ -35,10 +37,10 @@ NoteMiniGameState::NoteMiniGameState()
 
 	if(SoundOBJ)
 	{
-		sound[0] = SndObjCreate(SoundOBJ, "Sound/mi.wav", 2);
-		sound[1] = SndObjCreate(SoundOBJ, "Sound/ra.wav", 2);
-		sound[2] = SndObjCreate(SoundOBJ, "Sound/re.wav", 2);
-		sound[3] = SndObjCreate(SoundOBJ, "Sound/sol.wav", 2);
+		sound[0] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 1);
+		sound[1] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 1);
+		sound[2] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 1);
+		sound[3] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 1);
 	}
 }
 
