@@ -1,0 +1,230 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#pragma code_page(949)\r\n"
+    "#include ""res\\chunkmaker.rc2""  // Microsoft Visual C++에서 편집되지 않은 리소스\r\n"
+    "#include ""afxres.rc""         // 표준 구성 요소\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\chunkmaker.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CHUNKMAKER_DIALOG DIALOGEX 0, 0, 320, 200
+STYLE DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "MLC 파일 만들기 Ver1.2.3"
+FONT 9, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "MLC 생성",IDC_EXPORT,203,179,55,14
+    LISTBOX         IDC_LIST,7,27,306,146,LBS_NOINTEGRALHEIGHT | 
+                    LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "추가",IDC_ADD,7,179,55,14
+    PUSHBUTTON      "삭제",IDC_DELETE,62,179,55,14
+    PUSHBUTTON      "나가기",IDC_EXIT,258,179,55,14
+    EDITTEXT        IDC_PROJECTNAME,7,7,76,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "불러오기",IDC_LOAD,91,7,55,14
+    PUSHBUTTON      "저장",IDC_SAVE,146,7,55,14
+    PUSHBUTTON      "일괄수정",IDC_EDIT,117,179,55,14
+END
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 208, 130
+STYLE DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "정보수정"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "확인",IDOK,53,109,50,14
+    PUSHBUTTON      "취소",IDCANCEL,103,109,50,14
+    EDITTEXT        IDC_EDIT1,55,25,138,14,ES_AUTOHSCROLL
+    LTEXT           "이름",IDC_STATIC,16,28,33,8
+    EDITTEXT        IDC_EDIT2,103,46,30,14,ES_AUTOHSCROLL
+    LTEXT           "칼라키",IDC_STATIC,16,48,33,8
+    EDITTEXT        IDC_EDIT3,55,67,31,14,ES_AUTOHSCROLL
+    LTEXT           "불투명도",IDC_STATIC,16,70,33,8
+    COMBOBOX        IDC_COMBO1,55,46,41,34,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "타입",IDC_STATIC,15,91,33,8
+    COMBOBOX        IDC_LAYERTYPE,55,88,68,59,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    EDITTEXT        IDC_PATH,55,6,138,14,ES_AUTOHSCROLL
+    LTEXT           "경로",IDC_STATIC,16,9,33,8
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041203b5"
+        BEGIN
+            VALUE "CompanyName", "TODO: <회사 이름>\0"
+            VALUE "FileDescription", "TODO: <파일 설명>\0"
+            VALUE "FileVersion", "1.0.0.1\0"
+            VALUE "InternalName", "chunkmaker.exe\0"
+            VALUE "LegalCopyright", "TODO: (c) <회사 이름>.  All rights reserved.\0"
+            VALUE "OriginalFilename", "chunkmaker.exe\0"
+            VALUE "ProductName", "TODO: <제품 이름>\0"
+            VALUE "ProductVersion", "1.0.0.1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "변환", 0x412, 949
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO MOVEABLE PURE 
+BEGIN
+    IDD_CHUNKMAKER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 193
+    END
+
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 201
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 123
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_DIALOG1 DLGINIT
+BEGIN
+    IDC_COMBO1, 0x403, 5, 0
+0xf8be, 0xbdc0, "\000" 
+    IDC_COMBO1, 0x403, 5, 0
+0xd6c0, 0xbdc0, "\000" 
+    IDC_LAYERTYPE, 0x403, 7, 0
+0x6f4e, 0x6d72, 0x6c61, "\000" 
+    IDC_LAYERTYPE, 0x403, 6, 0
+0x694c, 0x6867, 0x0074, 
+    IDC_LAYERTYPE, 0x403, 5, 0
+0x6144, 0x6b72, "\000" 
+    IDC_LAYERTYPE, 0x403, 9, 0
+0x6441, 0x6964, 0x6974, 0x6e6f, "\000" 
+    0
+END
+
+#endif    // Korean resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+#pragma code_page(949)
+#include "res\chunkmaker.rc2"  // Microsoft Visual C++에서 편집되지 않은 리소스
+#include "afxres.rc"         // 표준 구성 요소
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
