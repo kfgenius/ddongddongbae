@@ -229,10 +229,10 @@ void CchunkmakerDlg::OnBnClickedAdd()
 {
 	char cdir[256];
 	strcpy(cdir, sdir);
-	strcat(cdir,"\\*.gif;*.jpg;*.tif;*.bmp");
+	strcat(cdir,"\\*.gif;*.jpg;*.tif;*.bmp;*.png");
 
 	//그림 파일 불러오기
-	const char szFilters[]="그림 파일(*.gif,*.jpg,*.tif,*.bmp)|*.gif;*.jpg;*.tif;*.bmp||";
+	const char szFilters[]="그림 파일(*.gif,*.jpg,*.tif,*.bmp,*.png)|*.gif;*.jpg;*.tif;*.bmp;*.png||";
 	CFileDialog m_fdlg(TRUE, "", cdir, OFN_ALLOWMULTISELECT | OFN_HIDEREADONLY, szFilters, this);
 	
 	//새 버퍼(파일명이 많을 경우를 대비해서)
