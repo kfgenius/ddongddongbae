@@ -5,7 +5,7 @@
 
 #include <math.h>
 
-static HSNDOBJ sound[4];
+HSNDOBJ note_sound[4];
 
 NoteMiniGameState::NoteMiniGameState()
 {
@@ -37,10 +37,10 @@ NoteMiniGameState::NoteMiniGameState()
 
 	if(SoundOBJ)
 	{
-		sound[0] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 1);
-		sound[1] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 1);
-		sound[2] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 1);
-		sound[3] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 1);
+		note_sound[0] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 2);
+		note_sound[1] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 2);
+		note_sound[2] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 2);
+		note_sound[3] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 2);
 	}
 }
 
@@ -53,7 +53,7 @@ NoteMiniGameState::~NoteMiniGameState()
 
 	for(int i = 0; i < 4; i++)
 	{
-		SndObjDestroy(sound[i]);
+		SndObjDestroy(note_sound[i]);
 	}
 }
 
@@ -73,7 +73,7 @@ void NoteMiniGameState::Process()
 			int y = (rand() % 4);
 			m_note[id]->Set(-10, SCREEN_HEIGHT - (y * 18 + 20), m_note_attribute);
 			m_note[id]->SetAngle(0);
-			_Play(sound[y]);
+			_Play(note_sound[y]);
 		}
 
 		time = 0;

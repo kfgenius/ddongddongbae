@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ddraw.lib gdiplus.lib dsound.lib dxerr9.lib ddeffects3.lib winmm.lib DlgEncode.lib"
-				OutputFile="$(OutDir)/MoonDLib.exe"
+				OutputFile="$(OutDir)/Mandolina.exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
