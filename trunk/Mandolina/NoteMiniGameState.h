@@ -20,18 +20,26 @@ private:
 
 	void NormalTouchesMove(int x, int y);
 
+	bool IsNoNote();
+	bool IsNoEnemy();
+
 	int old_x;
 	int old_y;
 	int origin_x;
 	int origin_y;
 
-	bool old_LButton;
+	BOOL old_LButton;
 
 	CAttribute* m_note_attribute;
 	CAttribute* m_mold_attribute;
 
 	CNoteObject* m_note[NOTE_MAX];
 	CEnemyObject* m_enemy[ENEMY_MAX];
+
+	int* stage_phase;
+	int next_time;
+	bool note_end;
+	bool is_clear;
 
 protected:
 	virtual void TouchesDown(int x, int y);

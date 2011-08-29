@@ -5,7 +5,29 @@
 
 #include <math.h>
 
-HSNDOBJ note_sound[4];
+enum
+{
+	note_3_sol,
+	note_3_ra,
+	note_3_si,
+	note_4_do,
+	note_4_re,
+	note_4_mi,
+	note_4_pa,
+	note_4_sol,
+	note_4_ra,
+	note_4_si,
+	note_5_do,
+	note_5_re,
+	note_5_mi,
+	note_max
+};
+
+HSNDOBJ note_sound[note_max];
+
+int phase_1_1[] = {note_3_sol, 100, note_4_re, 100, note_4_ra, 100, note_5_mi, 100, note_4_ra, 100, note_4_re, 100, note_3_sol, 100, note_max};
+
+int note_y[note_max];
 
 NoteMiniGameState::NoteMiniGameState()
 {
@@ -35,13 +57,36 @@ NoteMiniGameState::NoteMiniGameState()
 	jdd->LoadPicture("note", "DATA/note.png", &jpi, true);
 	jdd->LoadPicture("mold", "DATA/mold.png", &jpi, true);
 
+	jdd->LoadPicture("failed", "DATA/failed.png", &jpi, true);
+	jdd->LoadPicture("clear", "DATA/clear.png", &jpi, true);
+
 	if(SoundOBJ)
 	{
-		note_sound[0] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 2);
-		note_sound[1] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 2);
-		note_sound[2] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 2);
-		note_sound[3] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 2);
+		note_sound[note_3_sol] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 2);
+		note_sound[note_4_re] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 2);
+		note_sound[note_4_ra] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 2);
+		note_sound[note_5_mi] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 2);
 	}
+
+	note_y[note_3_sol] = SCREEN_HEIGHT - 12;
+	note_y[note_3_ra] = SCREEN_HEIGHT - 16;
+	note_y[note_3_si] = SCREEN_HEIGHT - 20;
+	note_y[note_4_do] = SCREEN_HEIGHT - 22;
+	note_y[note_4_re] = SCREEN_HEIGHT - 26;
+	note_y[note_4_mi] = SCREEN_HEIGHT - 30;
+	note_y[note_4_pa] = SCREEN_HEIGHT - 32;
+	note_y[note_4_sol] = SCREEN_HEIGHT - 36;
+	note_y[note_4_ra] = SCREEN_HEIGHT - 40;
+	note_y[note_4_si] = SCREEN_HEIGHT - 44;
+	note_y[note_5_do] = SCREEN_HEIGHT - 46;
+	note_y[note_5_re] = SCREEN_HEIGHT - 50;
+	note_y[note_5_mi] = SCREEN_HEIGHT - 54;
+
+	next_time = 0;
+	note_end = false;
+	is_clear = false;
+
+	stage_phase = phase_1_1;
 }
 
 NoteMiniGameState::~NoteMiniGameState()
@@ -64,19 +109,36 @@ void NoteMiniGameState::LoadSpriteFiles()
 void NoteMiniGameState::Process()
 {
 	static int time = 0;
-	time++;
-	if(time == 100)
+	if(time == next_time && note_end == false)
 	{
 		int id = GetFreeNoteID();
 		if(id >= 0)
 		{
-			int y = (rand() % 4);
-			m_note[id]->Set(-10, SCREEN_HEIGHT - (y * 18 + 20), m_note_attribute);
-			m_note[id]->SetAngle(0);
-			_Play(note_sound[y]);
+			//int sound_id = (rand() % note_max);
+			static int phase = 0;
+			int sound_id = stage_phase[phase];
+			phase++;
+
+			if(sound_id == note_max)
+			{
+				note_end = true;
+			}
+			else
+			{
+				m_note[id]->Set(-10, note_y[sound_id], m_note_attribute);
+				m_note[id]->SetAngle(0);
+				_Play(note_sound[sound_id]);
+
+				next_time = stage_phase[phase];
+				phase++;
+			}
 		}
 
 		time = 0;
+	}
+	else
+	{
+		time++;
 	}
 
 	for(int i = 0; i < NOTE_MAX; i++)
@@ -84,15 +146,15 @@ void NoteMiniGameState::Process()
 		m_note[i]->Update();
 	}
 
-	if(old_LButton == false && LButton == true)
+	if(old_LButton == FALSE && LButton == TRUE)
 	{
 		TouchesDown(MouseX, MouseY);
 	}
-	else if(old_LButton == true && LButton == true)
+	else if(old_LButton == TRUE && LButton == TRUE)
 	{
 		TouchesMove(MouseX, MouseY);
 	}
-	else if(old_LButton == true && LButton == false)
+	else if(old_LButton == TRUE && LButton == FALSE)
 	{
 		TouchesUp(MouseX, MouseY);
 	}
@@ -111,6 +173,11 @@ void NoteMiniGameState::Process()
 		}
 	}
 	old_LButton = LButton;
+
+	if(is_clear == false && IsNoEnemy())
+	{
+		is_clear = true;
+	}
 
 	Draw();
 }
@@ -133,6 +200,15 @@ void NoteMiniGameState::RenderNormalState()
 	for(int i = 0; i < ENEMY_MAX; i++)
 	{
 		m_enemy[i]->Draw();
+	}
+
+	if(is_clear == true)
+	{
+		jdd->DrawPicture(backbuffer, "clear", 0, 0, NULL);
+	}
+	else if(note_end == true && IsNoNote() == true)
+	{
+		jdd->DrawPicture(backbuffer, "failed", 0, 0, NULL);
 	}
 }
 
@@ -211,4 +287,30 @@ void NoteMiniGameState::NormalTouchesMove(int x, int y)
 			}
 		}
 	}
+}
+
+bool NoteMiniGameState::IsNoNote()
+{
+	for(int i = 0; i < NOTE_MAX; i++)
+	{
+		if(m_note[i]->GetLife() == true)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool NoteMiniGameState::IsNoEnemy()
+{
+	for(int j = 0; j < ENEMY_MAX; j++)
+	{
+		if(m_enemy[j]->GetLife() == true)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
