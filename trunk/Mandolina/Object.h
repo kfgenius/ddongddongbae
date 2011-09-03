@@ -12,6 +12,7 @@ protected:
 
 	float x;
 	float y;
+	float speed;
 
 	bool life;
 	bool isDone;
@@ -49,7 +50,8 @@ public:
 
 	virtual bool IsInScreen();
 
-	void SetAngle(float angle);
+	virtual void SetAngle(float angle);
+	virtual void SetSpeed(float speed);
 };
 
 #endif //__OBJECT_H__

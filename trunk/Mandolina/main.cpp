@@ -107,7 +107,7 @@ int main(char* arg[])
 	//_crtBreakAlloc = 12057;
 
 	//창 생성
-	if(!MainInitialize("타임리스", TRUE, TRUE, window_mode))return 0;
+	if(!MainInitialize("만돌리나 Ver0.1", TRUE, TRUE, window_mode))return 0;
 
 	//윈도우창 이동
 	if(window_mode)
