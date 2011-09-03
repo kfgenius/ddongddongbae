@@ -7,6 +7,7 @@
 CObject::CObject()
 {
 	life = false;
+	speed = 1;
 }
 
 CObject::~CObject()
@@ -15,8 +16,8 @@ CObject::~CObject()
 
 void CObject::GoAhead()
 {
-	x += cosf(angle);
-	y += sinf(angle);
+	x += cosf(angle) * speed;
+	y += sinf(angle) * speed;
 }
 
 void CObject::Set(float x, float y, CAttribute* attribute)
@@ -180,4 +181,9 @@ void CObject::Draw()
 void CObject::SetAngle(float angle)
 {
 	this->angle = angle;
+}
+
+void CObject::SetSpeed(float speed)
+{
+	this->speed = speed;
 }

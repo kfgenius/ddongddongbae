@@ -25,8 +25,6 @@ enum
 
 HSNDOBJ note_sound[note_max];
 
-int phase_1_1[] = {note_3_sol, 100, note_4_re, 100, note_4_ra, 100, note_5_mi, 100, note_4_ra, 100, note_4_re, 100, note_3_sol, 100, note_max};
-
 int note_y[note_max];
 
 NoteMiniGameState::NoteMiniGameState()
@@ -46,9 +44,13 @@ NoteMiniGameState::NoteMiniGameState()
 	old_LButton = false;
 
 	m_note_attribute = new CAttribute("note", 10, -8, -38);
-	m_mold_attribute = new CAttribute("mold", 28, -46, -26);
-
-	m_enemy[0]->Set(100, 100, m_mold_attribute);
+	m_mold_attribute[mold_normal] = new CAttribute("normal_mold", 28, -46, -26);
+	m_mold_attribute[mold_move] = new CAttribute("move_mold", 28, -46, -26);
+	m_mold_attribute[mold_fat] = new CAttribute("fat_mold", 28, -46, -26);
+	m_mold_attribute[mold_twin] = new CAttribute("twin_mold", 28, -46, -26);
+	m_mold_attribute[mold_mini] = new CAttribute("mini_mold", 28, -46, -26);
+	m_mold_attribute[mold_brain] = new CAttribute("brain_mold", 28, -46, -26);
+	m_mold_attribute[mold_block] = new CAttribute("block_mold", 28, -46, -26);
 
 	JPictureInfo jpi;
 	jpi.SetColorKey(JColor(0, 0, 255));
@@ -56,17 +58,18 @@ NoteMiniGameState::NoteMiniGameState()
 	jdd->LoadPicture("back", "DATA/back.png", NULL, true);
 	jdd->LoadPicture("note", "DATA/note.png", &jpi, true);
 	jdd->LoadPicture("mold", "DATA/mold.png", &jpi, true);
+	jdd->LoadPicture("normal_mold", "DATA/normal_mold.png", &jpi, true);
+	jdd->LoadPicture("move_mold", "DATA/move_mold.png", &jpi, true);
+	jdd->LoadPicture("fat_mold", "DATA/fat_mold.png", &jpi, true);
+	jdd->LoadPicture("twin_mold", "DATA/twin_mold.png", &jpi, true);
+	jdd->LoadPicture("mini_mold", "DATA/mini_mold.png", &jpi, true);
+	jdd->LoadPicture("brain_mold", "DATA/brain_mold.png", &jpi, true);
+	jdd->LoadPicture("block_mold", "DATA/block_mold.png", &jpi, true);
 
 	jdd->LoadPicture("failed", "DATA/failed.png", &jpi, true);
 	jdd->LoadPicture("clear", "DATA/clear.png", &jpi, true);
 
-	if(SoundOBJ)
-	{
-		note_sound[note_3_sol] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 2);
-		note_sound[note_4_re] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 2);
-		note_sound[note_4_ra] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 2);
-		note_sound[note_5_mi] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 2);
-	}
+	InitSound();
 
 	note_y[note_3_sol] = SCREEN_HEIGHT - 12;
 	note_y[note_3_ra] = SCREEN_HEIGHT - 16;
@@ -82,11 +85,13 @@ NoteMiniGameState::NoteMiniGameState()
 	note_y[note_5_re] = SCREEN_HEIGHT - 50;
 	note_y[note_5_mi] = SCREEN_HEIGHT - 54;
 
+	phase = 0;
 	next_time = 0;
 	note_end = false;
 	is_clear = false;
 
-	stage_phase = phase_1_1;
+	LoadStagePhase(1);
+	LoadStageMap(1);
 }
 
 NoteMiniGameState::~NoteMiniGameState()
@@ -94,11 +99,20 @@ NoteMiniGameState::~NoteMiniGameState()
 	jdd->DeleteSurface("back");
 
 	delete m_note_attribute;
-	delete m_mold_attribute;
+
+	for(int i = 0; i < MOLD_TYPE_MAX; i++)
+	{
+		delete m_mold_attribute[i];
+	}
 
 	for(int i = 0; i < 4; i++)
 	{
 		SndObjDestroy(note_sound[i]);
+	}
+
+	if(stage_phase)
+	{
+		delete [] stage_phase;
 	}
 }
 
@@ -108,37 +122,38 @@ void NoteMiniGameState::LoadSpriteFiles()
 
 void NoteMiniGameState::Process()
 {
-	static int time = 0;
-	if(time == next_time && note_end == false)
+	static float time = 0;
+
+	if(time >= next_time && note_end == false)
 	{
-		int id = GetFreeNoteID();
-		if(id >= 0)
+		if(phase >= stage_phase_max)
 		{
-			//int sound_id = (rand() % note_max);
-			static int phase = 0;
-			int sound_id = stage_phase[phase];
-			phase++;
-
-			if(sound_id == note_max)
-			{
-				note_end = true;
-			}
-			else
-			{
-				m_note[id]->Set(-10, note_y[sound_id], m_note_attribute);
-				m_note[id]->SetAngle(0);
-				_Play(note_sound[sound_id]);
-
-				next_time = stage_phase[phase];
-				phase++;
-			}
+			note_end = true;
 		}
+		else
+		{
+			int id = GetFreeNoteID();
+			if(id >= 0)
+			{
+				//int sound_id = (rand() % note_max);
+				int sound_id = stage_phase[phase].note;
+				next_time = (float)stage_phase[phase].delay;
+				phase++;
 
-		time = 0;
+
+				m_note[id]->Set((float)-10, (float)note_y[sound_id], m_note_attribute);
+				m_note[id]->SetAngle(0);
+				m_note[id]->SetSpeed(game_speed);
+
+				_Play(note_sound[sound_id]);
+			}
+
+			time = 0;
+		}
 	}
 	else
 	{
-		time++;
+		time += game_speed;
 	}
 
 	for(int i = 0; i < NOTE_MAX; i++)
@@ -243,6 +258,19 @@ int NoteMiniGameState::GetFreeNoteID()
 	return -1;
 }
 
+int NoteMiniGameState::GetFreeEnemyID()
+{
+	for(int i = 0; i < ENEMY_MAX; i++)
+	{
+		if(m_enemy[i]->GetLife() == false)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 void NoteMiniGameState::NormalTouchesMove(int x, int y)
 {
 	int diffX = x - old_x;
@@ -255,7 +283,7 @@ void NoteMiniGameState::NormalTouchesMove(int x, int y)
 	}
 	else
 	{
-		gradient = (y - old_y) / (x - old_x);
+		gradient = (float)(y - old_y) / (x - old_x);
 	}
 
 	float intercept = y - gradient * x;
@@ -264,7 +292,7 @@ void NoteMiniGameState::NormalTouchesMove(int x, int y)
 	{
 		if(m_note[i]->GetLife() == true)
 		{
-			bool isCollision = m_note[i]->IsLineInSprite(x, y, old_x, old_y, gradient, intercept);
+			bool isCollision = m_note[i]->IsLineInSprite((float)x, (float)y, (float)old_x, (float)old_y, gradient, intercept);
 
 			if(isCollision)
 			{
@@ -313,4 +341,183 @@ bool NoteMiniGameState::IsNoEnemy()
 	}
 
 	return true;
+}
+
+int NoteMiniGameState::GetColonPos(char* buffer)
+{
+	size_t length = strlen(buffer);
+	for(size_t i = 0; i < length; i++)
+	{
+		if(buffer[i] == ':')
+		{
+			return (int)i;
+		}
+	}
+
+	return -1;
+}
+
+int NoteMiniGameState::CharToNote(char* buffer)
+{
+	if(buffer[0] == 'C')
+	{
+		if(buffer[1] == '4')
+		{
+			return note_4_do;
+		}
+		else if(buffer[1] == '5')
+		{
+			return note_5_do;
+		}
+	}
+	else if(buffer[0] == 'D')
+	{
+		if(buffer[1] == '4')
+		{
+			return note_4_re;
+		}
+		else if(buffer[1] == '5')
+		{
+			return note_5_re;
+		}
+	}
+	else if(buffer[0] == 'E')
+	{
+		if(buffer[1] == '4')
+		{
+			return note_4_mi;
+		}
+		else if(buffer[1] == '5')
+		{
+			return note_5_mi;
+		}
+	}
+	else if(buffer[0] == 'F')
+	{
+		if(buffer[1] == '4')
+		{
+			return note_4_pa;
+		}
+	}
+	else if(buffer[0] == 'G')
+	{
+		if(buffer[1] == '3')
+		{
+			return note_3_sol;
+		}
+		else if(buffer[1] == '4')
+		{
+			return note_4_sol;
+		}
+	}
+	else if(buffer[0] == 'A')
+	{
+		if(buffer[1] == '3')
+		{
+			return note_3_ra;
+		}
+		else if(buffer[1] == '4')
+		{
+			return note_4_ra;
+		}
+	}
+	else if(buffer[0] == 'B')
+	{
+		if(buffer[1] == '3')
+		{
+			return note_3_si;
+		}
+		else if(buffer[1] == '4')
+		{
+			return note_4_si;
+		}
+	}
+
+
+	return 0;
+}
+
+void NoteMiniGameState::InitSound()
+{
+	if(SoundOBJ)
+	{
+		note_sound[note_3_sol] = SndObjCreate(SoundOBJ, "Sound\\sol.wav", 2);
+		note_sound[note_4_re] = SndObjCreate(SoundOBJ, "Sound\\re.wav", 2);
+		note_sound[note_4_ra] = SndObjCreate(SoundOBJ, "Sound\\mi.wav", 2);
+		note_sound[note_5_mi] = SndObjCreate(SoundOBJ, "Sound\\ra.wav", 2);
+	}
+}
+
+void NoteMiniGameState::LoadStagePhase(int stage)
+{
+	char filename[80];
+	sprintf(filename, "Stage/stage%d.txt", stage);
+
+	stage_phase_max = 0;
+	FILE* fp = fopen(filename, "rb");
+	stage_phase = NULL;
+	game_speed = 1;
+
+	if(fp)
+	{
+		char buffer[80];
+
+		fgets(buffer, 80, fp);
+		game_speed = (float)atoi(buffer) / 10;
+
+		while(fgets(buffer, 80, fp))
+		{
+			if(GetColonPos(buffer) >= 2)	//0,1의 위치에 있으면 에러
+			{
+				stage_phase_max++;
+			}
+		}
+
+		stage_phase = new StagePhase[stage_phase_max];
+
+		fseek(fp, 0, SEEK_SET);
+
+		int cx = 0;
+		fgets(buffer, 80, fp);
+		while(fgets(buffer, 80, fp))
+		{
+			int colon_pos = GetColonPos(buffer);
+			if(colon_pos >= 2)
+			{
+				stage_phase[cx].note = CharToNote(buffer);
+				stage_phase[cx].delay = atoi(&buffer[colon_pos + 1]);
+				cx++;
+			}
+		}
+
+		fclose(fp);
+	}
+}
+
+void NoteMiniGameState::LoadStageMap(int stage)
+{
+	char filename[80];
+	sprintf(filename, "Stage/stage%d_map.txt", stage);
+
+	FILE* fp = fopen(filename, "rb");
+
+	if(fp)
+	{
+		for(int i = 0; i < 8; i++)
+		{
+			char buffer[80];
+			fgets(buffer, 80, fp);
+
+			for(int j = 0; j < 8; j++)
+			{
+				if(buffer[j] >= '0' && buffer[j] <= '6')
+				{
+					int enemy_id = GetFreeEnemyID();
+					m_enemy[enemy_id]->Set((float)(j * 40 + 20), (float)(i * 40 + 20), m_mold_attribute[buffer[j] - '0']);
+				}
+			}
+		}
+
+		fclose(fp);
+	}
 }
