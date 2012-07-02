@@ -168,14 +168,16 @@ void CGame::CreateUnit()
 	while(1)
 	{
 		char src_file[80];
-		strcpy(src_file, StrAdd("User\\Unit%d.png", file_no));
+		sprintf(src_file, "User\\Unit%d.png", file_no);
 
 		if(fp = fopen(src_file, "rb"))
 		{
 			fclose(fp);
 
 			//해당 유닛 파일에서 정면 모습 하나를 가져다 찍음
-			jdd->LoadPicture(StrAdd("Unit%d", file_no), src_file, &pi, true);
+			char unit_file[80];
+			sprintf(unit_file, "Unit%d", file_no);
+			jdd->LoadPicture(unit_file, src_file, &pi, true);
 
 			++file_no;
 		}
@@ -372,7 +374,9 @@ void CGame::Draw()
 			|| unit[p].GetY() < start_y || unit[p].GetY() > end_y)continue;
 
 		//출력
-		ani.GetAni(p)->Draw(backbuffer, StrAdd("Unit%d",unit[p].GetID()), unit[p].GetRealX()-scroll_x, unit[p].GetRealY()-scroll_y-UNIT_PY);
+		char unit_file[80];
+		sprintf(unit_file, "Unit%d",unit[p].GetID());
+		ani.GetAni(p)->Draw(backbuffer, unit_file, unit[p].GetRealX()-scroll_x, unit[p].GetRealY()-scroll_y-UNIT_PY);
 	}
 
 	//2층 레이어
