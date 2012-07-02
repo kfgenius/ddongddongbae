@@ -1998,9 +1998,9 @@ int CScript::ComShowShadow(COMMAND_PTR it)
 
 	if(hash(it->buffer) == 0)	//전체 글자 그림자
 	{
-		m_dlg.ShowShadow(true);
-		m_select.ShowShadow(true);
-		m_input.ShowShadow(true);
+		m_dlg.ShowShadow();
+		m_select.ShowShadow();
+		m_input.ShowShadow();
 		text_shadow=true;
 	}
 	else if(p_text)p_text->shadow = true;	//특정 글자 그림자

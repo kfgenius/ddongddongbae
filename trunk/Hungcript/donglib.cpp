@@ -777,7 +777,7 @@ CDlg::CDlg()
 	b_shadow=FALSE;
 	dlgbox=NULL;
 	show_dlgbox=FALSE;
-	SetTextColor(0, 0, 0);
+	SetColor(0, 0, 0);
 	text_font=&global_font;
 	frame_x=frame_y=10;
 	opacity=1.0f;
@@ -856,11 +856,11 @@ void CDlg::Move(int mov_x, int mov_y)
 	y += mov_y;
 }
 
-void CDlg::SetTextColor(BYTE r, BYTE g, BYTE b)
+void CDlg::SetColor(BYTE r, BYTE g, BYTE b)
 {
-	text_color.r = r;
-	text_color.g = g;
-	text_color.b = b;
+	color.r = r;
+	color.g = g;
+	color.b = b;
 }
 
 void CDlg::SetDlgBox(char* dlgbox)
@@ -898,6 +898,11 @@ void CDlg::DrawDlg()
 }
 
 //그림자 보이기 숨기기
+void CDlg::ShowShadow(bool shadow)
+{
+	b_shadow = shadow;
+}
+
 void CDlg::ShowShadow()
 {
 	b_shadow = true;
@@ -1017,7 +1022,7 @@ void CTextDlg::MakeText(char* content)
 	length = (int)strlen(content);
 	strncpy(dlg_buffer, content, buffer_size);
 	if(strlen(content) >= buffer_size)dlg_buffer[buffer_size - 1] = NULL;
-	scroll_end = FALSE;
+	ani_end = FALSE;
 
 	//대화를 출력하기 알맞게 처리
 	sp = SNR_START;	//처리되고 있는 포인트
@@ -1148,7 +1153,7 @@ int CTextDlg::Printing()
 		return -1;
 	}
 
-	if(!scroll_end)
+	if(!ani_end)
 	{
 		if(sp < length && n_of_e < line)
 		{
@@ -1171,7 +1176,7 @@ int CTextDlg::Printing()
 		}
 		else
 		{
-			scroll_end = TRUE;
+			ani_end = TRUE;
 		}
 	}
 	else
@@ -1181,7 +1186,7 @@ int CTextDlg::Printing()
 		{
 			if(sp<length)
 			{
-				scroll_end=FALSE;
+				ani_end=FALSE;
 				n_of_e=0;
 				tp=0;
 			}
@@ -1206,7 +1211,7 @@ int CTextDlg::Printing()
 	
 	//글자
 	SetRect(&text_rect, x, y, SCREEN_X, SCREEN_Y);
-	jdd->DrawText(backbuffer, text_buffer, *text_font, &text_rect, text_color);
+	jdd->DrawText(backbuffer, text_buffer, *text_font, &text_rect, color);
 
 	return 0;
 }
@@ -1463,7 +1468,7 @@ int CSelectDlg::Selecting()
 		}
 
 		if(b_shadow)jdd->DrawText(backbuffer,select_point[i],*text_font,tx+1,ty+1,JColor(0,0,0));
-		jdd->DrawText(backbuffer, select_point[i], *text_font, tx, ty, text_color);
+		jdd->DrawText(backbuffer, select_point[i], *text_font, tx, ty, color);
 	}
 
 	//마우스 결정
@@ -1506,6 +1511,7 @@ void CInputDlg::SetDlg(int vx, int vy, int max)
 	y=vy;
 	width=Max(30,max);
 	width/=10;
+	line = 1;
 
 	str_max*=10;
 
@@ -1557,7 +1563,7 @@ int CInputDlg::Inputing()
 	if(blink_count<20 && str_max>text_length+10)strcat(show_text,"_");
 	//입력된 정보 표시
 	if(b_shadow)jdd->DrawText(backbuffer,show_text,*text_font,x+1,y+1,JColor(0,0,0));
-	jdd->DrawText(backbuffer,show_text,*text_font,x,y, text_color);
+	jdd->DrawText(backbuffer,show_text,*text_font,x,y, color);
 
 	int eng_len=(int)strlen(eng_buffer);
 	//입력
@@ -1653,7 +1659,7 @@ int CInputDlg::Inputing()
 		if(blink_count<0 || blink_count>=40)blink_count=0;
 		if(blink_count<20 && str_max>text_length+10)strcat(show_text,"_");
 		//입력된 정보 표시
-		jdd->DrawText(backbuffer,show_text,*text_font,x,y, text_color);
+		jdd->DrawText(backbuffer,show_text,*text_font,x,y, color);
 
 	}
 
@@ -1779,12 +1785,20 @@ CFiles::CFiles()
 
 CFiles::~CFiles()
 {
+	std::vector<char*>::iterator it;
+	for(it=filename.begin(); it!=filename.end(); ++it)
+	{
+		delete [] (*it);
+	}
+
 	filename.clear();
 }
 
 void CFiles::AddFile(char* name)
 {
-	filename.push_back(name);
+	char* newname = new char[strlen(name)+1];
+	strcpy(newname, name);
+	filename.push_back(newname);
 }
 
 void CFiles::SearchFile(char* dir, char* filetype)

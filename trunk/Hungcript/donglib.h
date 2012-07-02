@@ -98,9 +98,6 @@ int Min(int x, int y);
 int MaxMin(int x, int min, int max);
 BOOL Between(int value, int min, int max);
 
-//문자열 처리 함수
-char* StrAdd(char* msg, ...);
-
 //암호화를 위한 문자열의 번호를 알아내는 함수
 int get_char_num(char chr);
 
@@ -215,8 +212,12 @@ public:
 
 	void SetDlg();											//대화창 설정
 	void Move(int mov_x, int mov_y);						//대화창 이동
-	void ShowDlg(BOOL show_or_hide);						//글 상자 보이기 or 숨기기
-	void ShowShadow(BOOL show_or_hide);						//그림자 사용
+	void ShowDlg()					;						//글 상자 보이기
+	void HideDlg();											//글 상자 숨기기
+	
+	void ShowShadow(bool shadow);							//그림자 사용O
+	void ShowShadow();										//그림자 사용O
+	void HideShadow();										//그림자 사용X
 	
 	int GetX(){return x;}									//X좌표 가져오기
 	int GetY(){return y;}									//Y좌표 가져오기
