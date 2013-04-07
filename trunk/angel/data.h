@@ -933,13 +933,13 @@ void CGame::ShowItem(int x, int y, int c)
 
 		if(i<EQUIPMAX)	//장비 이름
 		{
-			if(i==m_sv.var[34])jdd->DrawText(backbuffer,name[i],font12,x+15,y,JColor(0,0,255));
-				else jdd->DrawText(backbuffer,name[i],font12,x+15,y,JColor(0,0,0));
+			if(i==m_sv.var[34])jdd->DrawText(SCREEN_BUFFER,name[i],font12,x+15,y,JColor(0,0,255));
+				else jdd->DrawText(SCREEN_BUFFER,name[i],font12,x+15,y,JColor(0,0,0));
 		}
 		else	//아이템 이름
 		{
-			jdd->DrawText(backbuffer,name[i],font12,x+15,y,JColor(0,0,0));
-			jdd->DrawText(backbuffer,StrAdd("dc",m_sv.var[i],"개"),font12,x+125,y,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,name[i],font12,x+15,y,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,StrAdd("dc",m_sv.var[i],"개"),font12,x+125,y,JColor(0,0,0));
 		}
 		y+=15;
 		if(items==c)sitem=i;	//선택한 아이템 번호 돌려 보내기
@@ -995,7 +995,7 @@ void CGame::Note(bool save_able)
 			DispatchMessage(&msg);
 		}
 
-		jdd->DrawPicture(backbuffer,"노트",0,0,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,"노트",0,0,NULL);
 
 		//아래로
 		if(_GetKeyPush(VK_DOWN))
@@ -1098,57 +1098,57 @@ void CGame::Note(bool save_able)
 		if(inside && _GetKeyState(VK_ESCAPE))inside=false;
 
 		//메뉴
-		jdd->DrawPicture(backbuffer,"메뉴얼굴",0,menu*20+20,NULL);
-		jdd->DrawText(backbuffer,"사건",font20,21,21,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"사건",font20,20,20,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"인물",font20,21,41,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"인물",font20,20,40,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"도구",font20,21,61,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"도구",font20,20,60,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"기록",font20,21,81,JColor(0,0,0));
-		if(save_able)jdd->DrawText(backbuffer,"기록",font20,20,80,JColor(0,0,172));
-			else jdd->DrawText(backbuffer,"기록",font20,20,80,JColor(128,128,128));
-		jdd->DrawText(backbuffer,"덮기",font20,21,101,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"덮기",font20,20,100,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"나가기",font20,21,121,JColor(0,0,0));
-		if(save_able)jdd->DrawText(backbuffer,"나가기",font20,20,120,JColor(0,0,172));
-			else jdd->DrawText(backbuffer,"나가기",font20,20,120,JColor(128,128,128));
+		jdd->DrawPicture(SCREEN_BUFFER,"메뉴얼굴",0,menu*20+20,NULL);
+		jdd->DrawText(SCREEN_BUFFER,"사건",font20,21,21,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"사건",font20,20,20,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"인물",font20,21,41,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"인물",font20,20,40,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"도구",font20,21,61,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"도구",font20,20,60,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"기록",font20,21,81,JColor(0,0,0));
+		if(save_able)jdd->DrawText(SCREEN_BUFFER,"기록",font20,20,80,JColor(0,0,172));
+			else jdd->DrawText(SCREEN_BUFFER,"기록",font20,20,80,JColor(128,128,128));
+		jdd->DrawText(SCREEN_BUFFER,"덮기",font20,21,101,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"덮기",font20,20,100,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"나가기",font20,21,121,JColor(0,0,0));
+		if(save_able)jdd->DrawText(SCREEN_BUFFER,"나가기",font20,20,120,JColor(0,0,172));
+			else jdd->DrawText(SCREEN_BUFFER,"나가기",font20,20,120,JColor(128,128,128));
 
 		if(menu==0)
 		{
-			jdd->DrawText(backbuffer,note_content,font12,&noterect,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,note_content,font12,&noterect,JColor(0,0,0));
 		}
 		else if(menu==1)
 		{
 			for(int i=0; i<6; i++)
 			{
-				if(inside && inside_menu==i)jdd->DrawText(backbuffer,"→",font12,65,i*15+20,JColor(0,0,0));
-				jdd->DrawText(backbuffer,name[i+1],font12,80,i*15+20,JColor(0,0,0));
+				if(inside && inside_menu==i)jdd->DrawText(SCREEN_BUFFER,"→",font12,65,i*15+20,JColor(0,0,0));
+				jdd->DrawText(SCREEN_BUFFER,name[i+1],font12,80,i*15+20,JColor(0,0,0));
 
-				if(!m_sv.sw[i])jdd->DrawText(backbuffer,"사망",font12,150,i*15+20,JColor(128,128,128));
-					else if(m_sv.var[36+i]==0)jdd->DrawText(backbuffer,"무관심",font12,150,i*15+20,JColor(0,172,0));
-					else if(m_sv.var[36+i]==1)jdd->DrawText(backbuffer,"요주의",font12,150,i*15+20,JColor(126,128,0));
-					else if(m_sv.var[36+i]==2)jdd->DrawText(backbuffer,"제거대상",font12,150,i*15+20,JColor(216,0,0));
-					else jdd->DrawText(backbuffer,"보호대상",font12,150,i*15+20,JColor(0,192,192));
+				if(!m_sv.sw[i])jdd->DrawText(SCREEN_BUFFER,"사망",font12,150,i*15+20,JColor(128,128,128));
+					else if(m_sv.var[36+i]==0)jdd->DrawText(SCREEN_BUFFER,"무관심",font12,150,i*15+20,JColor(0,172,0));
+					else if(m_sv.var[36+i]==1)jdd->DrawText(SCREEN_BUFFER,"요주의",font12,150,i*15+20,JColor(126,128,0));
+					else if(m_sv.var[36+i]==2)jdd->DrawText(SCREEN_BUFFER,"제거대상",font12,150,i*15+20,JColor(216,0,0));
+					else jdd->DrawText(SCREEN_BUFFER,"보호대상",font12,150,i*15+20,JColor(0,192,192));
 			}
 		}
 		else if(menu==2)
 		{
-			if(inside)jdd->DrawText(backbuffer,"→",font12,80,inside_menu*15+20,JColor(0,0,0));
+			if(inside)jdd->DrawText(SCREEN_BUFFER,"→",font12,80,inside_menu*15+20,JColor(0,0,0));
 			ShowItem(80,20,inside_menu);
 		}
 		else if(menu==3)
 		{
 			if(save_able)
 			{
-				if(inside)jdd->DrawText(backbuffer,"→",font12,80,inside_menu*15+20,JColor(0,0,0));
+				if(inside)jdd->DrawText(SCREEN_BUFFER,"→",font12,80,inside_menu*15+20,JColor(0,0,0));
 				for(int i=0; i<SAVEFILEMAX; i++)
 				{
-					if(save_page[i]==-1)jdd->DrawText(backbuffer,"비어 있음",font12,95,20+i*15,JColor(0,0,0));
+					if(save_page[i]==-1)jdd->DrawText(SCREEN_BUFFER,"비어 있음",font12,95,20+i*15,JColor(0,0,0));
 						else
 						{
 							char* background[]={"거실","계단","복도","계단2","3층","욕실","주방","침실","침실","침실","침실","외경"};
-							jdd->DrawText(backbuffer,StrAdd("ccdcdcd",background[save_page[i]]," ",save_time[i],":",save_min[i],":",save_sec[i]),font12,95,20+i*15,JColor(0,0,0));
+							jdd->DrawText(SCREEN_BUFFER,StrAdd("ccdcdcd",background[save_page[i]]," ",save_time[i],":",save_min[i],":",save_sec[i]),font12,95,20+i*15,JColor(0,0,0));
 						}
 				}
 			}
@@ -1156,6 +1156,16 @@ void CGame::Note(bool save_able)
 
 		Render();
 	}	
+}
+
+//화면 늘여서 찍기
+void CommonRender()
+{
+	RECT dest_rect, src_rect;
+	SetRect(&src_rect, 0, 0, ORGINAL_SCREEN_X, ORGINAL_SCREEN_Y);
+	SetRect(&dest_rect, 0, 0, SCREEN_X, SCREEN_Y);
+	jdd->DrawStretchedPicture(backbuffer, SCREEN_BUFFER, &dest_rect, &src_rect);
+	jdd->Render();
 }
 
 //메인 메뉴
@@ -1176,7 +1186,7 @@ int CGame::MainMenu()
 			DispatchMessage(&msg);
 		}
 
-		jdd->DrawPicture(backbuffer,"타이틀",0,0,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,"타이틀",0,0,NULL);
 
 		//아래로
 		if(_GetKeyPush(VK_DOWN))
@@ -1235,29 +1245,29 @@ int CGame::MainMenu()
 		if(inside && _GetKeyState(VK_ESCAPE))inside=false;
 
 		//메뉴
-		jdd->DrawPicture(backbuffer,"메뉴얼굴",0,menu*20+80,NULL);
-		jdd->DrawText(backbuffer,"새 게임",font20,21,81,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"새 게임",font20,20,80,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"사건수첩",font20,21,101,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"사건수첩",font20,20,100,JColor(0,0,172));
-		jdd->DrawText(backbuffer,"끝내기",font20,21,121,JColor(0,0,0));
-		jdd->DrawText(backbuffer,"끝내기",font20,20,120,JColor(0,0,172));
+		jdd->DrawPicture(SCREEN_BUFFER,"메뉴얼굴",0,menu*20+80,NULL);
+		jdd->DrawText(SCREEN_BUFFER,"새 게임",font20,21,81,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"새 게임",font20,20,80,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"사건수첩",font20,21,101,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"사건수첩",font20,20,100,JColor(0,0,172));
+		jdd->DrawText(SCREEN_BUFFER,"끝내기",font20,21,121,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,"끝내기",font20,20,120,JColor(0,0,172));
 
 		if(menu==1)
 		{
-			if(inside)jdd->DrawText(backbuffer,"→",font12,105,inside_menu*15+80,JColor(0,0,0));
+			if(inside)jdd->DrawText(SCREEN_BUFFER,"→",font12,105,inside_menu*15+80,JColor(0,0,0));
 			for(int i=0; i<SAVEFILEMAX; i++)
 			{
-				if(save_page[i]==-1)jdd->DrawText(backbuffer,"비어 있음",font12,120,80+i*15,JColor(0,0,0));
+				if(save_page[i]==-1)jdd->DrawText(SCREEN_BUFFER,"비어 있음",font12,120,80+i*15,JColor(0,0,0));
 				else
 				{
 					char* background[]={"거실","계단","복도","계단2","3층","욕실","주방","침실","침실","침실","침실","외경"};
-					jdd->DrawText(backbuffer,StrAdd("ccdcdcd",background[save_page[i]]," ",save_time[i],":",save_min[i],":",save_sec[i]),font12,120,80+i*15,JColor(0,0,0));
+					jdd->DrawText(SCREEN_BUFFER,StrAdd("ccdcdcd",background[save_page[i]]," ",save_time[i],":",save_min[i],":",save_sec[i]),font12,120,80+i*15,JColor(0,0,0));
 				}
 			}
 		}
 
-		jdd->Render();
+		CommonRender();
 	}	
 
 	return menu;
@@ -1265,13 +1275,13 @@ int CGame::MainMenu()
 
 void CGame::Render()	//공통 사항
 {
-	for(int i=0; i<m_sv.var[32]; i++)jdd->DrawPicture(backbuffer,"HP",i+2,2,NULL);
-	jdd->DrawPicture(backbuffer,"HPMAX",0,0,NULL);
-	jdd->DrawText(backbuffer,StrAdd("dc",m_sv.var[33],"카오"),font20,111,1,JColor(0,0,0));
-	jdd->DrawText(backbuffer,global_buffer,font20,110,0,JColor(255,255,0));
-	jdd->DrawText(backbuffer,GetTime(),font20,231,1,JColor(0,0,0));
-	jdd->DrawText(backbuffer,GetTime(),font20,230,0,JColor(0,255,255));
-	jdd->Render();
+	for(int i=0; i<m_sv.var[32]; i++)jdd->DrawPicture(SCREEN_BUFFER,"HP",i+2,2,NULL);
+	jdd->DrawPicture(SCREEN_BUFFER,"HPMAX",0,0,NULL);
+	jdd->DrawText(SCREEN_BUFFER,StrAdd("dc",m_sv.var[33],"카오"),font20,111,1,JColor(0,0,0));
+	jdd->DrawText(SCREEN_BUFFER,global_buffer,font20,110,0,JColor(255,255,0));
+	jdd->DrawText(SCREEN_BUFFER,GetTime(),font20,231,1,JColor(0,0,0));
+	jdd->DrawText(SCREEN_BUFFER,GetTime(),font20,230,0,JColor(0,255,255));
+	CommonRender();
 }
 
 CGame m_game;
@@ -1283,13 +1293,13 @@ void CDlg::Background()
 {
 	//얼굴,배경 출력
 	char* background[]={"거실","계단","복도","계단2","3층","욕실","주방","침실","침실","침실","침실","외경"};
-	jdd->DrawPicture(backbuffer,background[m_sv.var[35]],0,0,NULL);
+	jdd->DrawPicture(SCREEN_BUFFER,background[m_sv.var[35]],0,0,NULL);
 	if(m_sv.var[26]>0 && m_sv.var[26]<7)
 	{
 		int facex[]={30,60,60,40,60,70};
 		int facey=0;
 		if(m_sv.var[26]==4)facey=40;
-		jdd->DrawPicture(backbuffer,StrAdd("cd","Face",m_sv.var[26]),facex[m_sv.var[26]-1],facey,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,StrAdd("cd","Face",m_sv.var[26]),facex[m_sv.var[26]-1],facey,NULL);
 	}
 }
 
@@ -1381,11 +1391,11 @@ int CDlg::TextPrint(int n_dlg, int y)
 		}
 		//출력
 		Background();
-		jdd->DrawText(backbuffer,name[name_no%8],font20,1,141,JColor(0,0,0));
-		jdd->DrawText(backbuffer,name[name_no%8],font20,0,140,JColor(0,216,0));
-		jdd->DrawPicture(backbuffer,"대화창",0,160,NULL);
-		jdd->DrawText(backbuffer,text_buffer,font20,&shadow,JColor(0,0,0));
-		jdd->DrawText(backbuffer,text_buffer,font20,&text,JColor(255,255,255));
+		jdd->DrawText(SCREEN_BUFFER,name[name_no%8],font20,1,141,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,name[name_no%8],font20,0,140,JColor(0,216,0));
+		jdd->DrawPicture(SCREEN_BUFFER,"대화창",0,160,NULL);
+		jdd->DrawText(SCREEN_BUFFER,text_buffer,font20,&shadow,JColor(0,0,0));
+		jdd->DrawText(SCREEN_BUFFER,text_buffer,font20,&text,JColor(255,255,255));
 		m_game.Render();
 		if(!ani_end && !_GetKeyState(VK_RETURN))Sleep(20);
 	}
@@ -1498,12 +1508,12 @@ int CDlg::TextSelect(int y)
 		else enter=false;
 		
 		Background();
-		jdd->DrawPicture(backbuffer,"대화창",0,160,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,"대화창",0,160,NULL);
 		if(n_of_e<4)	//4개 이하의 선택
 		{
-			jdd->DrawPicture(backbuffer,"선택",0,y+select*20,NULL);
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&text,JColor(255,255,255));
+			jdd->DrawPicture(SCREEN_BUFFER,"선택",0,y+select*20,NULL);
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&text,JColor(255,255,255));
 		}
 		else if(n_of_e<8)	//8개 이하의 선택
 		{
@@ -1512,14 +1522,14 @@ int CDlg::TextSelect(int y)
 			sy=y+(select%4)*20;
 			RECT src_rect;
 			SetRect(&src_rect,0,0,80,20);
-			jdd->DrawPicture(backbuffer,"선택",sx,sy,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"선택",sx,sy,&src_rect);
 			SetRect(&src_rect,240,0,320,20);
-			jdd->DrawPicture(backbuffer,"선택",sx+80,sy,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"선택",sx+80,sy,&src_rect);
 
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&text,JColor(255,255,255));
-			jdd->DrawText(backbuffer,dlg_buffer[1],font20,&shadow2,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[1],font20,&text2,JColor(255,255,255));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&text,JColor(255,255,255));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[1],font20,&shadow2,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[1],font20,&text2,JColor(255,255,255));
 		}
 		else	//그 이상(최대 16개)
 		{
@@ -1528,26 +1538,26 @@ int CDlg::TextSelect(int y)
 			sy=y+(select%4)*20;
 			RECT src_rect;
 			SetRect(&src_rect,0,0,40,20);
-			jdd->DrawPicture(backbuffer,"선택",sx,sy,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"선택",sx,sy,&src_rect);
 			SetRect(&src_rect,280,0,320,20);
-			jdd->DrawPicture(backbuffer,"선택",sx+40,sy,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"선택",sx+40,sy,&src_rect);
 
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[0],font20,&text,JColor(255,255,255));
-			jdd->DrawText(backbuffer,dlg_buffer[1],font20,&shadow2,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[1],font20,&text2,JColor(255,255,255));
-			jdd->DrawText(backbuffer,dlg_buffer[2],font20,&shadow3,JColor(0,0,0));
-			jdd->DrawText(backbuffer,dlg_buffer[2],font20,&text3,JColor(255,255,255));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&shadow,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[0],font20,&text,JColor(255,255,255));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[1],font20,&shadow2,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[1],font20,&text2,JColor(255,255,255));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[2],font20,&shadow3,JColor(0,0,0));
+			jdd->DrawText(SCREEN_BUFFER,dlg_buffer[2],font20,&text3,JColor(255,255,255));
 			if(n_of_e>=12)
 			{
-				jdd->DrawText(backbuffer,dlg_buffer[3],font20,&shadow4,JColor(0,0,0));
-				jdd->DrawText(backbuffer,dlg_buffer[3],font20,&text4,JColor(255,255,255));
+				jdd->DrawText(SCREEN_BUFFER,dlg_buffer[3],font20,&shadow4,JColor(0,0,0));
+				jdd->DrawText(SCREEN_BUFFER,dlg_buffer[3],font20,&text4,JColor(255,255,255));
 			}
 		}
 		m_game.Render();
 	}
 
-	jdd->DrawPicture(backbuffer,"Dlg",0,160,NULL);
+	jdd->DrawPicture(SCREEN_BUFFER,"Dlg",0,160,NULL);
 	return select;
 }
 
@@ -1561,7 +1571,7 @@ void CDlg::TextSnr(int from)
 		command=TextPrint(from,160);
 		if(command==0)from++;			
 	}
-	jdd->DrawPicture(backbuffer,"Dlg",0,160,NULL);
+	jdd->DrawPicture(SCREEN_BUFFER,"Dlg",0,160,NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1741,7 +1751,7 @@ void CSpr::Show()
 			{
 				SetRect(&src_rect,frame*XSIZE,0,frame*XSIZE+XSIZE,YSIZE);
 			}
-		jdd->DrawPicture(backbuffer,surfname[type],x,y,&src_rect);
+		jdd->DrawPicture(SCREEN_BUFFER,surfname[type],x,y,&src_rect);
 	}
 	if(invincible>0)invincible--;
 }
@@ -1907,7 +1917,7 @@ void CMissile::Show()
 	char* surfname[]={"Ah","Boomerang","Fire","Evil","Gas","Eye","Poison","Coin","Dot"};
 	int frame=ani_tempo;
 	if(frame==3)frame=1;
-	jdd->DrawPicture(backbuffer,StrAdd("cd",surfname[type],frame),x,y,NULL);
+	jdd->DrawPicture(SCREEN_BUFFER,StrAdd("cd",surfname[type],frame),x,y,NULL);
 }
 
 void CMissile::SetGradient(int x2, int y2)
@@ -2041,13 +2051,13 @@ bool CBattle::Battle()
 
 		if(--back_start <0)back_start=320;
 		if(back_start==0)
-			jdd->DrawPicture(backbuffer,"BattleBack",0,0,NULL);
+			jdd->DrawPicture(SCREEN_BUFFER,"BattleBack",0,0,NULL);
 		else
 		{
 			SetRect(&src_rect,0,0,320-back_start,240);
-			jdd->DrawPicture(backbuffer,"BattleBack",back_start,0,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"BattleBack",back_start,0,&src_rect);
 			SetRect(&src_rect,320-back_start,0,320,240);
-			jdd->DrawPicture(backbuffer,"BattleBack",0,0,&src_rect);
+			jdd->DrawPicture(SCREEN_BUFFER,"BattleBack",0,0,&src_rect);
 		}
 
 		//이동헌
@@ -2163,7 +2173,7 @@ bool CBattle::Battle()
 			}
 
 		//적의 에너지
-		for(int i=0; i<spr[0].hp; i++)jdd->DrawPicture(backbuffer,"HP",i,230,NULL);
+		for(int i=0; i<spr[0].hp; i++)jdd->DrawPicture(SCREEN_BUFFER,"HP",i,230,NULL);
 		//시간
 		if(++sec >= 100)
 		{

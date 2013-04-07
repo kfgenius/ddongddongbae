@@ -27,8 +27,8 @@ void FadeOut()
 {
 	for(int i=0; i<10; i++)
 	{
-		jdd->DrawPicture(backbuffer,"막",0,0,NULL);
-		jdd->Render();
+		jdd->DrawPicture(SCREEN_BUFFER,"막",0,0,NULL);
+		CommonRender();
 		Sleep(30);
 	}
 }
@@ -124,7 +124,7 @@ void GameOver()
 {
 	while(1)
 	{
-		jdd->DrawPicture(backbuffer,"GameOver",0,0,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,"GameOver",0,0,NULL);
 		if(_GetKeyState(VK_RETURN))
 		{
 			if(!enter)break;
@@ -142,7 +142,7 @@ void Ending()
 	int page=0;
 	while(page<6)
 	{
-		jdd->DrawPicture(backbuffer,StrAdd("cd","Ending",page),0,0,NULL);
+		jdd->DrawPicture(SCREEN_BUFFER,StrAdd("cd","Ending",page),0,0,NULL);
 		jdd->Render();
 
 		Sleep(12000);
@@ -721,8 +721,8 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 		//메인메뉴
 		//if(!m_nosound)jds->Stop("BGM");
 		//if(!m_nosound)jds->Play("Title");
-		jdd->DrawPicture(backbuffer,"Title",0,0,NULL);
-		jdd->Render();
+		jdd->DrawPicture(SCREEN_BUFFER,"Title",0,0,NULL);
+		CommonRender();
 		Sleep(1000);
 		while(m_sv.sw[8])
 		{
