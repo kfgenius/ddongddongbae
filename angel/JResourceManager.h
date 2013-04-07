@@ -2,7 +2,6 @@
 #define __JRESOURCEMANAGER_H__
 
 #include "JDirectDraw.h"
-#include "JDirectSound.h"
 
 #ifndef PURE
 #define PURE =0
@@ -18,6 +17,6 @@ struct JResourceManager
 	virtual bool UnloadResource(char* filename) PURE;
 };
 
-JResourceManager* CreateDXResourceManager(JDirectDraw* pdd,JDirectSound* pds);
+JResourceManager* CreateDXResourceManager(JDirectDraw* pdd);
 
 #endif //__JRESOURCEMANAGER_H__

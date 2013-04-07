@@ -1,10 +1,12 @@
 #include "JResourceManagerImp.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <Ole2.h>
 
-JResourceManager* CreateDXResourceManager(JDirectDraw* pdd,JDirectSound* pds)
+JResourceManager* CreateDXResourceManager(JDirectDraw* pdd)
 {
-	return new JResourceManagerImp(pdd,pds);
+	return new JResourceManagerImp(pdd);
 }
 
 IStreamMinimumImp::IStreamMinimumImp(char* filename) : refcount(1), emulatedsize(0), emulatedbegin(0)
@@ -119,10 +121,9 @@ bool IStreamMinimumImp::EmulateSize(DWORD size,char* filename)
 	return true;
 }
 
-JResourceManagerImp::JResourceManagerImp(JDirectDraw* dd,JDirectSound* ds)
+JResourceManagerImp::JResourceManagerImp(JDirectDraw* dd)
 {
 	this->dd=dd;
-	this->ds=ds;
 	memset(datapool,0,sizeof(datapool));
 }
 
@@ -194,8 +195,6 @@ struct sounddata
 	DWORD loop;
 };
 
-#include <stdio.h>
-
 bool JResourceManagerImp::LoadResource(char* filename)
 {
 #	define EXIT { istream->Release(); return false; }
@@ -203,7 +202,7 @@ bool JResourceManagerImp::LoadResource(char* filename)
 	if(!istream->Loaded()) EXIT;
 	DWORD sign;
 	istream->Read(&sign,4,NULL);
-	if(sign!=0x4b4e4843) EXIT;
+
 	DWORD ptr=4;
 	STATSTG stat;
 	istream->Stat(&stat,STATFLAG_NONAME);
@@ -238,27 +237,37 @@ bool JResourceManagerImp::LoadResource(char* filename)
 					color.color=pdt.colorkey;
 					info.SetColorKey(color);
 				}
-				istream->EmulateSize(dt.size-sizeof(pdt),dt.filename);
-				dd->LoadPicture(dt.name,istream,&info,pdt.sysmem!=0);
-				istream->EmulateSize(0);
-			}
-			break;
-		case 2: // wave
-			{
-				sounddata sdt;
-				istream->Read(&sdt,sizeof(sdt),NULL);
-				JSoundInfo info;
-				if(sdt.flag&SOUND_VOL) info.SetVolume(sdt.vol);
-				if(sdt.flag&SOUND_BAL) info.SetBalance(sdt.bal);
-				if(sdt.flag&SOUND_LOOP) info.SetLoopState(sdt.loop!=0);
-				istream->EmulateSize(dt.size-sizeof(sdt),dt.filename);
-				ds->LoadSound(dt.name,istream,&info);
-				istream->EmulateSize(0);
+				//istream->EmulateSize(dt.size-sizeof(pdt),dt.filename);
+
+				size_t imageSize = dt.size-sizeof(pdt);
+				void* m_hBuffer  = GlobalAlloc(GMEM_MOVEABLE, imageSize);
+				if (m_hBuffer)
+				{
+					void* pBuffer = GlobalLock(m_hBuffer);
+					if (pBuffer)
+					{
+						istream->Read(pBuffer, imageSize, NULL);
+
+						IStream* pStream = NULL;
+						if (CreateStreamOnHGlobal(m_hBuffer, FALSE, &pStream) == S_OK)
+						{
+							dd->LoadPicture(dt.name, pStream, &info,pdt.sysmem!=0);
+							pStream->Release();
+						}
+
+						GlobalUnlock(m_hBuffer);
+					}
+
+					GlobalFree(m_hBuffer);
+					m_hBuffer = NULL;
+				}
+
+				//dd->LoadPicture(dt.name,istream,&info,pdt.sysmem!=0);
+				//istream->EmulateSize(0);
 			}
 			break;
 		}
 		ptr+=dt.size+sizeof(chunkdata);
-//		if(ptr>stat.cbSize.QuadPart) break;
 		istream->Seek(cv64(ptr),STREAM_SEEK_SET,NULL);
 	}
 	istream->Release();
@@ -274,13 +283,17 @@ bool JResourceManagerImp::UnloadResource(char* filename)
 	DWORD sign;
 	istream->Read(&sign,4,NULL);
 	if(sign!=0x4b4e4843) EXIT;
+
 	DWORD ptr=4;
 	STATSTG stat;
 	istream->Stat(&stat,STATFLAG_NONAME);
 	while(1)
 	{
 		chunkdata dt;
-		istream->Read(&dt,sizeof(dt),NULL);
+		ULONG read;
+		istream->Read(&dt,sizeof(dt),&read);
+		if(read!=sizeof(dt)) break;
+
 		switch(dt.type)
 		{
 		case 0: // data
@@ -293,11 +306,8 @@ bool JResourceManagerImp::UnloadResource(char* filename)
 		case 1: // picture
 			dd->DeleteSurface(dt.name);
 			break;
-		case 2: // wave
-			ds->DeleteSound(dt.name);
-			break;
 		}
-		if((ptr+=dt.size)>=stat.cbSize.QuadPart) break;
+		ptr+=dt.size+sizeof(chunkdata);
 		istream->Seek(cv64(ptr),STREAM_SEEK_SET,NULL);
 	}
 	istream->Release();

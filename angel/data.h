@@ -669,10 +669,19 @@ char* snr[]={
 	"06999뭐가 어째?\n수염을 욕하다니!\n전국의 수염인들을 대표해서 널 심판해주마!\n타올라라! 수염의 불꽃!",
 };
 
+#define ORGINAL_SCREEN_X 320
+#define ORGINAL_SCREEN_Y 240
+#define SCREEN_X 640
+#define SCREEN_Y 480
+#define SCREEN_BUFFER	"CommonBlank"
+
 #include <stdarg.h>
 
-#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey ))
-#define _GetKeyPush( vkey )  LOBYTE(GetAsyncKeyState( vkey ))
+HWND hwnd;
+bool activate = true;
+
+#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey )) && activate
+#define _GetKeyPush( vkey )  LOBYTE(GetAsyncKeyState( vkey )) && activate
 
 FILE* fp;
 
@@ -687,8 +696,8 @@ void Play(char* name)
 {
 	if(!m_nosound)
 	{
-		jds->SetPosition(name,0.0f);
-		if(!m_nosound)jds->Play(name);
+		//jds->SetPosition(name,0.0f);
+		//if(!m_nosound)jds->Play(name);
 	}
 }
 
@@ -1382,7 +1391,7 @@ int CDlg::TextPrint(int n_dlg, int y)
 	}
 
 	//명령문 읽기
-	for(i=0; i<3; i++)
+	for(int i=0; i<3; i++)
 		tmp[i]=dlg_buffer[i+2];
 	tmp[3]=NULL;
 	return atoi(tmp);
@@ -1928,7 +1937,7 @@ public:
 CBattle::CBattle(int enemy)
 {
 	for(int i=0; i<SPRMAX; i++)spr[i].life=false;
-	for(i=0; i<MISSILE_MAX; i++)msl[i].life=false;
+	for(int i=0; i<MISSILE_MAX; i++)msl[i].life=false;
 
 	spr[SPRMAX-1].SetSpr(0,80,0,m_sv.var[32]);
 
@@ -1969,8 +1978,8 @@ bool CBattle::Crush(int spr_no, int msl_no)
 
 bool CBattle::Battle()
 {
-	if(!m_nosound)jds->Stop("BGM");
-	if(!m_nosound)jds->Play("Battle");
+	//if(!m_nosound)jds->Stop("BGM");
+	//if(!m_nosound)jds->Play("Battle");
 
 	int back_start=0;
 	int sec=0;
@@ -2111,7 +2120,7 @@ bool CBattle::Battle()
 				}
 			}
 		//아군 미사일
-		for(i=0; i<ENEMY_MISSILE; i++)
+		for(int i=0; i<ENEMY_MISSILE; i++)
 			if(msl[i].life)
 			{
 				msl[i].Move(spr[SPRMAX-1].x,spr[SPRMAX-1].y);
@@ -2139,7 +2148,7 @@ bool CBattle::Battle()
 					}
 			}
 		//적군 미사일
-		for(i=ENEMY_MISSILE; i<MISSILE_MAX; i++)
+		for(int i = ENEMY_MISSILE; i<MISSILE_MAX; i++)
 			if(msl[i].life)
 			{
 				msl[i].Move(spr[SPRMAX-1].x,spr[SPRMAX-1].y);
@@ -2154,7 +2163,7 @@ bool CBattle::Battle()
 			}
 
 		//적의 에너지
-		for(i=0; i<spr[0].hp; i++)jdd->DrawPicture(backbuffer,"HP",i,230,NULL);
+		for(int i=0; i<spr[0].hp; i++)jdd->DrawPicture(backbuffer,"HP",i,230,NULL);
 		//시간
 		if(++sec >= 100)
 		{
@@ -2164,7 +2173,7 @@ bool CBattle::Battle()
 		m_game.Render();
 	}
 
-	if(!m_nosound)jds->Stop("Battle");
-	if(spr[SPRMAX-1].life && !m_nosound)jds->Play("BGM");
+	//if(!m_nosound)jds->Stop("Battle");
+	//if(spr[SPRMAX-1].life && !m_nosound)jds->Play("BGM");
 	return spr[SPRMAX-1].life;
 }

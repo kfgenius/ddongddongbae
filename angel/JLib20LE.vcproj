@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="JLib20LE"
 	ProjectGUID="{751F57CF-0531-44EB-88D0-ED21B4AC3F00}"
+	RootNamespace="JLib20LE"
 	>
 	<Platforms>
 		<Platform
@@ -70,14 +71,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/force:multiple"
-				AdditionalDependencies="odbc32.lib odbccp32.lib gdiplus.lib ddraw.lib ddeffects3.lib dxerr9.lib dsound.lib amstrmid.lib dxguid.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib gdiplus.lib ddraw.lib ddeffects3.lib dxerr9.lib dsound.lib winmm.lib dxguid.lib"
 				OutputFile=".\Debug/JLib20LE.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="libc,libcd"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/JLib20LE.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -269,26 +270,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="JDirectSound.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="JResourceManager.cpp"
 				>
 				<FileConfiguration
@@ -375,14 +356,6 @@
 			</File>
 			<File
 				RelativePath="JDirectDrawImp.h"
-				>
-			</File>
-			<File
-				RelativePath="JDirectSound.h"
-				>
-			</File>
-			<File
-				RelativePath="JDirectSoundImp.h"
 				>
 			</File>
 			<File
