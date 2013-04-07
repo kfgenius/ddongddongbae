@@ -1,5 +1,4 @@
 #include "JDirectDraw.h"
-#include "JDirectSound.h"
 #include "JResourceManager.h"
 #include "resource.h"
 
@@ -12,7 +11,6 @@
 using namespace Gdiplus;
 
 JDirectDraw* jdd;
-JDirectSound* jds;
 JResourceManager* jre;
 
 char* backbuffer;
@@ -22,6 +20,8 @@ MSG msg;
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam);
 
 #include "data.h"
+
+bool window_mode = true;
 
 void FadeOut()
 {
@@ -137,8 +137,8 @@ void GameOver()
 
 void Ending()
 {
-	if(!m_nosound)jds->Stop("BGM");
-	if(!m_nosound)jds->Play("Ending");
+	//if(!m_nosound)jds->Stop("BGM");
+	//if(!m_nosound)jds->Play("Ending");
 	int page=0;
 	while(page<6)
 	{
@@ -149,20 +149,18 @@ void Ending()
 		FadeOut();
 		page++;
 	}
-	if(!m_nosound)jds->Stop("Ending");
+	//if(!m_nosound)jds->Stop("Ending");
 }
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 ■																		■
 ■                             메   인                                  ■
 ■																		■
 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
-int main()
+//int main()
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int nShowCmd)
 {
 	jdd=CreateDirectDraw();
-	jds=CreateDirectSound();
-	jre=CreateDXResourceManager(jdd,jds);
-
-	HINSTANCE hInstance=(HINSTANCE)0x00400000;
+	jre=CreateDXResourceManager(jdd);
 
 	WNDCLASS wc={0};
 	wc.hIcon=LoadIcon(hInstance,"satam3.ico");
@@ -173,9 +171,25 @@ int main()
 	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszClassName="Demo";
 	RegisterClass(&wc);
-	
-	HWND hwnd=CreateWindow("Demo","사립탐정 이동헌: 나의 수호천사",WS_POPUP|WS_VISIBLE,0,0,640,480,NULL,NULL,hInstance,NULL);
-    ShowCursor( FALSE );
+
+	if(window_mode)
+	{
+		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
+		ws &= ~WS_THICKFRAME;
+		ws &= ~WS_MAXIMIZEBOX;
+
+		RECT crt;
+		SetRect(&crt, 0, 0, SCREEN_X, SCREEN_Y);
+		AdjustWindowRect(&crt, ws, FALSE);
+
+		hwnd = CreateWindow("Demo","사립탐정 이동헌: 나의 수호천사", ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
+		ShowCursor( TRUE );
+	}
+	else
+	{
+		hwnd=CreateWindow("Demo","사립탐정 이동헌: 나의 수호천사",WS_POPUP|WS_VISIBLE,0,0,640,480,NULL,NULL,hInstance,NULL);
+		ShowCursor( FALSE );
+	}
 
 	//셋업 정보 부르기
 	FILE *fp;
@@ -187,9 +201,22 @@ int main()
 	}
 	
 	//초기화
-	if(m_640)jdd->Initialize(NULL,hwnd,640,480,16,true);
-		else jdd->Initialize(NULL,hwnd,320,240,16,true);
-	jds->Initialize(0,hwnd);
+	//if(m_640)jdd->Initialize(NULL,hwnd,640,480,16,true);
+	//	else jdd->Initialize(NULL,hwnd,320,240,16,true);
+	jdd->Initialize(NULL,hwnd,640,480,16,true,window_mode);
+
+	//임시 서페이스 생성
+	JPictureInfo jpi;
+	jpi.SetWidth(SCREEN_X);
+	jpi.SetHeight(SCREEN_Y);
+	jdd->CreateSurface(SCREEN_BUFFER, &jpi, TRUE);
+
+	//윈도우창 이동
+	if(window_mode)
+	{
+		jdd->OnMove(100, 100);
+		SetCursor(LoadCursor(0, IDC_ARROW));
+	}
 
 	backbuffer=jdd->GetBackBuffer();
 	font20=jdd->CreateFont("굴림체",20,true,false,false,false,false);
@@ -208,20 +235,20 @@ int main()
 	if(!m_nosound)
 	{
 		//소리 데이터 불러오기
-		JSoundInfo si;
-		si.SetLoopState(true);
-		jds->LoadSound("Title","sound\\title.mp3",&si);
-		jds->LoadSound("BGM","sound\\bg.mp3",&si);
-		jds->LoadSound("Ending","sound\\end.mp3");
-		si.SetVolume(0.9f);
-		jds->LoadSound("Battle","sound\\battle.mid",&si);
+		//JSoundInfo si;
+		//si.SetLoopState(true);
+		//jds->LoadSound("Title","sound\\title.mp3",&si);
+		//jds->LoadSound("BGM","sound\\bg.mp3",&si);
+		//jds->LoadSound("Ending","sound\\end.mp3");
+		//si.SetVolume(0.9f);
+		//jds->LoadSound("Battle","sound\\battle.mid",&si);
 		
-		jds->LoadSound("Ral","sound\\ral.mp3");
-		jds->LoadSound("Boomerang","sound\\boomerang.mp3");
-		jds->LoadSound("Fire","sound\\fire.mp3");
-		jds->LoadSound("Puck","sound\\puck.mp3");
-		jds->LoadSound("Lock","sound\\lock.mp3");
-		jds->LoadSound("Move","sound\\move.mp3");
+		//jds->LoadSound("Ral","sound\\ral.mp3");
+		//jds->LoadSound("Boomerang","sound\\boomerang.mp3");
+		//jds->LoadSound("Fire","sound\\fire.mp3");
+		//jds->LoadSound("Puck","sound\\puck.mp3");
+		//jds->LoadSound("Lock","sound\\lock.mp3");
+		//jds->LoadSound("Move","sound\\move.mp3");
 	}
 
 	bool end=false;
@@ -379,7 +406,7 @@ int main()
 
 						CCommand m_com2(4,8);
 						//조사 가능 장소 추가
-						for(i=0; i<7; i++)
+						for(int i=0; i<7; i++)
 						{
 							if(invest_spot[m_sv.var[35]][i]==-1)break;
 								else m_com2.AddCom(invest_spot[m_sv.var[35]][i]);
@@ -551,7 +578,7 @@ int main()
 
 						CCommand m_com2(6);
 						//이동 가능 장소
-						for(i=0; i<6; i++)
+						for(int i=0; i<6; i++)
 						{
 							if(move_spot[m_sv.var[35]][i]==-1)break;
 								else m_com2.AddCom(move_spot[m_sv.var[35]][i]);
@@ -692,15 +719,15 @@ int main()
 		FadeOut();
 		/////////////////////////////////////////////
 		//메인메뉴
-		if(!m_nosound)jds->Stop("BGM");
-		if(!m_nosound)jds->Play("Title");
+		//if(!m_nosound)jds->Stop("BGM");
+		//if(!m_nosound)jds->Play("Title");
 		jdd->DrawPicture(backbuffer,"Title",0,0,NULL);
 		jdd->Render();
 		Sleep(1000);
 		while(m_sv.sw[8])
 		{
 			int main_menu=m_game.MainMenu();
-			if(!m_nosound)jds->Stop("Title");
+			//if(!m_nosound)jds->Stop("Title");
 			//새 게임
 			if(main_menu==0)
 			{
@@ -728,12 +755,12 @@ int main()
 				m_dlg.TextSnr(33);
 				m_sv.SetVars(42,47,4,10,8,2,5,6);
 				m_game.Note(true);
-				if(!m_nosound)jds->Play("BGM");
+				//if(!m_nosound)jds->Play("BGM");
 			}
 			else if(main_menu==1)
 			{
 				m_sv.sw[8]=false;
-				if(!m_nosound)jds->Play("BGM");
+				//if(!m_nosound)jds->Play("BGM");
 			}
 			else if(main_menu==2)
 			{
@@ -749,5 +776,28 @@ int main()
 
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
+    switch ( msg )
+    {
+		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								break;
+		
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)activate=false;
+								else activate=true;
+								break;
+		
+		case WM_ACTIVATE	 : if(LOWORD(wParam))activate=true;
+								else activate=false;
+							   break;
+
+		case WM_SYSCOMMAND	 :  //닫기 메시지 가로채기
+								if(wParam==SC_CLOSE)
+								{
+									wParam=0;
+									exit(0);
+								}
+								break;
+
+	}
+
 	return DefWindowProc(wnd,msg,wParam,lParam);
 }

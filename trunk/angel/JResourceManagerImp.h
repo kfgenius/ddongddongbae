@@ -41,11 +41,10 @@ class JResourceManagerImp : public JResourceManager
 {
 protected:
 	JDirectDraw* dd;
-	JDirectSound* ds;
 	unsigned int sizepool[HASH_SIZE];
 	void* datapool[HASH_SIZE];
 public:
-	JResourceManagerImp(JDirectDraw* dd,JDirectSound* ds);
+	JResourceManagerImp(JDirectDraw* dd);
 	virtual ~JResourceManagerImp();
 
 	virtual int ReadData(char* name,void* dt,unsigned int len);
