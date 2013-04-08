@@ -165,13 +165,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/force:multiple"
-				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib gdiplus.lib dsound.lib amstrmid.lib dxerr9.lib ddeffects3.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib gdiplus.lib dsound.lib winmm.lib dxerr9.lib ddeffects3.lib"
 				OutputFile="Release/satam3.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release/satam3.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -209,6 +210,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath=".\Dsutil.cpp"
+				>
+			</File>
 			<File
 				RelativePath="JDirectDraw.cpp"
 				>
@@ -344,6 +349,10 @@
 			</File>
 			<File
 				RelativePath="DDEffects3.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Dsutil.h"
 				>
 			</File>
 			<File

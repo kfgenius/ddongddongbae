@@ -689,16 +689,69 @@ bool enter=false;
 int mode;
 char global_buffer[256];
 char time_buffer[16];
-BOOL m_nosound, m_640;
 
-//효과음 연주
-void Play(char* name)
+//사운드
+HSNDOBJ Sound[100];
+
+LPDIRECTSOUND       SoundOBJ = NULL;
+LPDIRECTSOUNDBUFFER SoundDSB = NULL;
+DSBUFFERDESC        DSB_desc;
+
+BOOL SoundCard;
+BOOL ReplayFlag;
+
+#define	SOUND_EFFECT_RAL		0
+#define	SOUND_EFFECT_BOOMERANG	1
+#define	SOUND_EFFECT_FIRE		2
+#define	SOUND_EFFECT_PUCK		3
+#define	SOUND_EFFECT_LOCK		4
+#define	SOUND_EFFECT_MOVE		5
+
+#define	SOUND_BGM_TITLE		6
+#define	SOUND_BGM_BG		7
+#define	SOUND_BGM_END		8
+#define	SOUND_BGM_BATTLE	9
+
+//미디 연주
+BOOL _MidiPlay(char* pszMidiFN, BOOL bReplayFlag = TRUE)
 {
-	if(!m_nosound)
-	{
-		//jds->SetPosition(name,0.0f);
-		//if(!m_nosound)jds->Play(name);
-	}
+    char szMCISendString[256];
+
+    wsprintf(szMCISendString,"open %s type sequencer alias MUSIC", pszMidiFN);
+
+    if ( mciSendString ( "close all", NULL, 0, NULL ) != 0 ) return ( FALSE );
+    if ( mciSendString ( szMCISendString, NULL, 0, NULL ) != 0 ) return ( FALSE );
+    if ( mciSendString ( "play MUSIC from 0 notify", NULL, 0, hwnd ) != 0) return(FALSE);
+
+    ReplayFlag = bReplayFlag; 
+    return TRUE;
+}
+
+BOOL _MidiStop()
+{
+    if ( mciSendString ( "close all", NULL, 0, NULL) != 0 ) return ( FALSE );
+    return TRUE;
+}
+
+BOOL _MidiReplay()
+{
+    if ( mciSendString ( "play MUSIC from 0 notify", NULL, 0, hwnd) != 0 ) return ( FALSE );
+    return TRUE;
+}
+
+void _BGMPlay( int num )
+{
+	if ( SoundCard ) SndObjPlay( Sound[num], DSBPLAY_LOOPING );
+}
+
+void _Play( int num )
+{
+    if ( SoundCard ) SndObjPlay( Sound[num], NULL );
+}
+
+void _Stop( int num )
+{
+	if ( SoundCard ) SndObjStop( Sound[num] );
 }
 
 //문자열 처리 함수
@@ -1988,8 +2041,8 @@ bool CBattle::Crush(int spr_no, int msl_no)
 
 bool CBattle::Battle()
 {
-	//if(!m_nosound)jds->Stop("BGM");
-	//if(!m_nosound)jds->Play("Battle");
+	_Stop(SOUND_BGM_BG);
+	_BGMPlay(SOUND_BGM_BATTLE);
 
 	int back_start=0;
 	int sec=0;
@@ -2022,7 +2075,7 @@ bool CBattle::Battle()
 						msl[0].SetMissile(spr[SPRMAX-1].x,spr[SPRMAX-1].y,shoot_angle,m_sv.var[34]);
 						msl[1].SetMissile(spr[SPRMAX-1].x,spr[SPRMAX-1].y,shoot_angle-2,m_sv.var[34]);
 						msl[2].SetMissile(spr[SPRMAX-1].x,spr[SPRMAX-1].y,shoot_angle+2,m_sv.var[34]);
-						Play("Ral");
+						_Play(SOUND_EFFECT_RAL);
 					}
 				}
 				else if(m_sv.var[34]==3)	//악마의 지팡이
@@ -2041,8 +2094,8 @@ bool CBattle::Battle()
 					if(id_no>=0)
 					{
 						msl[id_no].SetMissile(spr[SPRMAX-1].x,spr[SPRMAX-1].y,shoot_angle,m_sv.var[34]);
-						if(m_sv.var[34]==1)Play("Boomerang");
-							else if(m_sv.var[34]==2)Play("Fire");
+						if(m_sv.var[34]==1)_Play(SOUND_EFFECT_BOOMERANG);
+							else if(m_sv.var[34]==2)_Play(SOUND_EFFECT_FIRE);
 					}
 				}
 			}
@@ -2145,7 +2198,7 @@ bool CBattle::Battle()
 							if(msl[i].mirror_count>=2)
 							{
 								spr[j].Hurt(msl[i].power);
-								Play("Puck");
+								_Play(SOUND_EFFECT_PUCK);
 							}
 							spr[j].x=rand()%(320-XSIZE);
 							spr[j].y=rand()%(Y_MAX-YSIZE);
@@ -2153,7 +2206,7 @@ bool CBattle::Battle()
 						else
 						{
 							spr[j].Hurt(msl[i].power);
-							Play("Puck");
+							_Play(SOUND_EFFECT_PUCK);
 						}
 					}
 			}
@@ -2183,7 +2236,7 @@ bool CBattle::Battle()
 		m_game.Render();
 	}
 
-	//if(!m_nosound)jds->Stop("Battle");
-	//if(spr[SPRMAX-1].life && !m_nosound)jds->Play("BGM");
+	_Stop(SOUND_BGM_BATTLE);
+	_BGMPlay(SOUND_BGM_BG);
 	return spr[SPRMAX-1].life;
 }
