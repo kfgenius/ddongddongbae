@@ -1,4 +1,8 @@
+#include <dsound.h>
+
 #include "JDirectDraw.h"
+#include "JDirectDraw.h"
+#include "Dsutil.h"
 #include "JResourceManager.h"
 #include "resource.h"
 
@@ -137,8 +141,9 @@ void GameOver()
 
 void Ending()
 {
-	//if(!m_nosound)jds->Stop("BGM");
-	//if(!m_nosound)jds->Play("Ending");
+	_Stop(SOUND_BGM_BG);
+	_BGMPlay(SOUND_BGM_END);
+
 	int page=0;
 	while(page<6)
 	{
@@ -149,7 +154,8 @@ void Ending()
 		FadeOut();
 		page++;
 	}
-	//if(!m_nosound)jds->Stop("Ending");
+
+	_Stop(SOUND_BGM_END);
 }
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 ■																		■
@@ -191,19 +197,24 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 		ShowCursor( FALSE );
 	}
 
-	//셋업 정보 부르기
-	FILE *fp;
-	if(fp = fopen("setup.sav","rb"))
-	{
-		fread(&m_nosound,sizeof(BOOL),1,fp);
-		fread(&m_640,sizeof(BOOL),1,fp);
-		fclose(fp);
-	}
-	
 	//초기화
-	//if(m_640)jdd->Initialize(NULL,hwnd,640,480,16,true);
-	//	else jdd->Initialize(NULL,hwnd,320,240,16,true);
 	jdd->Initialize(NULL,hwnd,640,480,16,true,window_mode);
+
+	//사운드 초기화
+	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
+	{
+		SoundCard = TRUE;
+		if (SoundOBJ->SetCooperativeLevel(hwnd,DSSCL_PRIORITY)!=DS_OK) return 0;
+
+		memset(&DSB_desc,0,sizeof(DSBUFFERDESC));
+		DSB_desc.dwSize = sizeof(DSBUFFERDESC);
+		DSB_desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
+
+		if (SoundOBJ->CreateSoundBuffer(&DSB_desc,&SoundDSB,NULL)!=DS_OK) return 0;
+		SoundDSB -> SetVolume(0);
+		SoundDSB -> SetPan(0);
+	}
+	else SoundCard = FALSE;
 
 	//임시 서페이스 생성
 	JPictureInfo jpi;
@@ -232,23 +243,20 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 	jre->LoadResource("data\\battle.mlc");
 	jre->LoadResource("data\\etc.mlc");
 
-	if(!m_nosound)
+	//사운드 초기화
+	if(SoundCard)
 	{
-		//소리 데이터 불러오기
-		//JSoundInfo si;
-		//si.SetLoopState(true);
-		//jds->LoadSound("Title","sound\\title.mp3",&si);
-		//jds->LoadSound("BGM","sound\\bg.mp3",&si);
-		//jds->LoadSound("Ending","sound\\end.mp3");
-		//si.SetVolume(0.9f);
-		//jds->LoadSound("Battle","sound\\battle.mid",&si);
-		
-		//jds->LoadSound("Ral","sound\\ral.mp3");
-		//jds->LoadSound("Boomerang","sound\\boomerang.mp3");
-		//jds->LoadSound("Fire","sound\\fire.mp3");
-		//jds->LoadSound("Puck","sound\\puck.mp3");
-		//jds->LoadSound("Lock","sound\\lock.mp3");
-		//jds->LoadSound("Move","sound\\move.mp3");
+		Sound[SOUND_EFFECT_RAL] = SndObjCreate(SoundOBJ, "sound\\ral.wav", 2);
+		Sound[SOUND_EFFECT_BOOMERANG] = SndObjCreate(SoundOBJ, "sound\\boomerang.wav", 2);
+		Sound[SOUND_EFFECT_FIRE] = SndObjCreate(SoundOBJ, "sound\\fire.wav", 2);
+		Sound[SOUND_EFFECT_PUCK] = SndObjCreate(SoundOBJ, "sound\\puck.wav", 2);
+		Sound[SOUND_EFFECT_LOCK] = SndObjCreate(SoundOBJ, "sound\\lock.wav", 2);
+		Sound[SOUND_EFFECT_MOVE] = SndObjCreate(SoundOBJ, "sound\\move.wav", 2);
+
+		Sound[SOUND_BGM_TITLE] = SndObjCreate(SoundOBJ, "sound\\title.wav",1);
+		Sound[SOUND_BGM_BG] = SndObjCreate(SoundOBJ, "sound\\bg.wav",1);
+		Sound[SOUND_BGM_END] = SndObjCreate(SoundOBJ, "sound\\end.wav",1);
+		Sound[SOUND_BGM_BATTLE] = SndObjCreate(SoundOBJ, "sound\\battle.wav",1);
 	}
 
 	bool end=false;
@@ -597,12 +605,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 
 							if(lock)
 							{
-								Play("Lock");
+								_Play(SOUND_EFFECT_LOCK);
 								m_dlg.TextSnr(583);
 							}
 							else
 							{
-								Play("Move");
+								_Play(SOUND_EFFECT_MOVE);
 								m_sv.var[35]=m_com2.GetComID(com);
 								m_sv.var[26]=0;
 								//지금 장소에 있는 사람 검사
@@ -719,15 +727,17 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 		FadeOut();
 		/////////////////////////////////////////////
 		//메인메뉴
-		//if(!m_nosound)jds->Stop("BGM");
-		//if(!m_nosound)jds->Play("Title");
+		_Stop(SOUND_BGM_BG);
+		_BGMPlay(SOUND_BGM_TITLE);
 		jdd->DrawPicture(SCREEN_BUFFER,"Title",0,0,NULL);
 		CommonRender();
 		Sleep(1000);
 		while(m_sv.sw[8])
 		{
 			int main_menu=m_game.MainMenu();
-			//if(!m_nosound)jds->Stop("Title");
+
+			_Stop(SOUND_BGM_TITLE);
+
 			//새 게임
 			if(main_menu==0)
 			{
@@ -755,12 +765,13 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 				m_dlg.TextSnr(33);
 				m_sv.SetVars(42,47,4,10,8,2,5,6);
 				m_game.Note(true);
-				//if(!m_nosound)jds->Play("BGM");
+
+				_BGMPlay(SOUND_BGM_BG);
 			}
 			else if(main_menu==1)
 			{
 				m_sv.sw[8]=false;
-				//if(!m_nosound)jds->Play("BGM");
+				_BGMPlay(SOUND_BGM_BG);
 			}
 			else if(main_menu==2)
 			{
