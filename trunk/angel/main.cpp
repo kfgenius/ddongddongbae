@@ -709,7 +709,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 
 			if(++sec >= 100)
 			{
-				m_game.PlusTime(1000);
+				m_game.PlusTime(1);
 				sec=0;
 			}
 			m_dlg.Background();
