@@ -1,5 +1,7 @@
+#include <dsound.h>
+
 #include "JDirectDraw.h"
-#include "JDirectSound.h"
+#include "Dsutil.h"
 #include "JResourceManager.h"
 #include "resource.h"
 
@@ -12,7 +14,6 @@
 using namespace Gdiplus;
 
 JDirectDraw* jdd;
-JDirectSound* jds;
 JResourceManager* jre;
 
 char* backbuffer;
@@ -21,6 +22,8 @@ JFont font2;
 MSG msg;
 
 #include "data.h"
+
+bool window_mode = true;
 
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam);
 
@@ -110,7 +113,7 @@ void prepare_mode0()	//게임에 필요한 것들 준비
 	}
 }
 
-#include <iostream.h>
+//#include <iostream.h>
 
 int Menu(char* background, int menus, int x, int y, char* menu1, char* menu2, char* menu3, char* menu4, char* menu5, char* menu6, char* menu7)
 {
@@ -274,7 +277,7 @@ void SelectPlayer()
 							break;
 						}
 					}
-					for(j=0; j<ALL_GROUND; j++)
+					for(int j=0; j<ALL_GROUND; j++)
 					{
 						if(collision(&grd_r[j],&player_r))
 						{
@@ -295,12 +298,12 @@ void SelectPlayer()
 	jdd->DeleteSurface("Select");
 	//선수를 선택 안 했다면 자동 선택
 	if(select_ground==-1)select_ground=rand()%ALL_GROUND;
-	for(i=0; i<hall.players; i++)
+	for(int i=0; i<hall.players; i++)
 		if(select_pi[i]==-1)select_pi[i]=rand()%ALL_PLAYER;
 
 	//경기장과 플레이어 초기화
 	hall.SetHall(select_ground);
-	for(i=0; i<hall.players; i++)player[i].SetPlayer(select_pi[i],i%2);
+	for(int i=0; i<hall.players; i++)player[i].SetPlayer(select_pi[i],i%2);
 }
 
 //////////////////////////////////////////////////////
@@ -397,14 +400,11 @@ void KeyDefine(int player_no)
 	}
 }
 
-int main()
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int nShowCmd)
 {
 
 	jdd=CreateDirectDraw();
-	jds=CreateDirectSound();
-	jre=CreateDXResourceManager(jdd,jds);
-
-	HINSTANCE hInstance=(HINSTANCE)0x00400000;
+	jre=CreateDXResourceManager(jdd);
 
 	WNDCLASS wc={0};
 	wc.hIcon=LoadIcon(hInstance,"PSYCCER.ico");
@@ -415,15 +415,40 @@ int main()
 	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszClassName="Demo";
 	RegisterClass(&wc);
+
+	if(window_mode)
+	{
+		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
+		ws &= ~WS_THICKFRAME;
+		ws &= ~WS_MAXIMIZEBOX;
+
+		RECT crt;
+		SetRect(&crt, 0, 0, 640, 480);
+		AdjustWindowRect(&crt, ws, FALSE);
+
+		hwnd = CreateWindow("Demo","싸이커", ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
+		ShowCursor( TRUE );
+	}
+	else
+	{
+		hwnd=CreateWindow("Demo","싸이커",WS_POPUP|WS_VISIBLE,0,0,640,480,NULL,NULL,hInstance,NULL);
+		ShowCursor( FALSE );
+	}
+
+	jdd->Initialize(NULL/*jdd->GetDeviceCount()-1*/,hwnd,640,480,16,true,true);
 	
-	HWND hwnd=CreateWindow("Demo","싸이커",WS_POPUP|WS_VISIBLE,0,0,640,480,NULL,NULL,hInstance,NULL);
-    ShowCursor( FALSE );
+	
+	//윈도우창 이동
+	if(window_mode)
+	{
+		jdd->OnMove(100, 100);
+		SetCursor(LoadCursor(0, IDC_ARROW));
+	}
 
-	jdd->Initialize(NULL/*jdd->GetDeviceCount()-1*/,hwnd,640,480,16,true);
-	jds->Initialize(0,hwnd);
+	//jds->Initialize(0,hwnd);
 
-	JSoundInfo music_info, effect_info;
-    music_info.SetLoopState(true);
+	//JSoundInfo music_info, effect_info;
+    ////music_info.SetLoopState(true);
 
  	JBrush red=jdd->CreateBrush(JColor(255,0,0));
 
@@ -526,16 +551,16 @@ int main()
 							{
 								music_volume-=0.01f;
 								if(music_volume<0.0f)music_volume=0.0f;
-								music_info.SetVolume(music_volume);
-								jds->SetSoundInfo("Test",&music_info);
+								//music_info.SetVolume(music_volume);
+								//jds->SetSoundInfo("Test",&music_info);
 							}							
 							//크게
 							else if(_GetKeyState(player[0].keyR))
 							{
 								music_volume+=0.01f;
 								if(music_volume>1.0f)music_volume=1.0f;
-								music_info.SetVolume(music_volume);
-								jds->SetSoundInfo("Test",&music_info);
+								//music_info.SetVolume(music_volume);
+								//jds->SetSoundInfo("Test",&music_info);
 							}
 							else if(_GetKeyState(VK_ESCAPE))break;
 							
@@ -543,8 +568,8 @@ int main()
 							jdd->DrawText(backbuffer,StrAdd("음악크기:",int(music_volume*100)),font,260,160,JColor(255,32,32));
 							jdd->Render();
 						}
-						jds->Stop("Test");
-						jds->DeleteSound("Test");
+						//jds->Stop("Test");
+						//jds->DeleteSound("Test");
 					}
 					//효과음 조절
 					else if(what==1)
@@ -569,16 +594,16 @@ int main()
 							{
 								effect_volume-=0.01f;
 								if(effect_volume<0.0f)effect_volume=0.0f;
-								effect_info.SetVolume(effect_volume);
-								jds->SetSoundInfo("Test",&effect_info);
+								//effect_info.SetVolume(effect_volume);
+								//jds->SetSoundInfo("Test",&effect_info);
 							}							
 							//크게
 							else if(_GetKeyState(player[0].keyR))
 							{
 								effect_volume+=0.01f;
 								if(effect_volume>1.0f)effect_volume=1.0f;
-								effect_info.SetVolume(effect_volume);
-								jds->SetSoundInfo("Test",&effect_info);
+								//effect_info.SetVolume(effect_volume);
+								//jds->SetSoundInfo("Test",&effect_info);
 							}
 							else if(_GetKeyState(VK_ESCAPE))break;
 							
@@ -586,8 +611,8 @@ int main()
 							jdd->DrawText(backbuffer,StrAdd("효과음 크기:",int(effect_volume*100)),font,260,160,JColor(255,32,32));
 							jdd->Render();
 						}
-						jds->Stop("Test");
-						jds->DeleteSound("Test");
+						//jds->Stop("Test");
+						//jds->DeleteSound("Test");
 					}
 					else if(what==6)sound_on=(sound_on)?false:true;
 					else if(what>=2)KeyDefine(what-2);
@@ -609,7 +634,7 @@ int main()
 			if(ai_fight)
 			{
 				if(player[2].ai && player[3].ai)hall.players=2;
-				for(i=0; i<PLAYERS; i++)player[i].ai=true;
+				for(int i=0; i<PLAYERS; i++)player[i].ai=true;
 			}			
 		}
 		else	//녹화경기 보기
@@ -619,7 +644,7 @@ int main()
 
 		gamemode=READYMODE;
 
-		for(i=0; i<hall.players; i++)
+		for(int i=0; i<hall.players; i++)
 		{
 			char tmp_file[40];
 			//스프라이트 데이터
@@ -652,33 +677,33 @@ int main()
 
 		if(!demoplay)m_rec.RecordStart();
 
-		music_info.SetVolume(music_volume);
-		effect_info.SetVolume(effect_volume);
+		//music_info.SetVolume(music_volume);
+		//effect_info.SetVolume(effect_volume);
 
 		//축구장 소리
 		if(hall.id==0)
 		{
-			jds->LoadSound("bgm","bgm\\soccer.mid",&music_info);
+			//jds->LoadSound("bgm","bgm\\soccer.mid",&music_info);
 		}
 		//감옥 소리
 		else if(hall.id==1)
 		{
-			jds->LoadSound("bgm","bgm\\jail.mid",&music_info);
+			//jds->LoadSound("bgm","bgm\\jail.mid",&music_info);
 		}
 		//농구장 소리
 		else if(hall.id==2)
 		{
-			jds->LoadSound("bgm","bgm\\slamdunk.mid",&music_info);
+			//jds->LoadSound("bgm","bgm\\slamdunk.mid",&music_info);
 		}
 		//지옥 소리
 		else if(hall.id==3)
 		{
-			jds->LoadSound("bgm","bgm\\hell.mid",&music_info);
+			//jds->LoadSound("bgm","bgm\\hell.mid",&music_info);
 		}
 		//B-612 소리
 		else if(hall.id==4)
 		{
-			jds->LoadSound("bgm","bgm\\star.mid",&music_info);
+			//jds->LoadSound("bgm","bgm\\star.mid",&music_info);
 		}
 
 		//게임 플레이
@@ -708,7 +733,7 @@ int main()
 			if(gamemode == PLAYMODE)
 			{
 				//-----------공 제어-----------//
-				for(i=0; i<BALLMAX; i++)
+				for(int i=0; i<BALLMAX; i++)
 				{
 					if(!ball[i].life)continue;
 					ball[i].Move();
@@ -726,7 +751,7 @@ int main()
 				if(demoplay)m_rec.Play();	//데모 플레이
 				bool teamlife[]={false,false};	//팀의 생존현황
 				//-----------플레이어 제어-----------//
-				for(i=0; i<hall.players; i++)
+				for(int i=0; i<hall.players; i++)
 				{
 					if(!player[i].life)continue;
 					if(player[i].now==6)//죽었을 경우 제어불능
@@ -889,11 +914,11 @@ int main()
 				//팀 전원 사망
 				else
 				{
-					for(i=0; i<2; i++)
+					for(int i=0; i<2; i++)
 					{
 						if(!teamlife[i])
 						{
-							win+=int(pow(2,i));
+							win+=int(pow((double)2,(double)i));
 							stop=400;
 							gamemode=READYMODE;
 						}
@@ -914,7 +939,7 @@ int main()
 					//배경
 					jdd->DrawPicture(backbuffer,"Back",0,0,&hall.srect);
 					//공
-					for(i=0; i<BALLMAX; i++)
+					for(int i=0; i<BALLMAX; i++)
 					{
 						if(!ball[i].life)continue;
 						int x=ball[i].x-hall.scroll;
@@ -922,7 +947,7 @@ int main()
 							else jdd->DrawPictureEx(backbuffer,StrAdd("Weapon",ball[i].type*10+ball[i].ani_now),x,ball[i].y,NULL,ball[i].dir);
 					}
 					//캐릭터
-					for(i=0; i<hall.players; i++)
+					for(int i=0; i<hall.players; i++)
 					{
 						if(!player[i].life)continue;
 
@@ -982,7 +1007,7 @@ int main()
 				{
 					if(stop==400)
 					{
-						jds->Stop("bgm");
+						//jds->Stop("bgm");
 					}
 					jdd->DrawPicture(backbuffer,"End",114,161,NULL);
 					stop--;
@@ -994,7 +1019,7 @@ int main()
 					stop++;
 					if(stop==0)
 					{
-						jds->Play("bgm");
+						//jds->Play("bgm");
 						gamemode=PLAYMODE;
 					}
 				}
@@ -1002,17 +1027,17 @@ int main()
 			jdd->Render();
 		}
 		//음악 삭제
-		jds->DeleteSound("bgm");
-		jds->DeleteSound("Puck");
-		jds->DeleteSound("Bound");
-		jds->DeleteSound("Whistle");
-		jds->DeleteSound("Fire");
-		jds->DeleteSound("Wind");
-		jds->DeleteSound("Scream");
+		//jds->DeleteSound("bgm");
+		//jds->DeleteSound("Puck");
+		//jds->DeleteSound("Bound");
+		//jds->DeleteSound("Whistle");
+		//jds->DeleteSound("Fire");
+		//jds->DeleteSound("Wind");
+		//jds->DeleteSound("Scream");
 
 		//게임 중에만 쓰는 서페이스들 삭제
 		jre->UnloadResource(StrAdd("data\\",hall.filename));
-		for(i=0; i<hall.players; i++)
+		for(int i=0; i<hall.players; i++)
 			for(int j=0; j<8; j++)
 				jdd->DeleteSurface(surfname[i][j]);
 		//경기녹화
@@ -1028,14 +1053,13 @@ int main()
 	jdd->DeleteFont(font);
 	jdd->DeleteFont(font2);
 	delete jdd;
-	delete jds;
 
 	_CrtDumpMemoryLeaks();
 
 	//옵션 정보를 저장
 	if(fp=fopen("setup.sav","wb"))
 	{
-		for(i=0; i<4; i++)fwrite(&player[i].keyL,sizeof(int),5,fp);
+		for(int i=0; i<4; i++)fwrite(&player[i].keyL,sizeof(int),5,fp);
 		fwrite(&music_volume,sizeof(double),1,fp);
 		fwrite(&effect_volume,sizeof(double),1,fp);
 		fwrite(&sound_on,sizeof(bool),1,fp);
@@ -1047,10 +1071,33 @@ int main()
 
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	switch(msg)
-	{
-		case WM_CHAR:
-			break;
+    switch ( msg )
+    {
+		case WM_CHAR		:	break;
+
+		case MM_MCINOTIFY    :  if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL ) _MidiReplay();
+								break;
+
+		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								break;
+		
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)activate=false;
+								else activate=true;
+								break;
+		
+		case WM_ACTIVATE	 : if(LOWORD(wParam))activate=true;
+								else activate=false;
+							   break;
+
+		case WM_SYSCOMMAND	 :  //닫기 메시지 가로채기
+								if(wParam==SC_CLOSE)
+								{
+									wParam=0;
+									exit(0);
+								}
+								break;
+
 	}
+
 	return DefWindowProc(wnd,msg,wParam,lParam);
 }

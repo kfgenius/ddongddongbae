@@ -5,7 +5,7 @@
 #define ALL_PLAYER 7	//만들어 놓은 모든 선수
 #define ALL_GROUND 5	//만들어 놓은 경기장
 
-#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey ))
+#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey )) && activate
 
 FILE *fp;
 int frameskip = 0;
@@ -15,14 +15,55 @@ double music_volume=1.0f;
 double effect_volume=1.0f;
 bool sound_on;
 
+bool activate = true;
+
+HWND hwnd;
+
+//사운드
+HSNDOBJ Sound[100];
+
+LPDIRECTSOUND       SoundOBJ = NULL;
+LPDIRECTSOUNDBUFFER SoundDSB = NULL;
+DSBUFFERDESC        DSB_desc;
+
+BOOL SoundCard;
+BOOL ReplayFlag;
+
+//미디 연주
+BOOL _MidiPlay(char* pszMidiFN, BOOL bReplayFlag = TRUE)
+{
+    char szMCISendString[256];
+
+    wsprintf(szMCISendString,"open %s type sequencer alias MUSIC", pszMidiFN);
+
+    if ( mciSendString ( "close all", NULL, 0, NULL ) != 0 ) return ( FALSE );
+    if ( mciSendString ( szMCISendString, NULL, 0, NULL ) != 0 ) return ( FALSE );
+    if ( mciSendString ( "play MUSIC from 0 notify", NULL, 0, hwnd ) != 0) return(FALSE);
+
+    ReplayFlag = bReplayFlag; 
+    return TRUE;
+}
+
+BOOL _MidiStop()
+{
+    if ( mciSendString ( "close all", NULL, 0, NULL) != 0 ) return ( FALSE );
+    return TRUE;
+}
+
+BOOL _MidiReplay()
+{
+    if ( mciSendString ( "play MUSIC from 0 notify", NULL, 0, hwnd) != 0 ) return ( FALSE );
+    return TRUE;
+}
+
+void _Play( int num )
+{
+    if ( SoundCard ) SndObjPlay( Sound[num], NULL );
+}
+
 //효과음 연주
 void Play(char* name)
 {
-	if(sound_on)
-	{
-		jds->SetPosition(name,0.0f);
-		jds->Play(name);
-	}
 }
 
 //최대값 최소값
@@ -246,7 +287,7 @@ void CHall::SetHall(int type)
 	player[2].x=100;
 	player[3].x=width-100;
 	//공 초기화
-	for(i=0; i<BALLMAX; i++)ball[i].life=false;
+	for(int i=0; i<BALLMAX; i++)ball[i].life=false;
 	ball[0].SetBall(width/2,999,type);
 }
 
