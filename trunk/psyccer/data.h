@@ -15,6 +15,8 @@ double music_volume=1.0f;
 double effect_volume=1.0f;
 bool sound_on;
 
+int bound_sound_id = 0;
+
 bool activate = true;
 
 HWND hwnd;
@@ -458,10 +460,12 @@ void CPlayer::Hurt(int damage)
 	hp=Max(0,hp-damage);
 	if(!hp)	//사망
 	{
+		_Play(6);
 		SetAni(6,6,6,6,100,true);
 	}
 	else	//패닉
 	{
+		_Play(4);
 		SetAni(5,5,5,5,damage);
 	}
 }
@@ -498,6 +502,11 @@ void CPlayer::Action()
 	count++;
 	if(count > delay)
 	{
+		//드래곤 불꽃 효과음
+		if(id == DRAGUN && now==4)
+		{
+			_Play(1);
+		}
 
 		count = 0;
 		cp++;
@@ -508,6 +517,7 @@ void CPlayer::Action()
 			if(id == HWARANG && next[3]==4)
 			{
 				attack_on=true;
+				_Play(8);
 			}
 
 			if(!ani_loop)SetAni(0,1,2,1,40,true);
@@ -731,6 +741,7 @@ void CBall::Move()		//힘에 의한 공의 이동
 		{
 			y=BASE-height;
 			force_y=-(force_y*hall.bound/10*(100-heavy)/100);
+			_Play(bound_sound_id);
 		}
 	}
 	else force_y+=(10-hall.grav)*heavy/10;
