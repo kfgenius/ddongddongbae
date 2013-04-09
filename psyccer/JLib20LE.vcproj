@@ -165,13 +165,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/force:multiple"
-				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib gdiplus.lib dsound.lib amstrmid.lib dxerr9.lib ddeffects3.lib dinput.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib gdiplus.lib dsound.lib winmm.lib dxerr9.lib ddeffects3.lib dinput.lib"
 				OutputFile="Release/psyccer.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release/psyccer.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool

@@ -60,7 +60,7 @@ BOOL _MidiReplay()
 
 void _Play( int num )
 {
-    if ( SoundCard ) SndObjPlay( Sound[num], NULL );
+    if ( SoundCard && sound_on ) SndObjPlay( Sound[num], NULL );
 }
 
 //효과음 연주
