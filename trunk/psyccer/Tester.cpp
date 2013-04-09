@@ -557,11 +557,11 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 					char on_off[20];
 					if(sound_on)strcpy(on_off,"효과음 끄기");
 						else strcpy(on_off,"효과음 켜기");
-					int what=Menu("TitleDark",7,210,200,"음악 조절","효과음 조절","1P 키설정","2P 키설정","3P 키설정","4P 키설정",on_off);
+					int what=Menu("TitleDark",5,210,200,"1P 키설정","2P 키설정","3P 키설정","4P 키설정",on_off,"","");
 					
 					if(what==-1)break;
 					//음악 조절
-					else if(what==0)
+					/*else if(what==0)
 					{
 						while(1)
 						{
@@ -638,9 +638,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 						}
 						//jds->Stop("Test");
 						//jds->DeleteSound("Test");
-					}
-					else if(what==6)sound_on=(sound_on)?false:true;
-					else if(what>=2)KeyDefine(what-2);
+					}*/
+					else if(what==4)sound_on=(sound_on)?false:true;
+					else KeyDefine(what);
 				}
 			}
 		}while(!ready);
