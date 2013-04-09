@@ -445,10 +445,35 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 		SetCursor(LoadCursor(0, IDC_ARROW));
 	}
 
-	//jds->Initialize(0,hwnd);
+	//사운드 초기화
+	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
+	{
+		SoundCard = TRUE;
+		if (SoundOBJ->SetCooperativeLevel(hwnd,DSSCL_PRIORITY)!=DS_OK) return 0;
 
-	//JSoundInfo music_info, effect_info;
-    ////music_info.SetLoopState(true);
+		memset(&DSB_desc,0,sizeof(DSBUFFERDESC));
+		DSB_desc.dwSize = sizeof(DSBUFFERDESC);
+		DSB_desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
+
+		if (SoundOBJ->CreateSoundBuffer(&DSB_desc,&SoundDSB,NULL)!=DS_OK) return 0;
+		SoundDSB -> SetVolume(0);
+		SoundDSB -> SetPan(0);
+	}
+	else SoundCard = FALSE;
+
+	//사운드 초기화
+	if(SoundCard)
+	{
+		Sound[0] = SndObjCreate(SoundOBJ,"sound\\bound.wav",2);
+		Sound[1] = SndObjCreate(SoundOBJ,"sound\\fire.wav",2);
+		Sound[2] = SndObjCreate(SoundOBJ,"sound\\jump.wav",2);
+		Sound[3] = SndObjCreate(SoundOBJ,"sound\\leaf.wav",2);
+		Sound[4] = SndObjCreate(SoundOBJ,"sound\\puck.wav",2);
+		Sound[5] = SndObjCreate(SoundOBJ,"sound\\sand.wav",2);
+		Sound[6] = SndObjCreate(SoundOBJ,"sound\\scream.wav",2);
+		Sound[7] = SndObjCreate(SoundOBJ,"sound\\whistle.wav",2);
+		Sound[8] = SndObjCreate(SoundOBJ,"sound\\wind.wav",2);
+	}
 
  	JBrush red=jdd->CreateBrush(JColor(255,0,0));
 
@@ -683,27 +708,33 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 		//축구장 소리
 		if(hall.id==0)
 		{
-			//jds->LoadSound("bgm","bgm\\soccer.mid",&music_info);
+			_MidiPlay("bgm\\soccer.mid");
+			bound_sound_id = 3;
+
 		}
 		//감옥 소리
 		else if(hall.id==1)
 		{
-			//jds->LoadSound("bgm","bgm\\jail.mid",&music_info);
+			_MidiPlay("bgm\\jail.mid");
+			bound_sound_id = 0;
 		}
 		//농구장 소리
 		else if(hall.id==2)
 		{
-			//jds->LoadSound("bgm","bgm\\slamdunk.mid",&music_info);
+			_MidiPlay("bgm\\slamdunk.mid");
+			bound_sound_id = 0;
 		}
 		//지옥 소리
 		else if(hall.id==3)
 		{
-			//jds->LoadSound("bgm","bgm\\hell.mid",&music_info);
+			_MidiPlay("bgm\\hell.mid");
+			bound_sound_id = 2;
 		}
 		//B-612 소리
 		else if(hall.id==4)
 		{
-			//jds->LoadSound("bgm","bgm\\star.mid",&music_info);
+			_MidiPlay("bgm\\star.mid");
+			bound_sound_id = 5;
 		}
 
 		//게임 플레이
@@ -721,6 +752,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 			{
 				if(!key_esc)
 				{
+					_MidiStop();
 					key_esc=true;
 					game_over=true;
 					win=999;
@@ -1003,11 +1035,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 			if(gamemode == READYMODE)
 			{
 				//시합 종료, 시작
-				if(stop>0)
+				if(stop > 0)
 				{
 					if(stop==400)
 					{
-						//jds->Stop("bgm");
+						_Play(7);
+						_MidiStop();
 					}
 					jdd->DrawPicture(backbuffer,"End",114,161,NULL);
 					stop--;
@@ -1015,11 +1048,15 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 				}
 				else
 				{
+					if(stop==-200)
+					{
+						_Play(7);
+					}
+
 					jdd->DrawPicture(backbuffer,"Start",126,171,NULL);
 					stop++;
 					if(stop==0)
 					{
-						//jds->Play("bgm");
 						gamemode=PLAYMODE;
 					}
 				}
@@ -1027,7 +1064,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstancem, LPSTR lpCmdLine, int 
 			jdd->Render();
 		}
 		//음악 삭제
-		//jds->DeleteSound("bgm");
 		//jds->DeleteSound("Puck");
 		//jds->DeleteSound("Bound");
 		//jds->DeleteSound("Whistle");
