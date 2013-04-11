@@ -48,7 +48,13 @@ int Click()
 	key=true;
 	while(loop)
 	{
-		PRC
+		if(PeekMessage(&msg,NULL,0,0,PM_NOREMOVE))
+		{
+			if(!GetMessage(&msg,NULL,0,0)) break;
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
 		if(LeftButton||_GetKeyState(VK_RETURN)||_GetKeyState(VK_SPACE))
 		{
 			if(!key)

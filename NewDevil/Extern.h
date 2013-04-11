@@ -7,9 +7,6 @@
 #include "JResourceManager.h"
 #include "resource.h"
 
-#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey ))
-#define _GetKeyPush( vkey )  LOBYTE(GetAsyncKeyState( vkey ))
-
 #define random(num) (int)(((long)rand() * (num)) / (RAND_MAX + 1))
 #define randomize() srand((unsigned)time(NULL))
 
@@ -63,6 +60,11 @@ extern bool window_mode;
 extern char DirectOBJ;
 
 extern HSNDOBJ Sound[MAX_SOUND];
+
+extern MSG msg;
+
+#define _GetKeyState( vkey ) HIBYTE(GetAsyncKeyState( vkey )) && activate
+#define _GetKeyPush( vkey )  LOBYTE(GetAsyncKeyState( vkey )) && activate
 
 void Init();
 void Term();
