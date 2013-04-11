@@ -89,7 +89,15 @@ void _DrawBmp2(RECT rect, int x, int y, char* surf_name, int flag, RECT clip, in
 	Drect.left=x; Drect.right=x+xx;
 	Drect.top=y; Drect.bottom=y+yy;
 
-	jdd->DrawStretchedPicture(backbuffer, surf_name, &Drect, &Orect); 
+	if(flag & DDBLT_DDFX)
+	{
+		jdd->DrawPictureEx(backbuffer, surf_name, x, y, &Orect, DPX_HFLIP);
+	}
+	else
+	{
+		jdd->DrawPicture(backbuffer, surf_name, x, y, &Orect);
+	}
+	//jdd->DrawStretchedPicture(backbuffer, surf_name, &Drect, &Orect); 
 }
 
 void _Pixel( int x, int y, JColor jc)
