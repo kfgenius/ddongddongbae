@@ -591,15 +591,8 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			//혼돈과 어둠 로고
 			SetR(&BackRect,0,0,800,600);
 			_DrawBmp(BackRect, 0, 0, BmpScreen[7], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
-			_CopyScreen(false);
-			_Delay(1000);
-			Change(99);
-			//로코코워크스 로고
-			BmpScreen[7] = DDLoadBitmap( DirectOBJ, "data//rw.bmp", 0, 0, SYSTEM);
 			BmpScreen[9] = DDLoadBitmap( DirectOBJ, "data//mask.bmp", 0, 0, SYSTEM);
 			DDSetColorKey( BmpScreen[9], JColor(255,255,255) );
-			SetR(&BackRect,0,0,800,600);
-			_DrawBmp(BackRect, 0, 0, BmpScreen[7], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 			_CopyScreen(false);
 			_Delay(1000);
 			Change(99);
