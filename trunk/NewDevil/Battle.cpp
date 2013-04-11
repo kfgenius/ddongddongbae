@@ -4,7 +4,6 @@
 
 #include "Battle.h"
 #include "extern.h"
-#include "ddutil.h"
 
 #define PANIC 3
 #define DIE   4
@@ -168,7 +167,7 @@ void CBattle::Clear()
 {
 	for(int i=0; i<SMAX; i++)
 		spr[i].life=false;
-	for(i=0; i<SNDMAX; i++)
+	for(int i=0; i<SNDMAX; i++)
 		play[i]=-1;
 	spr[SMAX].NewSpr(500, 150, 5, 10, 100, 100, 1, 0, 99, 10);
 	jump=JUMPMAX;
@@ -181,7 +180,7 @@ void CBattle::Change()
 {
 	for(int i=0; i<SMAX; i++)
 		spr[i].life=false;
-	for(i=0; i<4; i++)
+	for(int i=0; i<4; i++)
 		if(etc[i]>=-101)
 		{
 			int happy;
@@ -389,7 +388,7 @@ void CBattle::CtrSpr()
 		else
 			ani[tmp].PutAni(spr[i].x, spr[i].y, spr[i].temp/spr[i].tempo, spr[i].dir, i);
 		//이상표시
-		for(i2=0; i2<2; i2++)
+		for(int i2=0; i2<2; i2++)
 		{
 			if(spr[i].odd[i2]>0)	//마비
 			{
@@ -454,10 +453,10 @@ void CBattle::Key()
 							AddSND(13);
 						}
 						break;
-					case 10: for(i=0; i<5; i++)spr[i].odd[0]=100*etc[10]; AddSND(3); break;
-					case 15: for(i=0; i<5; i++)spr[i].odd[1]=500*etc[10]; AddSND(5); break;
+					case 10: for(int i=0; i<5; i++)spr[i].odd[0]=100*etc[10]; AddSND(3); break;
+					case 15: for(int i=0; i<5; i++)spr[i].odd[1]=500*etc[10]; AddSND(5); break;
 					case 20: 
-						for(i=0;i<4;i++)
+						for(int i=0;i<4;i++)
 						{
 							if(spr[i+1].life && spr[i+1].now!=4)
 							{
@@ -709,9 +708,10 @@ void CBattle::Bump(int i, int j)
 	}
 }
 
-CBattle::State(int no)
+int CBattle::State(int no)
 {
-	for(int j=0;j<5;j++)
+	int j;
+	for(j=0;j<5;j++)
 		if(chr[spr[no].chr].type[j]==spr[no].now)break;
 	return chr[spr[no].chr].pic[j];
 }
