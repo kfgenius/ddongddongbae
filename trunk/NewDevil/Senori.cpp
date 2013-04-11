@@ -31,10 +31,10 @@ DSBUFFERDESC        DSB_desc;
 
 HSNDOBJ Sound[MAX_SOUND];
 
+MSG msg;
+
 void Init()
 {
-	jdd=CreateDirectDraw();
-	jre=CreateDXResourceManager(jdd);
 	backbuffer = jdd->GetBackBuffer();
 	font20=jdd->CreateFont("±¼¸²Ã¼",14,true,false,false,false,false);
 	srand( (unsigned)time( NULL ) );
@@ -184,5 +184,13 @@ void _Delay( DWORD count )
     
     cur = GetTickCount();
 
-    while ( (GetTickCount() - cur) < count );
+    while ( (GetTickCount() - cur) < count )
+	{
+		if(PeekMessage(&msg,NULL,0,0,PM_NOREMOVE))
+		{
+			if(!GetMessage(&msg,NULL,0,0)) break;
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
 }
