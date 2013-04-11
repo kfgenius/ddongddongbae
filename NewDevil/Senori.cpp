@@ -105,7 +105,7 @@ void _DrawBox( int x1, int y1, int x2, int y2, JColor jc)
 	JBrush tmp_brush;
 	tmp_brush=jdd->CreateBrush(jc);
 	RECT tmp_rect;
-	SetRect(&tmp_rect,x1,y1,x2,y2);
+	SetRect(&tmp_rect,x1,y1,x1 + x2,y1 + y2);
 	jdd->DrawRect(backbuffer,tmp_brush,&tmp_rect,1);
 	jdd->DeleteBrush(tmp_brush);
 }
