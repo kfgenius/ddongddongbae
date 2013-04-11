@@ -530,7 +530,7 @@ void CBattle::Key()
 		else if(etc[4]==2)
 		{
 			//정황검사
-			int mon=0, spot, Obeet=999, target=-1, it;
+			int mon=0, spot, Obeet=999, target=-1, it = 0;
 			for(i=HERO_SPR;i<SMAX; i++)
 			{
 				if(spr[i].life)
