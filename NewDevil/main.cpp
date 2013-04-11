@@ -484,7 +484,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		AdjustWindowRect(&crt, ws, FALSE);
 
 		MainHwnd = CreateWindow("Game", "¸¶¿ÕÅº»ý", ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
-		ShowCursor( TRUE );
+		ShowCursor( FALSE );
 	}
 	else
 	{
@@ -673,7 +673,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			_CopyScreen(false);
 			_Delay(100);
 			//Áß´Ü
-			if(_GetKeyState(VK_ESCAPE) || _GetKeyState(VK_RETURN) || end_mode==4)
+			if(LeftButton || _GetKeyState(VK_ESCAPE) || _GetKeyState(VK_RETURN) || end_mode==4)
 			{
 				_MidiStop();
 				BmpScreen[7] = DDLoadBitmap( DirectOBJ, "data//main.bmp", 0, 0, SYSTEM);
