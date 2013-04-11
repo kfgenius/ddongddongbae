@@ -89,15 +89,56 @@ void _DrawBmp2(RECT rect, int x, int y, char* surf_name, int flag, RECT clip, in
 	Drect.left=x; Drect.right=x+xx;
 	Drect.top=y; Drect.bottom=y+yy;
 
-	if(flag & DDBLT_DDFX)
+	DDBLTFX fx;
+	fx.dwSize=sizeof(fx);
+	fx.dwDDFX=DDBLTFX_MIRRORLEFTRIGHT;
+	
+    if ( x < clip.left )
+    { 
+		if(flag&DDBLT_DDFX) rect.right -= abs(clip.left - x);
+			else rect.left += abs(clip.left - x);
+        Drect.left += abs(clip.left - x);
+        xx = Drect.right - Drect.left;
+
+        x += (clip.left - x);
+    }
+    if ( y < clip.top )
+    { 
+        rect.top += abs(clip.top - y);
+        Drect.top += abs(clip.top - y);
+        yy = Drect.bottom - Drect.top;
+
+        y += (clip.top - y);
+    }
+    if ( (x + xx) > clip.right ){
+		if(flag&DDBLT_DDFX) rect.left += ((x + xx) - clip.right - 1);
+			else rect.right  -= ((x + xx) - clip.right - 1);
+		Drect.right -= ((x + xx) - clip.right - 1);
+	}
+    if ( (y + yy) > clip.bottom ){
+		rect.bottom -= ((y + yy) - clip.bottom - 1);
+		Drect.bottom -= ((y + yy) - clip.bottom - 1);
+	}
+	rect.right=Orect.left+(rect.right-Orect.left)/x2;
+	rect.bottom=Orect.top+(rect.bottom-Orect.top)/x2;
+	rect.left=Orect.left+(rect.left-Orect.left)/x2;
+	rect.top=Orect.top+(rect.top-Orect.top)/x2;
+
+	if(x2 > 1)
 	{
-		jdd->DrawPictureEx(backbuffer, surf_name, x, y, &Orect, DPX_HFLIP);
+		jdd->DrawStretchedPicture(backbuffer, surf_name, &Drect, &rect);
 	}
 	else
 	{
-		jdd->DrawPicture(backbuffer, surf_name, x, y, &Orect);
-	}
-	//jdd->DrawStretchedPicture(backbuffer, surf_name, &Drect, &Orect); 
+		if(flag & DDBLT_DDFX)
+		{
+			jdd->DrawPictureEx(backbuffer, surf_name, x, y, &rect, DPX_HFLIP);
+		}
+		else
+		{
+			jdd->DrawPicture(backbuffer, surf_name, x, y, &rect);
+		}
+	}	 
 }
 
 void _Pixel( int x, int y, JColor jc)

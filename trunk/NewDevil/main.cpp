@@ -1267,6 +1267,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				}
 
 			_CopyScreen(true);
+			_Delay(1);
 
 			//¸Þ´º·Î
 			if(_GetKeyState(VK_ESCAPE))
@@ -1418,7 +1419,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				}
 				else
 				{
-					if(_GetKeyState(VK_ESCAPE) || _GetKeyState(VK_RETURN))
+					if(LeftButton || _GetKeyState(VK_ESCAPE) || _GetKeyState(VK_RETURN))
 					{
 						BmpScreen[7] = DDLoadBitmap( DirectOBJ, "data//main.bmp", 0, 0, SYSTEM);
 						Change(99);
