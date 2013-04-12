@@ -1,0 +1,41 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: JPEG_DRAW - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1D6.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /FR"Debug/" /Fp"Debug/JPEG_DRAW.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\Administrator\πŸ≈¡ »≠∏È\Work\JPEG_DRAW\JPEG_DRAW.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1D6.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1D7.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/JPEG_DRAW.pdb" /debug /machine:I386 /out:"Debug/JPEG_DRAW.exe" /pdbtype:sept 
+".\Debug\StdAfx.obj"
+".\Debug\JPEG_DRAW.res"
+".\Debug\JPEG_DRAW.obj"
+".\Debug\BASEIMAGE.OBJ"
+".\Debug\JPEG.OBJ"
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1D7.tmp"
+<h3>Output Window</h3>
+Compiling...
+JPEG_DRAW.cpp
+C:\Documents and Settings\Administrator\πŸ≈¡ »≠∏È\Work\JPEG_DRAW\JPEG_DRAW.cpp(148) : warning C4101: 'ps' : unreferenced local variable
+C:\Documents and Settings\Administrator\πŸ≈¡ »≠∏È\Work\JPEG_DRAW\JPEG_DRAW.cpp(196) : warning C4700: local variable 'hdc' used without having been initialized
+Linking...
+Creating command line "bscmake.exe /nologo /o"Debug/JPEG_DRAW.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\JPEG_DRAW.sbr" ".\Debug\BASEIMAGE.SBR" ".\Debug\JPEG.SBR""
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+JPEG_DRAW.exe - 0 error(s), 2 warning(s)
+</pre>
+</body>
+</html>
