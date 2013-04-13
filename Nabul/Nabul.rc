@@ -1,0 +1,351 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#pragma code_page(949)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\Nabul.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""l.kor\\afxres.rc""          // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Nabul.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "마법사 나불나불에 대하여..."
+FONT 9, "굴림"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "마법사 나불나불(완전무결버전)",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "2000년 9월 19일(시드니 올림픽 중)",IDC_STATIC,40,23,119,
+                    8
+    DEFPUSHBUTTON   "확인",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "제작: 팡게아",IDC_STATIC,40,36,40,8
+END
+
+IDD_NABUL_DIALOG DIALOGEX 0, 0, 263, 201
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "마법사 나불나불"
+FONT 9, "굴림"
+BEGIN
+    CONTROL         136,IDC_STATIC,"Static",SS_BITMAP,0,0,229,200
+    PUSHBUTTON      "시작",IDC_GAME,233,7,27,44
+    PUSHBUTTON      "마법서",IDC_BOOK,233,82,27,44
+    PUSHBUTTON      "끝",IDC_OK,232,157,27,44
+END
+
+IDD_GAME DIALOGEX 0, 0, 279, 311
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "마법사 나불나불"
+FONT 9, "굴림"
+BEGIN
+    EDITTEXT        IDC_TYPE,112,229,89,12,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_WANTRETURN
+    GROUPBOX        "",IDC_STATIC,7,259,190,45
+    LTEXT           "체력:",IDC_STATIC,141,266,17,8
+    LTEXT           "마력:",IDC_STATIC,141,281,17,8
+    LTEXT           "경험:",IDC_STATIC,141,296,17,8
+    LTEXT           "나불나불 LV.",IDC_STATIC,70,267,42,8
+    LTEXT           "돈:",IDC_STATIC,77,281,10,8
+    LTEXT           "약초x",IDC_STATIC,69,296,19,8
+    LTEXT           "마약x",IDC_STATIC,102,296,19,8
+    GROUPBOX        "상인: 파러파러",IDC_STATIC,200,7,69,96
+    GROUPBOX        "대장장이: 대장쟁",IDC_STATIC,203,107,69,97
+    GROUPBOX        "백마법사: 아나프다",IDC_STATIC,203,207,69,97
+    LTEXT           "약초사기",IDC_ITEM1,207,73,28,8
+    LTEXT           "마약사기",IDC_ITEM2,207,83,28,8
+    LTEXT           "지팡이개조",IDC_ROD,207,180,35,8
+    LTEXT           "마법복개조",IDC_ROBE,207,189,35,8
+    LTEXT           "해독",IDC_CURE,207,275,15,8
+    LTEXT           "10",IDC_STATIC,255,73,8,8
+    LTEXT           "10",IDC_STATIC,255,83,8,8
+    LTEXT           "50",IDC_STATIC,255,180,8,8
+    LTEXT           "50",IDC_STATIC,255,189,8,8
+    LTEXT           "10",IDC_STATIC,255,275,8,8
+    CONTROL         142,IDC_STATIC,"Static",SS_BITMAP,215,25,36,32
+    CONTROL         144,IDC_STATIC,"Static",SS_BITMAP,215,225,36,32
+    CONTROL         143,IDC_STATIC,"Static",SS_BITMAP,215,127,36,32
+END
+
+IDD_BOOK DIALOG DISCARDABLE  0, 0, 244, 56
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "마법서"
+FONT 10, "System"
+BEGIN
+    LTEXT           "Static",IDC_TEXT,7,7,230,10
+    EDITTEXT        IDC_TYPE,7,20,230,12,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_WANTRETURN | NOT WS_BORDER
+    LTEXT           "남은시간:",IDC_STATIC,164,36,35,8
+    LTEXT           "페이지:",IDC_STATIC,14,36,27,8
+    LTEXT           "/26",IDC_STATIC,53,36,11,8
+    RTEXT           "Static",IDC_PAGE,43,36,8,8
+END
+
+IDD_OPEN DIALOG DISCARDABLE  0, 0, 226, 150
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "오프닝"
+FONT 15, "굴림"
+BEGIN
+    LTEXT           "Static",IDC_TEXT,136,7,83,136
+END
+
+IDD_END DIALOG DISCARDABLE  0, 0, 226, 150
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "엔딩"
+FONT 15, "굴림"
+BEGIN
+    LTEXT           "Static",IDC_TEXT,136,7,83,136
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041204B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "Nabul MFC 응용 프로그램\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "Nabul\0"
+            VALUE "LegalCopyright", "Copyright (C) 2000\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "Nabul.EXE\0"
+            VALUE "ProductName", "Nabul 응용 프로그램\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x412, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_GAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 272
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 304
+    END
+
+    IDD_BOOK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 237
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 49
+    END
+
+    IDD_OPEN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 219
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 143
+    END
+
+    IDD_END, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 219
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 143
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_MAGE                BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+IDB_ITEM                BITMAP  DISCARDABLE     "res\\bmp00001.bmp"
+IDB_OPEN                BITMAP  DISCARDABLE     "res\\open.bmp"
+IDB_FACE                BITMAP  DISCARDABLE     "res\\bmp00002.bmp"
+IDB_SHIELD              BITMAP  DISCARDABLE     "res\\bitmap2.bmp"
+IDB_SHOP1               BITMAP  DISCARDABLE     "res\\bmp00004.bmp"
+IDB_SHOP2               BITMAP  DISCARDABLE     "res\\shop2.bmp"
+IDB_SHOP3               BITMAP  DISCARDABLE     "res\\shop3.bmp"
+IDB_STAGE               BITMAP  DISCARDABLE     "res\\bmp00005.bmp"
+IDB_BOSS                BITMAP  DISCARDABLE     "res\\bmp00006.bmp"
+IDB_GAMEOVER            BITMAP  DISCARDABLE     "res\\bmp00007.bmp"
+IDB_MON                 BITMAP  DISCARDABLE     "bmp00003.bmp"
+IDB_DIE                 BITMAP  DISCARDABLE     "res\\bitmap6.bmp"
+IDB_STAGE1              BITMAP  DISCARDABLE     "res\\stage1.bmp"
+IDB_STAGE6              BITMAP  DISCARDABLE     "res\\stage6.bmp"
+IDB_STAGE2              BITMAP  DISCARDABLE     "res\\stage2.bmp"
+IDB_STAGE7              BITMAP  DISCARDABLE     "res\\stage7.bmp"
+IDB_STAGE4              BITMAP  DISCARDABLE     "res\\stage4.bmp"
+IDB_STAGE3              BITMAP  DISCARDABLE     "res\\stage3.bmp"
+IDB_STAGE42             BITMAP  DISCARDABLE     "res\\stage42.bmp"
+IDB_STAGE22             BITMAP  DISCARDABLE     "res\\stage22.bmp"
+IDB_STAGE12             BITMAP  DISCARDABLE     "res\\stage12.bmp"
+IDB_STAGE68             BITMAP  DISCARDABLE     "res\\stage69.bmp"
+IDB_STAGE63             BITMAP  DISCARDABLE     "res\\stage63.bmp"
+IDB_STAGE64             BITMAP  DISCARDABLE     "res\\stage65.bmp"
+IDB_STAGE65             BITMAP  DISCARDABLE     "res\\stage66.bmp"
+IDB_STAGE66             BITMAP  DISCARDABLE     "res\\stage67.bmp"
+IDB_STAGE67             BITMAP  DISCARDABLE     "res\\stage68.bmp"
+IDB_STAGE62             BITMAP  DISCARDABLE     "res\\stage62.bmp"
+IDB_STAGE32             BITMAP  DISCARDABLE     "res\\stage32.bmp"
+IDB_STAGE5              BITMAP  DISCARDABLE     "res\\stage5.bmp"
+IDB_END                 BITMAP  DISCARDABLE     "res\\end.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_WAVE1               WAVE    DISCARDABLE     "res\\Recovery3.wav"
+IDR_WAVE2               WAVE    DISCARDABLE     "res\\Flame1.wav"
+IDR_WAVE3               WAVE    DISCARDABLE     "res\\Kill11.wav"
+IDR_WAVE4               WAVE    DISCARDABLE     "res\\Monster2.wav"
+IDR_WAVE5               WAVE    DISCARDABLE     "res\\Cold1.wav"
+IDR_WAVE6               WAVE    DISCARDABLE     "res\\Item1.wav"
+IDR_WAVE7               WAVE    DISCARDABLE     "res\\beauty.wav"
+IDR_WAVE8               WAVE    DISCARDABLE     "res\\Success2.wav"
+IDR_WAVE9               WAVE    DISCARDABLE     "res\\Power.wav"
+IDR_WAVE10              WAVE    DISCARDABLE     "res\\Shot2.wav"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "마법사 나불나불에 대하여(&A)"
+END
+
+#endif    // Korean resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE 18, 1
+#pragma code_page(949)
+#endif //_WIN32
+#include "res\Nabul.rc2"  // non-Microsoft Visual C++ edited resources
+#include "l.kor\afxres.rc"          // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
