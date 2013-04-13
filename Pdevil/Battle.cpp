@@ -158,18 +158,18 @@ void CBattle::PutBack()
 
 	//HP
 	SetR(&MRect, 0, 360, 3, 20);
-	for(i=0;i<spr[0].hp;i++)
+	for(int i=0;i<spr[0].hp;i++)
 		_DrawBmp(MRect, i*4+101, 340, BmpScreen[2], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
-	for(i=0;i<spr[SMAX].hp;i++)
+	for(int i=0;i<spr[SMAX].hp;i++)
 		_DrawBmp(MRect, i*4+101, 420, BmpScreen[2], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 	PutFontOutline(510,340,RED,"%d%%",spr[0].hp);
 	PutFontOutline(510,420,RED,"%d%%",spr[SMAX].hp);
 	
 	//MP
 	SetR(&MRect, 3, 360, 3, 20);
-	for(i=0;i<spr[0].mp;i++)
+	for(int i=0;i<spr[0].mp;i++)
 		_DrawBmp(MRect, i*4+101, 360, BmpScreen[2], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
-	for(i=0;i<spr[SMAX].mp;i++)
+	for(int i=0;i<spr[SMAX].mp;i++)
 		_DrawBmp(MRect, i*4+101, 440, BmpScreen[2], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 	PutFontOutline(510,360,BLUE,"%d%%",spr[0].mp);
 	PutFontOutline(510,440,BLUE,"%d%%",spr[SMAX].mp);
@@ -186,7 +186,7 @@ void CBattle::PutFront()
 	for(int i=0;i<15;i++)
 		_DrawBmp(MRect, i*60-(scroll%60), 260, BmpScreen[1], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
 	SetR(&MRect, 570, 280, 20, 20);
-	for(i=0;i<big;i++)
+	for(int i=0;i<big;i++)
 		_DrawBmp(MRect, i*20, 0, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
 
 	if(tolk>=0)
@@ -626,9 +626,10 @@ void CBattle::Bump(int i, int j)
 	}
 }
 
-CBattle::State(int no)
+int CBattle::State(int no)
 {
-	for(int j=0;j<5;j++)
+	int j;
+	for(j=0;j<5;j++)
 		if(chr[spr[no].chr].type[j]==spr[no].now)break;
 	return chr[spr[no].chr].pic[j];
 }
