@@ -1,13 +1,13 @@
-#define WHITE RGB2(255,255,255)
-#define BLACK RGB2(0,0,0)
-#define RED RGB2(255,0,0)
-#define GREEN RGB2(0,255,0)
-#define BLUE RGB2(0,0,255)
-#define YELLOW RGB2(255,255,0)
+#define WHITE JColor(255,255,255)
+#define BLACK JColor(0,0,0)
+#define RED JColor(255,0,0)
+#define GREEN JColor(0,255,0)
+#define BLUE JColor(0,0,255)
+#define YELLOW JColor(255,255,0)
 #define PRC MSG msg; if ( PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) ){if ( !GetMessage(&msg, NULL, 0, 0) ) return msg.wParam;TranslateMessage( &msg );DispatchMessage( &msg );}else if(Act)
 #define SCENE SetRect(&BackRect, 0, 0, 800, 600); _DrawBmp(BackRect, 0, 0, BmpScreen[0], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT)
 #define SMAX 100
-#define ENSPR for(int i2=8;i2<SMAX;i2++)if(!spr[i2].life)break; if(i2<SMAX)
+#define ENSPR int i2 = 0; for(i2=8;i2<SMAX;i2++)if(!spr[i2].life)break; if(i2<SMAX)
 #define MONSTERS 26
 #define ENEMYS 28
 
