@@ -13,7 +13,7 @@ int custom_key[KEY_MAX]={VK_DOWN, VK_LEFT, VK_UP, VK_RIGHT, VK_RETURN, VK_ESCAPE
 int key_push[KEY_MAX];
 
 //DrawData 메소드
-DrawData::Set(int vx, int vy, int vid, int vframe)
+void DrawData::Set(int vx, int vy, int vid, int vframe)
 {
 	x=vx;
 	y=vy;
@@ -469,16 +469,16 @@ void CHungLib::Colorize(int surface_id, int mode)
 	switch(mode)
 	{
 		case TO_RED:
-			for(i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)if(ptr[i]!=0x001f)ptr[i]|=0xf800;
+			for(int i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)if(ptr[i]!=0x001f)ptr[i]|=0xf800;
 			break;
 		case TO_GREEN:
-			for(i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)if(ptr[i]!=0x001f)ptr[i]|=0x07e0;
+			for(int i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)if(ptr[i]!=0x001f)ptr[i]|=0x07e0;
 			break;
 		case TO_BLUE:
-			for(i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)ptr[i]|=0x001e;
+			for(int i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)ptr[i]|=0x001e;
 			break;
 		case DARK:
-			for(i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)
+			for(int i=0; i<(ddsd.lPitch/2*ddsd.dwHeight); i++)
 			{
 				if(ptr[i]!=0x001f)
 				{
@@ -686,7 +686,7 @@ void CHungLib::SaveImage(int id)
 
 		//데이터 1/2압축
 		dgf_cp=(dgf_cp>>1)+(dgf_cp%2);
-		for(i=0; i<dgf_cp; i++)
+		for(int i=0; i<dgf_cp; i++)
 		{
 			dgf_data[i]=(dgf_data[i*2]<<4);
 			dgf_data[i]|=dgf_data[i*2+1];
@@ -796,7 +796,7 @@ bool CHungLib::LoadDGF(char* name, char* src, COLORREF key, CAnimation* ani)
 					{
 						//이미지 데이터 읽기
 						rgb=0;
-						for(i=use_hbyte1-1; i>=0; i--)
+						for(int i=use_hbyte1-1; i>=0; i--)
 						{
 							rgb+=(WORD)dgf_data[dgf_cp+i];
 							if(i>0)rgb<<=4;
@@ -806,7 +806,7 @@ bool CHungLib::LoadDGF(char* name, char* src, COLORREF key, CAnimation* ani)
 
 						//반복 횟수 읽기
 						count=0;
-						for(i=use_hbyte2-1; i>=0; i--)
+						for(int i=use_hbyte2-1; i>=0; i--)
 						{
 							count|=(WORD)dgf_data[dgf_cp+i];
 							if(i>0)count<<=4;

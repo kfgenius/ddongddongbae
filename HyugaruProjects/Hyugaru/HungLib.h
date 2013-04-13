@@ -28,7 +28,7 @@ public:
 	int id;
 	int frame;
 
-	Set(int vx, int vy, int vid, int vframe=0);
+	void Set(int vx, int vy, int vid, int vframe=0);
 };
 
 //애니메이션 클래스
