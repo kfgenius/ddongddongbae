@@ -1,0 +1,2 @@
+chunkcompiler this.txt
+pause
