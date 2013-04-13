@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: GM - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x412 /fo"Release/GM.res" /d "NDEBUG" /d "_AFXDLL" "C:\Program Files\Microsoft Visual Studio\MyProjects\CRPG 작업\GM\GM.rc"" 
+Creating temporary file "C:\DOCUME~1\박동흥\LOCALS~1\Temp\RSP432.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/GM.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Program Files\Microsoft Visual Studio\MyProjects\CRPG 작업\GM\GM.cpp"
+"C:\Program Files\Microsoft Visual Studio\MyProjects\CRPG 작업\GM\GMDlg.cpp"
+]
+Creating command line "cl.exe @"C:\DOCUME~1\박동흥\LOCALS~1\Temp\RSP432.tmp"" 
+Creating temporary file "C:\DOCUME~1\박동흥\LOCALS~1\Temp\RSP433.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/GM.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Program Files\Microsoft Visual Studio\MyProjects\CRPG 작업\GM\StdAfx.cpp"
+]
+Creating command line "cl.exe @"C:\DOCUME~1\박동흥\LOCALS~1\Temp\RSP433.tmp"" 
+Creating command line "link.exe /nologo /subsystem:windows /incremental:no /pdb:"Release/GM.pdb" /machine:I386 /out:"Release/GM.exe"  ".\Release\GM.obj" ".\Release\GMDlg.obj" ".\Release\StdAfx.obj" ".\Release\GM.res" "
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+GM.cpp
+GMDlg.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+GM.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

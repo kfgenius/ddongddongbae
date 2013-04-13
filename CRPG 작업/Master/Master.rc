@@ -1,0 +1,283 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#pragma code_page(949)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\Master.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""l.kor\\afxres.rc""          // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Master.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Master 정보"
+FONT 9, "굴림"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "플레이어용 자기 관리툴 V1.7",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2002",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "확인",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_MASTER_DIALOG DIALOGEX 0, 0, 191, 225
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "플레이어용 자기 관리 툴 V1.8              제작:박동흥"
+FONT 9, "굴림"
+BEGIN
+    LTEXT           "이름:",IDC_STATIC,3,9,17,8
+    EDITTEXT        IDC_CNAME,21,6,35,14,ES_MULTILINE
+    LTEXT           "직업:",IDC_STATIC,70,9,17,8
+    EDITTEXT        IDC_CLASS,89,6,40,14,ES_MULTILINE
+    EDITTEXT        IDC_ATT,127,35,15,14,ES_MULTILINE
+    EDITTEXT        IDC_DEF,143,35,15,14,ES_MULTILINE
+    EDITTEXT        IDC_INT,159,35,15,14,ES_MULTILINE
+    EDITTEXT        IDC_LUK,175,35,15,14,ES_MULTILINE
+    LTEXT           "공격",IDC_STATIC,127,25,15,8
+    LTEXT           "방어",IDC_STATIC,143,25,15,8
+    LTEXT           "지력",IDC_STATIC,159,25,15,8
+    LTEXT           "운",IDC_STATIC,177,25,8,8
+    PUSHBUTTON      "초기화",IDC_START,66,54,29,14
+    PUSHBUTTON      "레벨업",IDC_LEVEL,95,54,27,14
+    PUSHBUTTON      "공격",IDC_CATT,54,207,21,14
+    PUSHBUTTON      "데미지 받기",IDC_CDEF,75,207,43,14
+    PUSHBUTTON      "사용",IDC_CMAG,138,95,21,14,WS_DISABLED
+    LTEXT           "돈",IDC_STATIC,6,57,8,8
+    EDITTEXT        IDC_MONEY,18,53,40,14,ES_MULTILINE
+    LTEXT           "데미지",IDC_STATIC,1,211,23,8
+    EDITTEXT        IDC_MINUS,72,111,19,14,ES_MULTILINE
+    EDITTEXT        IDC_HP,2,35,28,14,ES_MULTILINE
+    LTEXT           "HP",IDC_STATIC,5,26,10,8
+    EDITTEXT        IDC_MP,68,35,24,14,ES_MULTILINE
+    LTEXT           "MP",IDC_STATIC,71,25,12,8
+    EDITTEXT        IDC_DAMAGE,27,207,24,14,ES_MULTILINE | ES_AUTOHSCROLL
+    LTEXT           "레벨",IDC_STATIC,141,9,15,8
+    EDITTEXT        IDC_LEV,157,6,15,14,ES_MULTILINE
+    EDITTEXT        IDC_HPMAX,38,35,28,14,ES_MULTILINE
+    EDITTEXT        IDC_MPMAX,101,35,24,14,ES_MULTILINE
+    LTEXT           "/",IDC_STATIC,31,38,8,8
+    LTEXT           "/",IDC_STATIC,93,37,8,8
+    PUSHBUTTON      "휴식",IDC_REST,118,207,21,14
+    PUSHBUTTON      "저장",IDC_SAVE,121,54,25,14
+    PUSHBUTTON      "불러오기",IDC_LOAD,146,54,37,14
+    GROUPBOX        "소지마법&&아이템",IDC_STATIC,2,72,187,130
+    COMBOBOX        IDC_KIND,5,111,34,105,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "소비MP",IDC_EFFECT,73,99,15,8
+    LISTBOX         IDC_LIST,6,129,177,68,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_WHAT,91,111,92,14,ES_MULTILINE
+    LTEXT           "설명",IDC_STATIC,95,98,15,8
+    LTEXT           "종류",IDC_STATIC,13,99,15,8
+    PUSHBUTTON      "추가",IDC_GET,117,95,21,14
+    LTEXT           "이름",IDC_STATIC,43,99,15,8
+    EDITTEXT        IDC_NAME,40,111,32,14,ES_MULTILINE | ES_AUTOHSCROLL
+    PUSHBUTTON      "삭제",IDC_DEL,159,95,21,14
+    LTEXT           "장비제한:",IDC_STATIC,29,82,31,8
+    LTEXT           "무기",IDC_STATIC,63,82,15,8
+    LTEXT           "갑옷",IDC_STATIC,96,82,15,8
+    LTEXT           "지식",IDC_STATIC,127,82,15,8
+    LTEXT           "장식",IDC_STATIC,157,82,15,8
+    EDITTEXT        IDC_WP,79,80,13,12,ES_MULTILINE
+    EDITTEXT        IDC_ARM,111,80,13,12,ES_MULTILINE
+    EDITTEXT        IDC_BOOK,142,80,13,12,ES_MULTILINE
+    EDITTEXT        IDC_ETC,173,80,13,12,ES_MULTILINE
+    CONTROL         "항상 위",IDC_TOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    145,209,39,10
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041204B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "Master MFC 응용 프로그램\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "Master\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "Master.EXE\0"
+            VALUE "ProductName", "Master 응용 프로그램\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x412, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_MASTER_DIALOG DLGINIT
+BEGIN
+    IDC_KIND, 0x403, 5, 0
+0xf8b0, 0xddb0, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xb8c8, 0xb9ba, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xbdc0, 0xc4bd, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0x504d, 0xe0be, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xabb9, 0xe2b1, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xa9b0, 0xcabf, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xf6c1, 0xc4bd, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xe5c0, 0xc4bd, "\000" 
+    IDC_KIND, 0x403, 5, 0
+0xe2b1, 0xb8c5, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "Master 정보(&A)..."
+END
+
+#endif    // Korean resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+#ifdef _WIN32
+LANGUAGE 18, 1
+#pragma code_page(949)
+#endif //_WIN32
+#include "res\Master.rc2"  // non-Microsoft Visual C++ edited resources
+#include "l.kor\afxres.rc"          // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
