@@ -1,12 +1,8 @@
-#include <windows.h>
-#include <windowsx.h>
 #include <time.h>
 #include <ddraw.h>
 #include <dsound.h>
 #include <stdio.h>
 
-#include "dsutil.h"
-#include "ddutil.h"
 #include "extern.h"
 #include "data.h"
 
@@ -43,7 +39,7 @@ void _Play( int num )
     if ( SoundCard ) SndObjPlay( Sound[num], NULL );
 }
 
-long FAR PASCAL WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+/*long FAR PASCAL WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
     switch ( message )
     {
@@ -62,31 +58,60 @@ long FAR PASCAL WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
                                     break;
         case    MM_MCINOTIFY    :   if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL ) _MidiReplay();
                                     break;
-		case    WM_DESTROY      :  _WindowMode();
+		case    WM_DESTROY      :  
                                     PostQuitMessage( 0 );
                                     break;
     }
     return DefWindowProc( hWnd, message, wParam, lParam );
-}
+}*/
 
-int Max(int x, int y)
+long FAR PASCAL WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-	if(x>y)return x;
-		else return y;
+    switch ( message )
+	{
+									break;
+		case	WM_LBUTTONDOWN	:	LeftButton = TRUE;
+									break;
+		case	WM_LBUTTONUP	:	LeftButton = FALSE;
+									break;
+		case	WM_RBUTTONDOWN	:	RightButton = TRUE;
+									break;
+		case	WM_RBUTTONUP	:	RightButton = FALSE;
+									break;
+        case    WM_MOUSEMOVE    :   MouseX = LOWORD(lParam);
+	                                MouseY = HIWORD(lParam);
+		                            break;
+	   case    MM_MCINOTIFY    :    if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL ) _MidiReplay();
+		                            break;
+
+		case WM_MOVE		 :	if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
+								break;
+		
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)activate=false;
+								else activate=true;
+								break;
+		
+		case WM_ACTIVATE	 : if(LOWORD(wParam))activate=true;
+								else activate=false;
+							   break;
+
+		case WM_SYSCOMMAND	 :  //닫기 메시지 가로채기
+								if(wParam==SC_CLOSE)
+								{
+									wParam=0;
+									exit(0);
+								}
+								break;
+	}
+    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
-int Min(int x, int y)
-{
-	if(x<y)return x;
-		else return y;
-}
-
-SColor1(int hp)
+int SColor1(int hp)
 {
 	return (hp<50)?255:250-(hp-50)*5;
 }
 
-SColor2(int hp)
+int SColor2(int hp)
 {
 	return (hp<50)?hp*5:255;
 }
@@ -192,14 +217,14 @@ void MainScr()
 	{
 		int hx=(!i)?0:700;
 		PutFontOutline(hx,20,WHITE,"체력");
-		_DrawBar(hx,40,hx+mn[i].hp,60,RGB2(SColor1(mn[i].hp),SColor2(mn[i].hp),0));
+		_DrawBar(hx,40,hx+mn[i].hp,60,JColor(SColor1(mn[i].hp),SColor2(mn[i].hp),0));
 		_DrawBox(hx,40,hx+99,60,WHITE);
 		PutFontOutline(hx,80,WHITE,"무술(%d)",mn[i].exp);
 		SetRect(&BackRect, 40, 0, 60, 20);
 		for(int i2=0;i2<mn[i].pow;i2++)
 			_DrawBmp(BackRect, hx+i2*20, 100, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
 		PutFontOutline(hx,140,WHITE,"정의감");
-		_DrawBar(hx,160,hx+mn[i].just,180,RGB2(SColor1(mn[i].just),SColor2(mn[i].just),0));
+		_DrawBar(hx,160,hx+mn[i].just,180,JColor(SColor1(mn[i].just),SColor2(mn[i].just),0));
 		_DrawBox(hx,160,hx+99,180,WHITE);
 		PutFontOutline(hx,200,WHITE,"무기");
 		if(!i)PutFontOutline(hx,220,GREEN,stk[mn[i].att]);
@@ -315,7 +340,7 @@ void CBattle::PreBattle()
 		{1,0,8,0,0,10},{3,9,9,9,9,28},{4,0,16,0,0,28},//골렘, 화재, 전설의 거인(21~23)
 		{5,17,17,17,17,20},{0,0,23,0,0,0},{3,0,24,0,0,30},//전차부대, 엘프,히죽히죽(24~26)
 		{0,0,25,0,0,0}};//아들내미(27)
-	for(i1=0;i1<ENEMYS;i1++)
+	for(int i1=0;i1<ENEMYS;i1++)
 		for(int i2=0;i2<6;i2++)enemy[i1][i2]=Oenemy[i1][i2];
 }
 
@@ -383,7 +408,7 @@ void CBattle::PutSpr(int num)
 	//스프라이터
 	do{
 		ok=false;
-		for(i1=0; i1<SMAX-1; i1++)
+		for(int i1=0; i1<SMAX-1; i1++)
 		{
 			if((spr[putN[i1]].y+spr[putN[i1]].sizeY)>(spr[putN[i1+1]].y+spr[putN[i1+1]].sizeY)){
 				tmp=putN[i1+1];
@@ -393,7 +418,7 @@ void CBattle::PutSpr(int num)
 			}
 		}
 	}while(ok);
-	for(i1=0;i1<SMAX;i1++)
+	for(int i1=0;i1<SMAX;i1++)
 	{
 		if(!spr[putN[i1]].life || spr[putN[i1]].dam%2)continue;
 		if(spr[putN[i1]].kind!=3&&spr[putN[i1]].kind!=18)//이식할때 수정
@@ -403,14 +428,14 @@ void CBattle::PutSpr(int num)
 		_DrawBmp(BackRect, spr[putN[i1]].x, spr[putN[i1]].y, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
 	}
 	//데이터
-	for(i1=0;i1<6;i1++)
+	for(int i1=0;i1<6;i1++)
 	{
 		if(!spr[i1].life||spr[i1].kind==19)continue;//이식할때 수정
 		PutFontOutline(i1*130, 560, WHITE, name[spr[i1].kind]);
 		if(spr[i1].hp>100)
 			_DrawBar(i1*130, 580, i1*130+100, 595, BLACK);
 		else
-			_DrawBar(i1*130, 580, i1*130+spr[i1].hp, 595, RGB2(SColor1(spr[i1].hp),SColor2(spr[i1].hp),0));
+			_DrawBar(i1*130, 580, i1*130+spr[i1].hp, 595, JColor(SColor1(spr[i1].hp),SColor2(spr[i1].hp),0));
 		if(monHP[spr[i1].kind]>100)
 			_DrawBox(i1*130, 580, i1*130+100, 595, WHITE);
 		else
@@ -422,7 +447,7 @@ void CBattle::PutSpr(int num)
 		PutFontOutline(300,270,WHITE,"전투에서 승리했습니다!");
 		PutFontOutline(300,290,WHITE,"경험치+%d",enemy[num][5]);
 		int plusmoney=0;
-		for(i1=1;i1<5;i1++){
+		for(int i1=1;i1<5;i1++){
 			if(enemy[num][i1])plusmoney++;
 		}
 		PutFontOutline(300,310,WHITE,"돈+%dK",plusmoney);
@@ -484,7 +509,7 @@ void CBattle::CtrSpr()
 		}
 		if(i1>=2 && i1<=5)
 		{
-			int herodir, target, tmp1, tmp2;
+			int herodir = 0, target, tmp1, tmp2;
 			target=(spr[0].life)?0:1;
 			tmp1=spr[i1].x-spr[target].x;
 			tmp2=spr[i1].y-spr[target].y;
@@ -592,7 +617,8 @@ void CBattle::CtrSpr()
 				if(!(temp%80))spr[i1].dir=rand()%8;
 				if(!(temp%200))
 				{
-					for(int i2=2;i2<6;i2++)
+					int i2 = 0;
+					for(i2=2;i2<6;i2++)
 						if(!spr[i2].life)break;
 					int hijuk=rand()%3+5;
 					if(i2<6){
@@ -663,7 +689,7 @@ int CBattle::Battle(int num, bool party)
 	NewSpr(0,0,100,100,mn[0].hp,mn[0].pow,0);
 	if(party)NewSpr(1,1,100,400,mn[1].hp,mn[1].pow,0);
 	//(3)적군 생성
-	for(i1=2;i1<6;i1++){//적 데이터
+	for(int i1=2;i1<6;i1++){//적 데이터
 		int kind=enemy[num][i1-1];
 		if(kind)NewSpr(i1,kind,600,(i1-2)*150,monHP[kind],monAT[kind],0);
 	}
@@ -751,7 +777,7 @@ int CBattle::Boat()
 		x2=Min(x2,800-spr[0].sizeX);
 		y2=Min(y2,600-spr[0].sizeY);
 		spr[0].x=x2; spr[0].y=y2;
-		for(i1=8;i1<SMAX;i1++)
+		for(int i1=8;i1<SMAX;i1++)
 		{
 			if(!spr[i1].life)continue;
 			spr[i1].x-=ms;
@@ -1060,17 +1086,73 @@ void Event(int fafaDo, int sonDo)
 
 int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    if ( !_GameMode(hInstance, nCmdShow, 800, 600, 16, true) ) return FALSE;
+	jdd=CreateDirectDraw();
+	jre=CreateDXResourceManager(jdd);
+
+	WNDCLASS wc={0};
+	wc.hIcon=LoadIcon(hInstance,"newdevil.ico");
+	wc.hCursor=LoadCursor(hInstance,IDC_ARROW);
+	wc.lpfnWndProc=WindowProc;
+	wc.hInstance=hInstance;
+	wc.style=CS_HREDRAW|CS_VREDRAW;
+	wc.hbrBackground=(HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszClassName="Game";
+	RegisterClass(&wc);
+
+	if(window_mode)
+	{
+		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
+		ws &= ~WS_THICKFRAME;
+		ws &= ~WS_MAXIMIZEBOX;
+
+		RECT crt;
+		SetRect(&crt, 0, 0, SCREEN_X, SCREEN_Y);
+		AdjustWindowRect(&crt, ws, FALSE);
+
+		MainHwnd = CreateWindow("Game", "용사탄생", ws, 100, 100, crt.right - crt.left, crt.bottom - crt.top, NULL, NULL, hInstance, NULL);
+		ShowCursor( FALSE );
+	}
+	else
+	{
+		MainHwnd=CreateWindow("Game","용사탄생",WS_POPUP|WS_VISIBLE,0,0,SCREEN_X,SCREEN_Y,NULL,NULL,hInstance,NULL);
+		ShowCursor( FALSE );
+	}
+
+	if ( DirectSoundCreate(NULL,&SoundOBJ,NULL) == DS_OK )
+	{
+		SoundCard = TRUE;
+		if (SoundOBJ->SetCooperativeLevel(MainHwnd,DSSCL_PRIORITY)!=DS_OK) return 0;
+
+		memset(&DSB_desc,0,sizeof(DSBUFFERDESC));
+		DSB_desc.dwSize = sizeof(DSBUFFERDESC);
+		DSB_desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
+
+		if (SoundOBJ->CreateSoundBuffer(&DSB_desc,&SoundDSB,NULL)!=DS_OK) return 0;
+		SoundDSB -> SetVolume(0);
+		SoundDSB -> SetPan(0);
+	}
+	else SoundCard = FALSE;
+
+	jdd->Initialize(NULL,MainHwnd,SCREEN_X,SCREEN_Y,16,true,window_mode);
+	
+	//윈도우창 이동
+	if(window_mode)
+	{
+		jdd->OnMove(100, 100);
+		SetCursor(LoadCursor(0, IDC_ARROW));
+	}
+
+	Init();
 
 	//한글 초기화
-    InitXddFont( "HANGUL.FNT", "ENGLISH.FNT" );
-    SetFontPattern( NORMAL_PATTERN );
+    //InitXddFont( "HANGUL.FNT", "ENGLISH.FNT" );
+    //SetFontPattern( NORMAL_PATTERN );
 
 	//그래픽 초기화
 	BmpScreen[1] = DDLoadBitmap( DirectOBJ, "DATA//face.bmp", 0, 0, SYSTEM);
 	BmpScreen[2] = DDLoadBitmap( DirectOBJ, "DATA//etc.bmp", 0, 0, SYSTEM);
 	BmpScreen[4] = DDLoadBitmap( DirectOBJ, "DATA//tile.bmp", 0, 0, SYSTEM);
-	DDSetColorKey( BmpScreen[2], RGB(0,0,255) );
+	DDSetColorKey( BmpScreen[2], JColor(0,0,255) );
 
 	//음향 초기화
 	_MidiPlay("music//open.mid", true);
