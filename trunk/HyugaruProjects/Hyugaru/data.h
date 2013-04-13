@@ -622,7 +622,7 @@ void Que::Insert(unsigned char command, int id, int x, int y, WORD time)
 		delete [] que;
 		//확장하고 데이터를 옮김
 		que=new QueData[limit+QUE_STEP];
-		for(i=0; i<que_max; i++)que[i]=tmp_que[i];
+		for(int i=0; i<que_max; i++)que[i]=tmp_que[i];
 		delete [] tmp_que;
 		tmp_que=NULL;
 
@@ -1169,10 +1169,10 @@ void CGame::Init()
 	party.money=1000;
 	party.unit[0].SetUnit(0, 0, HERO1, 0);
 	for(int i=1; i<PARTY_MAX; i++)party.unit[i].life=false;
-	for(i=0; i<EQUIP_MAX; i++)party.item[i]=0;
+	for(int i=0; i<EQUIP_MAX; i++)party.item[i]=0;
 
 	//스위치 초기화
-	for(i=0; i<SWTICH_MAX; i++)event_switch[i]=false;
+	for(int i=0; i<SWTICH_MAX; i++)event_switch[i]=false;
 }
 
 void CGame::Start()
@@ -1285,7 +1285,7 @@ bool CGame::LoadMap()
 		//초기화
 		for(int i=0; i<UNIT_MAX; i++)unit[i].life=unit[i].soul=false;
 		for(int j=0; j<48; j++)
-			for(i=0; i<48; i++)
+			for(int i=0; i<48; i++)
 			{
 				unit_map[i][j]=-1;
 				if(battle && map_id>=7)fog_map[i][j]=true;
@@ -1294,7 +1294,7 @@ bool CGame::LoadMap()
 
 		//필터링, 유닛 초기위치 설정
 		int party_no=1;		//배치할 파티원 번호
-		for(j=0; j<y_size; j++)
+		for(int j=0; j<y_size; j++)
 			for(int i=0; i<x_size; i++)
 			{
 				if(Between(map[i][j][1],9,14))map[i][j][1]-=9;
@@ -1491,9 +1491,9 @@ void CGame::SetDiamondArea(int id, int x, int y, int dist_min, int dist_max, int
 		else
 		{
 			for(int j=0; j<i; j++)SetCheckMap(id, x-(i-j), y+j, value);	//좌
-			for(j=0; j<i; j++)SetCheckMap(id, x+(i-j), y-j, value);		//우
-			for(j=0; j<i; j++)SetCheckMap(id, x-j, y-(i-j), value);		//상
-			for(j=0; j<i; j++)SetCheckMap(id, x+j, y+(i-j), value);		//하
+			for(int j=0; j<i; j++)SetCheckMap(id, x+(i-j), y-j, value);		//우
+			for(int j=0; j<i; j++)SetCheckMap(id, x-j, y-(i-j), value);		//상
+			for(int j=0; j<i; j++)SetCheckMap(id, x+j, y+(i-j), value);		//하
 		}
 	}
 }
@@ -3551,7 +3551,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		else if(unit[i].soul)lib->Image(unit[i].x*40+unit[i].sx-fx_i, unit[i].y*40+unit[i].sy-fy_i, imgno.animation+2);
 
 	//3층&애니메이션
-	for(j=fy; j<Min(y_size, fy+13); j++)
+	for(int j=fy; j<Min(y_size, fy+13); j++)
 		for(int i=fx; i<Min(x_size, fx+17); i++)
 		{			
 			int tile_x=i*40-fx_i;
@@ -3821,7 +3821,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		//소지 목록
 		int ty=37;
 		selected2=-1;
-		for(i=0; i<EQUIP_MAX; i++)
+		for(int i=0; i<EQUIP_MAX; i++)
 		{
 			if(party.item[i]>0)
 			{				
@@ -3895,7 +3895,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		//명령들
 		int ty=37;
 		char* party_command[3]={"순서 바꾸기", "해고", "장비 해체"};
-		for(i=0; i<3; i++)
+		for(int i=0; i<3; i++)
 		{
 			if(selected2==i)
 			{
@@ -3953,7 +3953,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			}
 		//소지 목록
 		int ty=37;
-		for(i=0; i<EQUIP_MAX; i++)
+		for(int i=0; i<EQUIP_MAX; i++)
 		{
 			if(party.item[i]>0)
 			{
@@ -4087,7 +4087,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			}
 		//현재 용사단
 		lib->Image(118, 348, imgno.panel+6);
-		for(i=0; i<PARTY_MAX; i++)
+		for(int i=0; i<PARTY_MAX; i++)
 		{
 			if(party.unit[i].life)
 			{
