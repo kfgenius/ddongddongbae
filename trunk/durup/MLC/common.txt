@@ -1,0 +1,55 @@
+chunk common.mlc
+{
+	picture Dlg1
+	{
+		file "dlg1.gif";
+		sysmem;
+	}
+	picture Dlg2
+	{
+		file "dlg2.gif";
+		sysmem;
+	}
+	picture Dlg3
+	{
+		file "dlg3.gif";
+		sysmem;
+	}
+	picture Dlg4
+	{
+		file "dlg4.gif";
+		sysmem;
+	}
+	picture Dlg5
+	{
+		file "dlg5.gif";
+		sysmem;
+	}
+	picture Dlg7
+	{
+		file "dlg7.gif";
+		sysmem;
+	}
+	picture Dlg9
+	{
+		file "dlg9.gif";
+		sysmem;
+	}
+	picture White
+	{
+		file "white.gif";
+		sysmem;
+	}
+	picture Black
+	{
+		file "black.gif";
+		sysmem;
+	}
+	picture Select
+	{
+		file "select.gif";
+		layertype light;
+		opacity 1.0;
+		sysmem;
+	}
+}

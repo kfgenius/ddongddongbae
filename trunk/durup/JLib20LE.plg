@@ -1,0 +1,56 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: JLib20LE - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x412 /fo"Debug/resource.res" /d "_DEBUG" "C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\resource.rc"" 
+Creating temporary file "C:\DOCUME~1\DONGDO~1\LOCALS~1\Temp\RSP13.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/JLib20LE.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\Dsutil.cpp"
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\JDirectDraw.cpp"
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\JDirectDrawImp.cpp"
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\JDirectDrawImpID.cpp"
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\JResourceManager.cpp"
+"C:\Documents and Settings\DongDongBae\My Documents\Visual Studio 2005\Projects\歹反\durup\main.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\DONGDO~1\LOCALS~1\Temp\RSP13.tmp" 
+Creating temporary file "C:\DOCUME~1\DONGDO~1\LOCALS~1\Temp\RSP14.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gdiplus.lib ddraw.lib ddeffects3.lib dxerr9.lib dsound.lib amstrmid.lib dxguid.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/JLib20LE.pdb" /debug /machine:I386 /nodefaultlib:"libc" /nodefaultlib:"libcd" /out:"Debug/JLib20LE.exe" /pdbtype:sept /force:multiple 
+".\Debug\Dsutil.obj"
+".\Debug\JDirectDraw.obj"
+".\Debug\JDirectDrawImp.obj"
+".\Debug\JDirectDrawImpID.obj"
+".\Debug\JResourceManager.obj"
+".\Debug\main.obj"
+".\Debug\resource.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\DONGDO~1\LOCALS~1\Temp\RSP14.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+Dsutil.cpp
+JDirectDraw.cpp
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\jdirectdraw.cpp(110) : error C2061: syntax error : identifier 'HMONITOR'
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\jdirectdraw.cpp(124) : error C2065: 'DirectDrawEnumerateEx' : undeclared identifier
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\jdirectdrawimp.h(5) : fatal error C1083: Cannot open include file: 'gdiplus.h': No such file or directory
+JDirectDrawImp.cpp
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\jdirectdrawimp.cpp(9) : fatal error C1083: Cannot open include file: 'gdiplus.h': No such file or directory
+JDirectDrawImpID.cpp
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\jdirectdrawimp.h(5) : fatal error C1083: Cannot open include file: 'gdiplus.h': No such file or directory
+JResourceManager.cpp
+main.cpp
+c:\documents and settings\dongdongbae\my documents\visual studio 2005\projects\歹反\durup\main.cpp(13) : fatal error C1083: Cannot open include file: 'gdiplus.h': No such file or directory
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+JLib20LE.exe - 6 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

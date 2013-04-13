@@ -1,0 +1,400 @@
+chunk shooting.mlc
+{
+	picture Back1
+	{
+		file "back1.jpg";
+		sysmem;
+	}
+	picture Back2
+	{
+		file "back2.jpg";
+		sysmem;
+	}
+	picture Back3
+	{
+		file "back3.jpg";
+		sysmem;
+	}
+	picture BackE
+	{
+		file "backe.jpg";
+		sysmem;
+	}
+	picture Bottom
+	{
+		file "bottom.jpg";
+		sysmem;
+	}
+	picture HP
+	{
+		file "hp.gif";
+		sysmem;
+	}
+	picture HP2
+	{
+		file "hp2.gif";
+		sysmem;
+	}
+	picture HP3
+	{
+		file "hp3.gif";
+		sysmem;
+	}
+	picture HP4
+	{
+		file "hp4.gif";
+		sysmem;
+	}
+	picture Skull
+	{
+		file "skull.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture SkullBody
+	{
+		file "skullbody.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture AngryEye
+	{
+		file "angry_eye.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BeautyEye
+	{
+		file "beauty_eye.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Worm
+	{
+		file "worm.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BossFly
+	{
+		file "boss_fly.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BossDung
+	{
+		file "dung.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Hand1
+	{
+		file "hand_x.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Hand2
+	{
+		file "hand_b.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Hand3
+	{
+		file "punch.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Foot
+	{
+		file "foot.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Box
+	{
+		file "box.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BossFace
+	{
+		file "face.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Parasite
+	{
+		file "parasite.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Cell1
+	{
+		file "cell1.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Cell2
+	{
+		file "cell2.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Cell4
+	{
+		file "cell4.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture CellT
+	{
+		file "cell1.gif";
+		colorkey 0000ff;
+		opacity 0.1f;
+		sysmem;
+	}
+	picture CellPillar
+	{
+		file "cellpillar.gif";
+		colorkey 0000ff;
+		opacity 1.0f;
+		sysmem;
+	}
+	picture MiniCell
+	{
+		file "minicell.gif";
+		colorkey 0000ff;
+		opacity 1.0f;
+		sysmem;
+	}
+	picture BossCell
+	{
+		file "boss_cell.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture SkullCell
+	{
+		file "skullcell.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture DevilEye
+	{
+		file "devileye.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Robot
+	{
+		file "robot.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Jelly
+	{
+		file "jelly.gif";
+		colorkey 0000ff;
+		opacity 0.5f;
+		sysmem;
+	}
+	picture JellyCore
+	{
+		file "jelly_core.gif";
+		colorkey 0000ff;
+		opacity 1.0f;
+		sysmem;
+	}
+	picture Flight
+	{
+		file "flight.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BossLast
+	{
+		file "lastboss.jpg";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture WakeUp
+	{
+		file "wakeup.jpg";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Sleep
+	{
+		file "wakeup.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Tongue
+	{
+		file "tongue.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture BossEye
+	{
+		file "boss_eye.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MThunder
+	{
+		file "m_thunder.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MDot
+	{
+		file "m_dot.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MEgg
+	{
+		file "m_egg.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MMissile
+	{
+		file "m_missile.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MJelly
+	{
+		file "m_jelly.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MGas
+	{
+		file "gas.gif";
+		colorkey 0000ff;
+		opacity 0.5f;
+		sysmem;
+	}
+	picture MFire
+	{
+		file "fire.gif";
+		colorkey 0000ff;
+		opacity 0.5f;
+		sysmem;
+	}
+	picture WBase
+	{
+		file "w_base.gif";
+		colorkey 0000ff;
+		opacity 1.0f;
+		sysmem;
+	}
+	picture WThunder
+	{
+		file "w_thunder.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Handsome
+	{
+		file "handsome.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Nice
+	{
+		file "nice.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture WeaponBoom1
+	{
+		file "weapon_boom1.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture WeaponBoom2
+	{
+		file "weapon_boom2.gif";
+		layertype light;
+		opacity 0.5f;
+		sysmem;
+	}
+	picture WeaponBoom3
+	{
+		file "weapon_boom3.gif";
+		layertype light;
+		opacity 1.0f;
+		sysmem;
+	}
+	picture WeaponBoom4
+	{
+		file "weapon_boom4.gif";
+		layertype light;
+		sysmem;
+	}
+	picture WBeam
+	{
+		file "w_beam.gif";
+		layertype light;
+		sysmem;
+	}
+	picture MLight
+	{
+		file "m_light.gif";
+		layertype light;
+		sysmem;
+	}
+	picture WSolar
+	{
+		file "w_solar.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Boom
+	{
+		file "boom.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Boom2
+	{
+		file "boom2.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Boom3
+	{
+		file "boom3.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Boom4
+	{
+		file "boom4.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Boom5
+	{
+		file "boom.gif";
+		layertype light;
+		sysmem;
+	}
+	picture MLaser
+	{
+		file "m_laser.gif";
+		layertype light;
+		sysmem;
+	}
+	picture Shield
+	{
+		file "shield.gif";
+		layertype light;
+		sysmem;
+	}
+}

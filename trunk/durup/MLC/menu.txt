@@ -1,0 +1,38 @@
+chunk menu.mlc
+{
+	picture Title
+	{
+		file "title.jpg";
+		sysmem;
+	}
+	picture Pause
+	{
+		file "pause.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture Gameover
+	{
+		file "gameover.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture MainMenu
+	{
+		file "MainMenu.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture StageTitle
+	{
+		file "stage_title.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+	picture TheEnd
+	{
+		file "TheEnd.gif";
+		colorkey 0000ff;
+		sysmem;
+	}
+}
