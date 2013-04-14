@@ -20,12 +20,6 @@ static int MaxMin(int x, int min, int max)
 		else return x;
 }
 
-//WORD(16bit)Å©±âÀÇ RGB
-static WORD RGB2(WORD r, WORD g, WORD b)
-{
-	return ((r>>3)<<11) | ((g>>2)<<5) | (b>>3);
-}
-
 static bool Between(int value, int min, int max)
 {
 	if(value>=min && value<=max)return true;

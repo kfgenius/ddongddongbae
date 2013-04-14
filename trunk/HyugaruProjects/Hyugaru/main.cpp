@@ -1,10 +1,6 @@
-#include <windows.h>
-#include <windowsx.h>
-#include <ddraw.h>
 #include <dsound.h>
 #include <stdio.h>
 #include <time.h>
-#include <dmusicc.h>
 #include <tchar.h>
 
 #include "HungLib.h"
@@ -99,9 +95,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	main.SetStartPoint(13, 0, 0);
 	main.Init();
 
-	//음악 초기화
-	InitDirectMusic();
-	
 	//클리어 횟수 알아내기
 	bool ending=false;
 	int clear_code[]={0x2c5f138a, 0xd70ebb04, 0xaa6b5ce9};
@@ -124,8 +117,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		//엔딩
 		if(ending)
 		{
-			LoadSegmentFile("end.mid");
-			PlayAudio();
+			_MidiPlay("end.mid");
+
 			int scroll_time=0, count=0;
 			while(scroll_time<1100 && !gm.RightClick())
 			{
@@ -169,7 +162,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 							"아마 재밌는게 추가되어 있을지도... 크크크..."
 						};
 						for(int i=0; i<15; i++)
-							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], RGB(255,255,255));
+							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], JColor(255,255,255));
 					}
 					//두번째 엔딩
 					else if(clear_count==1)
@@ -192,7 +185,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 							"또 재밌는게 추가되어 있을걸... 크크크..."
 						};
 						for(int i=0; i<15; i++)
-							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], RGB(255,255,255));
+							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], JColor(255,255,255));
 					}
 					//세번째 엔딩
 					else if(clear_count==2)
@@ -215,7 +208,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 							"그럼 이만... 쉬리리릭~"
 						};
 						for(int i=0; i<15; i++)
-							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], RGB(255,255,255));
+							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], JColor(255,255,255));
 					}
 					//네번째 엔딩
 					else if(clear_count==3)
@@ -238,7 +231,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 							"끝"
 						};
 						for(int i=0; i<15; i++)
-							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], RGB(255,255,255));
+							gm.PutText(100, 480+(i*40)-scroll_time, steproll[i], JColor(255,255,255));
 					}
 
 					gm.Render();
@@ -280,14 +273,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				//프로그램 처리 부분
 				else
 				{
-					//DirectMusic 프로세스
-					HRESULT hr;
-					if(FAILED(hr = ProcessDirectMusicMessages())) 
-					{
-						DXTRACE_ERR_MSGBOX( TEXT("ProcessDirectMusicMessages"), hr );
-						return FALSE;
-					}
-
 					//대기 상태
 					if(!main.sw_move && !main.sw_ai)
 					{
@@ -396,9 +381,6 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 			MouseY=HIWORD(lParam);
 			break;
 		case WM_DESTROY:			
-            SAFE_DELETE( g_pMusicSegment );
-            SAFE_DELETE( g_pMusicManager );
-            CloseHandle( g_hDMusicMessageEvent );
 			PostQuitMessage( 0 );
 			break;
 	}
@@ -411,65 +393,53 @@ void CHungLib::RestoreAll()
 	surface_count=0;
 
 	//타일
-	LoadDGF("지형","dgf\\tile_1F.dgf", NULL, &ani_tile);
-	LoadDGF("지물","dgf\\tile_2F.dgf", RGB(0,0,255), &ani_tile);
-
-	//이동할 때를 대비한 색깔 변경
-	SurfaceCopy("지형D","지형");
-	Colorize(GetImageID("지형D"),DARK);
-	//공격 때를 대비한 색깔 변경
-	SurfaceCopy("지형R","지형");
-	Colorize(GetImageID("지형R"),TO_RED);
+	LoadDGF("지형","dgf\\tile_1F.bmp", JColor(0, 0, 0), &ani_tile);
+	LoadDGF("지물","dgf\\tile_2F.bmp", JColor(0,0,255), &ani_tile);
+	LoadDGF("지형D","dgf\\tile_1F_Dark.bmp", JColor(0, 0, 0), &ani_tile);
+	LoadDGF("지형R","dgf\\tile_1F_Red.bmp", JColor(0,0,255), &ani_tile);
 
 	//캐릭터
-	LoadDGF("유닛1","dgf\\unit.dgf",RGB(0,0,255), &ani_tile);
-	ColorChange(GetImageID("유닛1"), RGB2(255,0,255), RGB2(184,185,244), RGB2(192,0,192), RGB2(128,128,255));
-	LoadDGF("유닛2","dgf\\unit.dgf",RGB(0,0,255), &ani_tile);
-	ColorChange(GetImageID("유닛2"), RGB2(255,0,255), RGB2(247,140,81), RGB2(192,0,192), RGB2(200,52,28));
-	//중독 이미지
-	SurfaceCopy("유닛1P","유닛1");
-	Colorize(GetImageID("유닛1P"),TO_GREEN);
-	SurfaceCopy("유닛2P","유닛2");
-	Colorize(GetImageID("유닛2P"),TO_GREEN);
-	//어두운 이미지
-	SurfaceCopy("유닛1D","유닛1");
-	Colorize(GetImageID("유닛1D"),DARK);
+	LoadDGF("유닛1","dgf\\unit1.png",JColor(0,0,255), &ani_tile);
+	LoadDGF("유닛2","dgf\\unit2.png",JColor(0,0,255), &ani_tile);
+	LoadDGF("유닛1P","dgf\\unit1_poison.png",JColor(0,0,255), &ani_tile);
+	LoadDGF("유닛2P","dgf\\unit2_poison.png",JColor(0,0,255), &ani_tile);
+	LoadDGF("유닛1D","dgf\\unit1_dark.png",JColor(0,0,255), &ani_tile);
 
 	//상태창 용
-	LoadDGF("상태 아이콘","dgf\\state_icon.dgf",RGB(0,0,255), &ani_icon);
+	LoadDGF("상태 아이콘","dgf\\state_icon.png",JColor(0,0,255), &ani_icon);
 
 	//숫자
-	LoadDGF("숫자","dgf\\number.dgf",RGB(0,0,255), &ani_number);
+	LoadDGF("숫자","dgf\\number.png",JColor(0,0,255), &ani_number);
 
 	//애니메이션
-	LoadDGF("불","dgf\\ani_fire.dgf",RGB(0,0,255), &ani_fire);
-	LoadDGF("충격","dgf\\ani_damage.dgf",RGB(0,0,255), &ani_tile);
-	LoadDGF("혼","dgf\\ani_soul.dgf",RGB(0,0,255), &ani_fire);
-	LoadDGF("치료","dgf\\ani_heel.dgf",RGB(0,0,255), &ani_heel);
-	LoadDGF("바람","dgf\\ani_wind.dgf",RGB(0,0,255), &ani_fire);
-	LoadDGF("물","dgf\\ani_water.dgf",RGB(0,0,255), &ani_tile);
-	LoadDGF("벼락","dgf\\ani_thunder.dgf",RGB(0,0,255), &ani_fire);
-	LoadDGF("독","dgf\\ani_poison.dgf",RGB(0,0,255), &ani_tile);
-	LoadDGF("빛","dgf\\ani_light.dgf",RGB(0,0,255), &ani_tile);
+	LoadDGF("불","dgf\\ani_fire.bmp",JColor(0,0,255), &ani_fire);
+	LoadDGF("충격","dgf\\ani_damage.bmp",JColor(0,0,255), &ani_tile);
+	LoadDGF("혼","dgf\\ani_soul.bmp",JColor(0,0,255), &ani_fire);
+	LoadDGF("치료","dgf\\ani_heel.bmp",JColor(0,0,255), &ani_heel);
+	LoadDGF("바람","dgf\\ani_wind.bmp",JColor(0,0,255), &ani_fire);
+	LoadDGF("물","dgf\\ani_water.bmp",JColor(0,0,255), &ani_tile);
+	LoadDGF("벼락","dgf\\ani_thunder.bmp",JColor(0,0,255), &ani_fire);
+	LoadDGF("독","dgf\\ani_poison.bmp",JColor(0,0,255), &ani_tile);
+	LoadDGF("빛","dgf\\ani_light.bmp",JColor(0,0,255), &ani_tile);
 
 	//타이틀
-	LoadDGF("타이틀","dgf\\title.dgf");
+	LoadDGF("타이틀","dgf\\title.bmp");
 
 	//패널
-	LoadDGF("명령창","dgf\\panel.dgf");
-	LoadDGF("상태창","dgf\\state.dgf");
-	LoadDGF("자세히","dgf\\detail.dgf");
-	LoadDGF("얼굴","dgf\\detail2.dgf");
-	LoadDGF("적의 턴","dgf\\enemy_turn.dgf", NULL, &ani_turn);
-	LoadDGF("대화창","dgf\\dialog.dgf");
-	LoadDGF("파티원","dgf\\party.dgf");
-	LoadDGF("소지목록","dgf\\itemlist.dgf");
+	LoadDGF("명령창","dgf\\panel.bmp");
+	LoadDGF("상태창","dgf\\state.bmp");
+	LoadDGF("자세히","dgf\\detail.bmp");
+	LoadDGF("얼굴","dgf\\detail2.bmp");
+	LoadDGF("적의 턴","dgf\\enemy_turn.bmp", JColor(0, 0, 0), &ani_turn);
+	LoadDGF("대화창","dgf\\dialog.bmp");
+	LoadDGF("파티원","dgf\\party.bmp");
+	LoadDGF("소지목록","dgf\\itemlist.bmp");
 	
 	//기타
-	LoadDGF("커서","dgf\\cursor.dgf",RGB(0,0,255));
-	LoadDGF("여기","dgf\\here.dgf",RGB(0,0,255));
-	LoadDGF("선택","dgf\\select.dgf", RGB(0, 0, 255), &ani_select);
-	LoadDGF("예아니오","dgf\\yesno.dgf",RGB(0,0,255), &ani_yesno);
+	LoadDGF("커서","dgf\\cursor.bmp",JColor(0,0,255));
+	LoadDGF("여기","dgf\\here.bmp",JColor(0,0,255));
+	LoadDGF("선택","dgf\\select.bmp", JColor(0, 0, 255), &ani_select);
+	LoadDGF("예아니오","dgf\\yesno.bmp",JColor(0,0,255), &ani_yesno);
 }
 
 void CHungLib::LoadSound()

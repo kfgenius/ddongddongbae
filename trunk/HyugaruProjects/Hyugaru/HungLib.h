@@ -1,6 +1,9 @@
+#include <ddraw.h>
 #include <dsound.h>
 
 #include "dsutil.h"
+#include "JDirectDraw.h"
+#include "JResourceManager.h"
 
 #define _GetKeyState(vkey) HIBYTE(GetAsyncKeyState(vkey))
 
@@ -59,9 +62,12 @@ class CHungLib
 {
 private:
 	//DirectDraw 객체
-	LPDIRECTDRAW		lpDD;				//다이렉트 드로우 객체
-	LPDIRECTDRAWSURFACE	RealScreen;			//Primary Surface 객체
-	LPDIRECTDRAWSURFACE	BackScreen;			//Back Surface 객체
+	JDirectDraw* jdd;
+	JResourceManager* jre;
+	char* backbuffer;
+
+	JFont font;
+
 	DDSURFACEDESC ddsd;
 	DDSCAPS ddscaps;
 
@@ -75,22 +81,12 @@ private:
 
 	//서페이스
 	int surface_count;
-	LPDIRECTDRAWSURFACE	ddsurface[SURFACE_MAX];
 	char* surface_name[SURFACE_MAX];
 	char* file_name[SURFACE_MAX];
-	bool surface_trans[SURFACE_MAX];
-	COLORREF surface_colorkey[SURFACE_MAX];
-	RECT surface_rect[SURFACE_MAX];
 	CAnimation* animation[SURFACE_MAX];
 
 	//DirectDraw관련 변수
-	bool use_system_memory;
 	int screen_x, screen_y;
-	RECT clip;
-
-	//DC관련 변수
-	HDC hdc;
-	bool dc_mode;	//DC를 쓰고 있는지 알기 위한 것. DC를 쓰는데 BLT를 썼다간 다운
 
 	//클래스 이름, 윈도우 이름
 	char* class_name;
@@ -100,15 +96,6 @@ private:
 	bool left_button_push;
 	bool right_button_push;
 
-	//*** Private 메소드 ***//
-	//ddutil
-	DWORD DDColorMatch(IDirectDrawSurface *pdds, COLORREF rgb);
-	HRESULT DDSetColorKey(IDirectDrawSurface *pdds, COLORREF rgb);
-
-	//DC 관련 메소드
-	void BeginDC();
-	void EndDC();
-
 public:
 	//DirectDraw 관련 메소드
 	void Image(DrawData ddata);
@@ -117,25 +104,18 @@ public:
 	int NextImage(int surface_id);
 	int GetImageID(char* name);
 	bool Render();
-	WORD* GetSurfaceAddress(int surface_id);
-	void SetClip(int left, int top, int right, int bottom);
-	void SetClip(int mode);
-	void SaveImage(int id);
 
 	//DirectSound 관련 메소드
 	void LoadSound();
 	void PlaySound(int num);
 
 	//서페이스 제어 메소드
-	bool LoadDGF(char* name, char* src, COLORREF key=NULL, CAnimation* ani=NULL);
-	void SurfaceCopy(char* name, char* src);
-	void ColorChange(int surface_id, WORD from, WORD to, WORD from2, WORD to2);
-	void Colorize(int surface_id, int mode);
+	bool LoadDGF(char* name, char* src, JColor key = JColor(0, 0, 0), CAnimation* ani=NULL);
 	void RestoreAll();
 
 	//DC 관련 메소드
-	void PutText(RECT* tarRECT, char* text, COLORREF rgb);
-	void PutText(int x, int y, char* text, COLORREF rgb);
+	void PutText(RECT* tarRECT, char* text, JColor rgb);
+	void PutText(int x, int y, char* text, JColor rgb);
 
 	//입력 메소드
 	bool GetKey(int key, int delay=999);

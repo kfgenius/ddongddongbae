@@ -1,11 +1,5 @@
-#include <dmusici.h>
-#include <dxerr9.h>
-
-#include "DMUtil.h"
-#include "DXUtil.h"
-
-#define CUSTOM_BLUE	RGB(149,190,209)
-#define YELLOW		RGB(255,255,0)
+#define CUSTOM_BLUE	JColor(149,190,209)
+#define YELLOW		JColor(255,255,0)
 
 HWND hwnd;
 
@@ -36,180 +30,6 @@ BOOL _MidiReplay()
 {
     if ( mciSendString ( "play MUSIC from 0 notify", NULL, 0, hwnd) != 0 ) return ( FALSE );
     return TRUE;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//Direct Music
-//-----------------------------------------------------------------------------
-// Defines, constants, and global variables
-//-----------------------------------------------------------------------------
-#define MUSIC_VOLUME_RANGE      ( 0-(DMUS_VOLUME_MIN/4) )
-
-CMusicManager*     g_pMusicManager          = NULL;
-CMusicSegment*     g_pMusicSegment          = NULL;
-HINSTANCE          g_hInst                  = NULL;
-HANDLE             g_hDMusicMessageEvent    = NULL;
-
-//-----------------------------------------------------------------------------
-// 함수들
-//-----------------------------------------------------------------------------
-HRESULT InitDirectMusic()
-{
-    HRESULT hr; 
-
-    g_hDMusicMessageEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
-    g_pMusicManager = new CMusicManager();
-    if( NULL == g_pMusicManager )
-        return E_OUTOFMEMORY;
-
-    if( FAILED( hr = g_pMusicManager->Initialize( hwnd ) ) )
-        return DXTRACE_ERR_MSGBOX( TEXT("Initialize"), hr );
-
-    // Register segment notification
-    IDirectMusicPerformance* pPerf = g_pMusicManager->GetPerformance();
-    GUID guid = GUID_NOTIFICATION_SEGMENT;
-    pPerf->AddNotificationType( guid );
-    pPerf->SetNotificationHandle( g_hDMusicMessageEvent, 0 );  
-
-    return S_OK;
-}
-
-HRESULT LoadSegmentFile(TCHAR* strFileName)
-{
-    HRESULT hr;
-
-    // Free any previous segment, and make a new one
-    SAFE_DELETE( g_pMusicSegment );
-
-    // Have the loader collect any garbage now that the old 
-    // segment has been released
-    g_pMusicManager->CollectGarbage();
-
-    // Set the media path based on the file name (something like C:\MEDIA)
-    // to be used as the search directory for finding DirectMusic content
-    // related to this file.
-    TCHAR strMediaPath[MAX_PATH];
-    _tcsncpy( strMediaPath, strFileName, MAX_PATH );
-    strMediaPath[MAX_PATH-1] = 0;
-    TCHAR* strLastSlash = _tcsrchr(strMediaPath, TEXT('\\'));
-    if( strLastSlash )
-    {
-        *strLastSlash = 0;
-        if( FAILED( hr = g_pMusicManager->SetSearchDirectory( strMediaPath ) ) )
-            return DXTRACE_ERR_MSGBOX( TEXT("SetSearchDirectory"), hr );
-    }
-
-    // For DirectMusic must know if the file is a standard MIDI file or not
-    // in order to load the correct instruments.
-    BOOL bMidiFile = FALSE;
-    if( strstr( strFileName, ".mid" ) != NULL ||
-        strstr( strFileName, ".rmi" ) != NULL ) 
-    {
-        bMidiFile = TRUE;
-    }
-
-    BOOL bWavFile = FALSE;
-    if( strstr( strFileName, ".wav" ) != NULL )
-    {
-        bWavFile = TRUE;
-    }        
-
-    // Load the file into a DirectMusic segment 
-    if( FAILED( g_pMusicManager->CreateSegmentFromFile( &g_pMusicSegment, strFileName, 
-                                                        TRUE, bMidiFile ) ) )
-    {
-        // Not a critical failure, so just update the status
-        return S_FALSE; 
-    }
-
-    return S_OK;
-}
-
-HRESULT ProcessDirectMusicMessages()
-{
-    HRESULT hr;
-    IDirectMusicPerformance8* pPerf = NULL;
-    DMUS_NOTIFICATION_PMSG* pPMsg;
-        
-    if( NULL == g_pMusicManager )
-        return S_OK;
-
-    pPerf = g_pMusicManager->GetPerformance();
-
-    // Get waiting notification message from the performance
-    while( S_OK == pPerf->GetNotificationPMsg( &pPMsg ) )
-    {
-        switch( pPMsg->dwNotificationOption )
-        {
-        case DMUS_NOTIFICATION_SEGEND:
-            if( pPMsg->punkUser )
-            {
-                IDirectMusicSegmentState8* pSegmentState   = NULL;
-                IDirectMusicSegment*       pNotifySegment   = NULL;
-                IDirectMusicSegment8*      pNotifySegment8  = NULL;
-                IDirectMusicSegment8*      pPrimarySegment8 = NULL;
-
-                // The pPMsg->punkUser contains a IDirectMusicSegmentState8, 
-                // which we can query for the segment that the SegmentState refers to.
-                if( FAILED( hr = pPMsg->punkUser->QueryInterface( IID_IDirectMusicSegmentState8,
-                                                                  (VOID**) &pSegmentState ) ) )
-                    return DXTRACE_ERR_MSGBOX( TEXT("QueryInterface"), hr );
-
-                if( FAILED( hr = pSegmentState->GetSegment( &pNotifySegment ) ) )
-                {
-                    // Sometimes the segend arrives after the segment is gone
-                    // This can happen when you load another segment as 
-                    // a motif or the segment is ending
-                    if( hr == DMUS_E_NOT_FOUND )
-                    {
-                        SAFE_RELEASE( pSegmentState );
-                        return S_OK;
-                    }
-
-                    return DXTRACE_ERR_MSGBOX( TEXT("GetSegment"), hr );
-                }
-
-                if( FAILED( hr = pNotifySegment->QueryInterface( IID_IDirectMusicSegment8,
-                                                                 (VOID**) &pNotifySegment8 ) ) )
-                    return DXTRACE_ERR_MSGBOX( TEXT("QueryInterface"), hr );
-
-                // Get the IDirectMusicSegment for the primary segment
-                pPrimarySegment8 = g_pMusicSegment->GetSegment();
-
-                // Cleanup
-                SAFE_RELEASE( pSegmentState );
-                SAFE_RELEASE( pNotifySegment );
-                SAFE_RELEASE( pNotifySegment8 );
-            }
-            break;
-        }
-
-        pPerf->FreePMsg( (DMUS_PMSG*)pPMsg ); 
-    }
-
-    return S_OK;
-}
-
-HRESULT PlayAudio()
-{
-    HRESULT hr;
-
-    // Set the segment to repeat many times
-    if( FAILED( hr = g_pMusicSegment->SetRepeats( DMUS_SEG_REPEAT_INFINITE ) ) )
-        return DXTRACE_ERR_MSGBOX( TEXT("SetRepeats"), hr );
-
-    // Play the segment and wait. The DMUS_SEGF_BEAT indicates to play on the 
-    // next beat if there is a segment currently playing. 
-    if( FAILED( hr = g_pMusicSegment->Play( DMUS_SEGF_BEAT ) ) )
-        return DXTRACE_ERR_MSGBOX( TEXT("Play"), hr );
-
-    return S_OK;
-}
-
-void StopAudio()
-{
-    if( g_pMusicManager )
-        g_pMusicManager->StopAll(); 
 }
 
 //////////////////////////////////////////////////////
@@ -1220,24 +1040,21 @@ void CGame::SelectBGM()
 {
 	if(map_id==0)
 	{
-		LoadSegmentFile("field.mid");
-		PlayAudio();
+		_MidiPlay("field.mid");
 	}
 	else if(map_id==13)
 	{
-		StopAudio();
+		_MidiStop();
 	}
 	else if(map_id<13)
 	{
 		if(battle)
 		{
-			LoadSegmentFile("battle.mid");
-			PlayAudio();
+			_MidiPlay("battle.mid");
 		}
 		else
 		{
-			LoadSegmentFile("village.mid");
-			PlayAudio();
+			_MidiPlay("village.mid");
 		}
 	}
 }
@@ -3703,7 +3520,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 				else sprintf(tmp_text, "%d", have_money[unit_p->caracter]);
 			strcat(info_text,tmp_text);
 			//출력
-			lib->PutText(&info_rect, info_text, RGB(0,0,0));
+			lib->PutText(&info_rect, info_text, JColor(0,0,0));
 		}
 	}
 	//명령판
@@ -3729,7 +3546,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 						selected=cara[unit[unit_id].caracter].command[i];
 					}
 					else
-						lib->PutText(panel_x+2, panel_y+2+i*20, str_command[cara[unit[unit_id].caracter].command[i]], RGB(255,255,255));
+						lib->PutText(panel_x+2, panel_y+2+i*20, str_command[cara[unit[unit_id].caracter].command[i]], JColor(255,255,255));
 				}
 		}
 	}
@@ -3789,7 +3606,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			};
 			RECT mizi_help_rect;
 			SetRect(&mizi_help_rect, 242, 260, 398, 318);
-			lib->PutText(&mizi_help_rect, mizi_help_text[selected], RGB(0,0,0));
+			lib->PutText(&mizi_help_rect, mizi_help_text[selected], JColor(0,0,0));
 		}
 	}
 	//장비
@@ -3855,7 +3672,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 
 			RECT help_rect;
 			SetRect(&help_rect, 35, 197, 435, 273);
-			lib->PutText(&help_rect, help_text, RGB(0,0,0));
+			lib->PutText(&help_rect, help_text, JColor(0,0,0));
 		}
 	}
 	//파티 설정
@@ -3916,7 +3733,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 
 			RECT help_rect;
 			SetRect(&help_rect, 35, 197, 435, 273);
-			lib->PutText(&help_rect, help_text, RGB(0,0,0));
+			lib->PutText(&help_rect, help_text, JColor(0,0,0));
 		}
 	}
 	//상품 목록
@@ -3937,7 +3754,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 				//이름과 가격 알아내기
 				char price[10];
 				sprintf(price, "%d카오", equipment[shop[i]].price);
-				COLORREF goods_color;				
+				JColor goods_color;				
 				if(MouseX>=panel_x && MouseX<panel_x+160 && MouseY>=panel_y+(i*20) && MouseY<panel_y+(i*20)+20)
 				{
 					goods_color=YELLOW;
@@ -3990,7 +3807,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 
 			RECT help_rect;
 			SetRect(&help_rect, panel_x+2, panel_y+100, panel_x+158, panel_y+140);
-			lib->PutText(&help_rect, help_text[selected], RGB(0,0,0));
+			lib->PutText(&help_rect, help_text[selected], JColor(0,0,0));
 		}
 		//소지금
 		char my_money[30];
@@ -4051,9 +3868,9 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			char help_text[128];
 
 			sprintf(help_text, "미지 속성: %s / 미지 레벨: %d\n다음 레벨이 되기 위해 필요한 학습료: %d\n소지금: %d카오", mizi_name[party.unit[selected].mizi_type], party.unit[selected].mizi_level, mizi_price[party.unit[selected].mizi_level], party.money);
-			lib->PutText(&help_rect, help_text, RGB(0, 0, 0));
+			lib->PutText(&help_rect, help_text, JColor(0, 0, 0));
 		}
-		else lib->PutText(&help_rect, "미지 등급을 높일 캐릭터를 선택해주세요.", RGB(0, 0, 0));
+		else lib->PutText(&help_rect, "미지 등급을 높일 캐릭터를 선택해주세요.", JColor(0, 0, 0));
 	}
 	//알선소
 	else if(click_mode==110)
@@ -4070,7 +3887,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 				int pay[]={0,200,200,200,200,300,100,80,80,120,50,100,80,60,120,300,100};
 				char price[10];
 				sprintf(price, "%d카오", pay[shop[i]]);
-				COLORREF goods_color;				
+				JColor goods_color;				
 				if(MouseX>=panel_x && MouseX<panel_x+160 && MouseY>=panel_y+(i*20) && MouseY<panel_y+(i*20)+20)
 				{
 					goods_color=YELLOW;
@@ -4137,7 +3954,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 
 		RECT help_rect;
 		SetRect(&help_rect, 120, 202, 516, 258);
-		lib->PutText(&help_rect, help_text, RGB(0,0,0));
+		lib->PutText(&help_rect, help_text, JColor(0,0,0));
 	}
 	//수리점
 	else if(click_mode==120)
@@ -4172,9 +3989,9 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			char help_text[128];
 
 			sprintf(help_text, "%s: %d/%d\n수리비: %d\n소지금: %d카오", equipment[party.unit[selected].ammor].name, party.unit[selected].dp, equipment[party.unit[selected].ammor].pow, select_price, party.money);
-			lib->PutText(&help_rect, help_text, RGB(0, 0, 0));
+			lib->PutText(&help_rect, help_text, JColor(0, 0, 0));
 		}
-		else lib->PutText(&help_rect, "갑옷을 수리할 캐릭터를 선택해주세요.", RGB(0, 0, 0));
+		else lib->PutText(&help_rect, "갑옷을 수리할 캐릭터를 선택해주세요.", JColor(0, 0, 0));
 	}
 
 	//적의 턴을 알려주는 그림
@@ -4211,7 +4028,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		lib->Image(80, 400, imgno.panel+5);
 		RECT dialog_rect;
 		SetRect(&dialog_rect, 85, 408, 635, 472);
-		lib->PutText(&dialog_rect, dialog_text[dialog_no*2+1], RGB(0,0,0));
+		lib->PutText(&dialog_rect, dialog_text[dialog_no*2+1], JColor(0,0,0));
 	}
 
 	//커서
@@ -4224,19 +4041,19 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		{
 			if(unit[0].life)lib->Image(150, 10, "타이틀");
 
-			lib->PutText(275, 140, "새 게임", RGB(255,255,255));
+			lib->PutText(275, 140, "새 게임", JColor(255,255,255));
 			if(!main_menu)	//중간 메뉴일 때
 			{
-				lib->PutText(120, 290, "저장", RGB(255,255,255));
-				lib->PutText(325, 325, "돌아가기", RGB(255,255,255));				
+				lib->PutText(120, 290, "저장", JColor(255,255,255));
+				lib->PutText(325, 325, "돌아가기", JColor(255,255,255));				
 				if(!pre_battle)
 				{
-					lib->PutText(200, 400, "장비", RGB(255,255,255));
-					lib->PutText(410, 370, "파티설정", RGB(255,255,255));
+					lib->PutText(200, 400, "장비", JColor(255,255,255));
+					lib->PutText(410, 370, "파티설정", JColor(255,255,255));
 				}
 			}
-			lib->PutText(450, 290, "불러오기", RGB(255,255,255));
-			lib->PutText(275, 450, "나가기", RGB(255,255,255));
+			lib->PutText(450, 290, "불러오기", JColor(255,255,255));
+			lib->PutText(275, 450, "나가기", JColor(255,255,255));
 		}
 	}
 	else if(map_id==14)
@@ -4248,7 +4065,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 		{
 			if(file_data[i].read_able)
 			{
-				lib->PutText(290, 170+(i*80), map_name[file_data[i].map_id], RGB(255,255,255));				
+				lib->PutText(290, 170+(i*80), map_name[file_data[i].map_id], JColor(255,255,255));				
 				check_map[ANIMATION_MAP][6][4+(i*2)]=3;
 				check_map[DELAY_MAP][6][4+(i*2)]=1;
 			}
