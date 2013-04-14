@@ -361,6 +361,9 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 {
     switch( message )
     {
+		case WM_SIZE		 :	if(wParam == SIZE_MINIMIZED)active=false;
+								else active=true;
+								break;
 		case WM_ACTIVATEAPP:
 			active = wParam;
 			break;
@@ -379,6 +382,12 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 		case WM_MOUSEMOVE:
 			MouseX=LOWORD(lParam);
 			MouseY=HIWORD(lParam);
+			break;
+	   case    MM_MCINOTIFY:
+			if ( ReplayFlag && wParam == MCI_NOTIFY_SUCCESSFUL ) _MidiReplay();
+			break;
+		case WM_MOVE:
+			if(jdd)jdd->OnMove(LOWORD(lParam), HIWORD(lParam));
 			break;
 		case WM_DESTROY:			
 			PostQuitMessage( 0 );

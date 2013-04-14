@@ -22,6 +22,10 @@
 extern int MouseX, MouseY;							//마우스 좌표
 extern BOOL LeftButton, RightButton;	//마우스 클릭 여부
 
+//DirectDraw 객체
+extern JDirectDraw* jdd;
+extern JResourceManager* jre;
+
 //그림을 그릴 정보를 보내주는 클래스
 class DrawData
 {
@@ -61,9 +65,6 @@ public:
 class CHungLib
 {
 private:
-	//DirectDraw 객체
-	JDirectDraw* jdd;
-	JResourceManager* jre;
 	char* backbuffer;
 
 	JFont font;

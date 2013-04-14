@@ -9,6 +9,9 @@ LRESULT CALLBACK WindowProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 int custom_key[KEY_MAX]={VK_DOWN, VK_LEFT, VK_UP, VK_RIGHT, VK_RETURN, VK_ESCAPE, VK_SPACE};
 int key_push[KEY_MAX];
 
+JDirectDraw* jdd;
+JResourceManager* jre;
+
 //DrawData ¸Þ¼Òµå
 void DrawData::Set(int vx, int vy, int vid, int vframe)
 {
