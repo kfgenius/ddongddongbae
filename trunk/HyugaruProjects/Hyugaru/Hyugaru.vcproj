@@ -73,7 +73,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib ddraw.lib Dxguid.lib dsound.lib dxerr9.lib gdiplus.lib DDEffects3.lib"
+				AdditionalDependencies="winmm.lib ddraw.lib dsound.lib gdiplus.lib DDEffects3.lib dxerr9.lib"
 				OutputFile=".\Debug/Hyugaru.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -169,10 +169,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib dsound.lib winmm.lib dxerr9.lib dxguid.lib"
+				AdditionalDependencies="winmm.lib ddraw.lib dsound.lib gdiplus.lib DDEffects3.lib dxerr9.lib"
 				OutputFile=".\Release/Hyugaru.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/Hyugaru.pdb"
 				SubSystem="2"
 				TargetMachine="1"
