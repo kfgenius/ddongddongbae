@@ -157,6 +157,7 @@ CHungLib::CHungLib(HWND hwnd, HINSTANCE hInstance, int nCmdShow, char* class_nam
 	else SoundCard = FALSE;
 
 	jdd->Initialize(NULL,hwnd,x,y,16,true,true);
+	jdd->SetFrameRate(100);
 	
 	//윈도우창 이동
 	jdd->OnMove(100, 100);
@@ -308,7 +309,7 @@ bool CHungLib::RightClick()
 
 bool CHungLib::LoadDGF(char* name, char* src, JColor key, CAnimation* ani)
 {
-	if(key == JColor(0, 0, 0))
+	if(key != JColor(0, 0, 0))
 	{
 		JPictureInfo pi;
 		pi.SetColorKey(key);
