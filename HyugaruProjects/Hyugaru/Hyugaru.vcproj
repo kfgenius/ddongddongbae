@@ -73,10 +73,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib ddraw.lib Dxguid.lib dsound.lib dxerr9.lib"
+				AdditionalDependencies="winmm.lib ddraw.lib Dxguid.lib dsound.lib dxerr9.lib gdiplus.lib DDEffects3.lib"
 				OutputFile=".\Debug/Hyugaru.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Hyugaru.pdb"
 				SubSystem="2"
@@ -212,26 +213,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="dmutil.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="Dsutil.cpp"
 				>
 				<FileConfiguration
@@ -252,44 +233,24 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dxutil.cpp"
+				RelativePath=".\HungLib.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="HungLib.cpp"
+				RelativePath=".\JDirectDraw.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\JDirectDrawImp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\JDirectDrawImpID.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\JResourceManager.cpp"
+				>
 			</File>
 			<File
 				RelativePath="main.cpp"
@@ -337,11 +298,15 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\ColorMatrix2.h"
+				>
+			</File>
+			<File
 				RelativePath="data.h"
 				>
 			</File>
 			<File
-				RelativePath="dmutil.h"
+				RelativePath=".\DDEffects3.h"
 				>
 			</File>
 			<File
@@ -349,11 +314,27 @@
 				>
 			</File>
 			<File
-				RelativePath="dxutil.h"
+				RelativePath=".\HungLib.h"
 				>
 			</File>
 			<File
-				RelativePath="HungLib.h"
+				RelativePath=".\JAnimation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\JDirectDraw.h"
+				>
+			</File>
+			<File
+				RelativePath=".\JDirectDrawImp.h"
+				>
+			</File>
+			<File
+				RelativePath=".\JResourceManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\JResourceManagerImp.h"
 				>
 			</File>
 			<File
@@ -370,6 +351,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\DDEffects3.lib"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
