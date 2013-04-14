@@ -970,6 +970,8 @@ CGame::CGame(CHungLib* hung)
 {
 	lib=hung;
 
+	unit_id = 0;
+
 	//숫자 초기화
 	n_hp.Set(lib, imgno.number, 5);
 	n_ammor.Set(lib, imgno.number, 5);
