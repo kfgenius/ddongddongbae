@@ -4029,7 +4029,7 @@ void CGame::DrawMap(int MouseX, int MouseY, char d_tile, char r_tile)
 			else if(dialog_face>=0)lib->Image(20, 420, imgno.unit, dialog_face);
 		lib->Image(80, 400, imgno.panel+5);
 		RECT dialog_rect;
-		SetRect(&dialog_rect, 85, 408, 635, 472);
+		SetRect(&dialog_rect, 85, 408, 635, 480);
 		lib->PutText(&dialog_rect, dialog_text[dialog_no*2+1], JColor(0,0,0));
 	}
 
