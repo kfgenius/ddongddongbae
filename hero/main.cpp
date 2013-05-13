@@ -165,7 +165,10 @@ void Change(int to)
 	{
 		char* fname[]={"DATA//first.bmp","DATA//back.bmp","DATA//water.bmp",
 						"DATA//event1.bmp","DATA//event2.bmp","DATA//event3.bmp",
-						"DATA//event4.bmp","DATA//time.bmp",};
+						"DATA//event4.bmp","DATA//time.bmp", "DATA//event5.bmp",
+						"DATA//end1.bmp","DATA//end2.bmp", "DATA//end3.bmp",
+						"DATA//end4.bmp","DATA//end5.bmp", "DATA//end6.bmp",
+						"DATA//end.bmp"};
 		BmpScreen[0] = DDLoadBitmap( DirectOBJ, fname[to], 0, 0, SYSTEM);
 		for(i=1;i<=101;i++){
 			SetRect(&BackRect,400-i*4,300-i*3, 400+i*4,300+i*3);
@@ -956,6 +959,15 @@ void Event(int fafaDo, int sonDo)
 						gm.money+=10;
 						mn[1].just+=3;
 						break;
+					case 18: //마지막 주
+						Change(8);
+						Story(216,6,true);
+						gm.out++;
+						break;
+					case 19: //숲의 성자
+						Story(222,2,true);
+						mn[1].just+=6;
+						break;
 				}
 				break;
 		}
@@ -1083,6 +1095,33 @@ void Event(int fafaDo, int sonDo)
 				Story(173,8,false);
 				gm.money+=10;
 				break;
+			case 5:
+				Story(202, 3, true);
+				Change(99); Change(1);
+				_MidiPlay(bgm[gm.day/7], true);
+				Story(205, 6, true);
+				break;
+			case 6:
+				Story(211, 3, true);
+				BmpScreen[3] = DDLoadBitmap( DirectOBJ, scr[gm.day/7], 0, 0, SYSTEM);
+				Change(99); Change(1);
+				_MidiPlay(bgm[gm.day/7], true);
+				Story(214, 2, false);
+				break;
+			case 7:	//$$
+				Story(224,4,true);
+				spr[0].Battle(27,false);
+				Story(228,13,true);
+				Change(99); Change(1);
+				_MidiPlay("music//end.mid", true);
+				Story(241,4,true);
+
+				//엔딩 분기
+				Change(9);
+				Story(245,3,true);
+				Change(15);
+				Quit = true;
+				break;
 		}
 		_MidiPlay(bgm[gm.day/7], true);
 		BmpScreen[3] = DDLoadBitmap( DirectOBJ, scr[gm.day/7], 0, 0, SYSTEM);
@@ -1096,7 +1135,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	jre=CreateDXResourceManager(jdd);
 
 	WNDCLASS wc={0};
-	wc.hIcon=LoadIcon(hInstance,"icon.ico");
+	wc.hIcon=LoadIcon(hInstance,"icon1.ico");
 	wc.hCursor=LoadCursor(hInstance,IDC_ARROW);
 	wc.lpfnWndProc=WindowProc;
 	wc.hInstance=hInstance;
