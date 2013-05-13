@@ -195,6 +195,7 @@ void Talk(int caracter, char* sen1, char* sen2, char* sen3)
 		case 9: strcpy(name, "전설의 거인");break;
 		case 10: strcpy(name, "마을주민");break;
 		case 11: strcpy(name, "상인");break;
+		case 12: strcpy(name, "술집주인");break;
 	}
 	SetRect(&BackRect, (caracter%4)*160, (caracter/4)*160, (caracter%4)*160+160, (caracter/4)*160+160);
 	if(caracter<8)_DrawBmp(BackRect, 20, 420, BmpScreen[1], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
@@ -1109,20 +1110,44 @@ void Event(int fafaDo, int sonDo)
 				Story(214, 2, false);
 				break;
 			case 7:	//$$
+				_MidiPlay("music//first.mid",true);
 				Story(224,4,true);
 				spr[0].Battle(27,false);
+				_MidiPlay("music//first.mid",true);
 				Story(228,13,true);
 				Change(99); Change(1);
 				_MidiPlay("music//end.mid", true);
 				Story(241,4,true);
 
 				//엔딩 분기
-				Change(9);
-				Story(245,3,true);
+				if(1)
+				if(mn[1].pow >= 5 && mn[1].just >= 100)	//용사 엔딩
+				{
+					Change(9);
+					Story(248,6,true);
+				}
+				else if(mn[1].pow >= 5)	//마왕 엔딩
+				{
+					Change(10);
+					Story(245,3,true);
+				}
+				else if(mn[1].just >= 100)	//사망 엔딩
+				{
+					Change(11);
+					Story(254,2,true);
+				}
+				else //if(mn[1].pow >= 3)	//병사 엔딩
+				{
+					Change(12);
+					Story(256,3,true);
+				}
+
 				Change(15);
+				Click();
 				Quit = true;
 				break;
 		}
+
 		_MidiPlay(bgm[gm.day/7], true);
 		BmpScreen[3] = DDLoadBitmap( DirectOBJ, scr[gm.day/7], 0, 0, SYSTEM);
 		gm.out=(gm.day/7)*3;
