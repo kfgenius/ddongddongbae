@@ -36,7 +36,7 @@ MSG msg;
 void Init()
 {
 	backbuffer = jdd->GetBackBuffer();
-	font20=jdd->CreateFont("±¼¸²Ã¼",14,true,false,false,false,false);
+	font20=jdd->CreateFont("±¼¸²Ã¼",16,true,false,false,false,false);
 	srand( (unsigned)time( NULL ) );
 }
 
