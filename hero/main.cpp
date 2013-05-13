@@ -950,6 +950,12 @@ void Event(int fafaDo, int sonDo)
 						gm.money+=5;
 						mn[1].just+=3;
 						break;
+					case 15: //용병 뛰기
+						Story(196,6,true);
+						spr[0].Battle(24,true);
+						gm.money+=10;
+						mn[1].just+=3;
+						break;
 				}
 				break;
 		}
@@ -1090,7 +1096,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	jre=CreateDXResourceManager(jdd);
 
 	WNDCLASS wc={0};
-	wc.hIcon=LoadIcon(hInstance,"newdevil.ico");
+	wc.hIcon=LoadIcon(hInstance,"icon.ico");
 	wc.hCursor=LoadCursor(hInstance,IDC_ARROW);
 	wc.lpfnWndProc=WindowProc;
 	wc.hInstance=hInstance;
@@ -1202,7 +1208,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		PutFontOutline(200,420,YELLOW,"[분노의 대갈]");
 		PutFontOutline(200,440,WHITE,"자! 그럼 스케쥴을 짜 볼까?");
 		PutFontOutline(200,460,WHITE,"(그림을 클릭하면 예정을 바꿀 수 있습니다)");
-		PutFontOutline(200,480,BLUE,"분노의 대갈    아들내미");
+		PutFontOutline(200,480,BLUE,"분노의 대갈   아들내미");
 		SetRect(&BackRect, doing[0]*50, 20, doing[0]*50+50, 70);
 		_DrawBmp(BackRect, 220, 510, BmpScreen[2], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 		SetRect(&BackRect, doing[1]*50, 20, doing[1]*50+50, 70);

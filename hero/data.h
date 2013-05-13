@@ -2,7 +2,7 @@
 #define BLACK JColor(0,0,0)
 #define RED JColor(255,0,0)
 #define GREEN JColor(0,255,0)
-#define BLUE JColor(0,0,255)
+#define BLUE JColor(128,128,255)
 #define YELLOW JColor(255,255,0)
 #define PRC MSG msg; if ( PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE) ){if ( !GetMessage(&msg, NULL, 0, 0) ) return msg.wParam;TranslateMessage( &msg );DispatchMessage( &msg );}else if(Act)
 #define SCENE SetRect(&BackRect, 0, 0, 800, 600); _DrawBmp(BackRect, 0, 0, BmpScreen[0], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT)
@@ -28,7 +28,7 @@ char *bgm[]={"music//stage1.mid","music//stage2.mid","music//stage3.mid",
 			"music//stage7.mid"};
 char *stk[]={"애정의 눈짓","사랑의 매","가혹한 채찍","애정의 철퇴","섬김의 쇠사슬"};
 char *swd[]={"목검","동검","철검","장검","영웅의 검"};
-char *shoes[]={"구두","운동화","동흥택스","동흥택스II","바람의 신발"};
+char *shoes[]={"구두","운동화","똥똥택스","똥똥택스II","바람의 신발"};
 
 char *snr1[]={
 	"0","오고 있다...","오고 있어...","",//0
@@ -227,7 +227,18 @@ char *snr1[]={
 	"2","뭐야? 어디를?","","",
 	"1","마을 사람들에게 들었는데, 이곳에는 불이 많이 난다는군.","화재 한건 해결하면 5K를 준대.","경험치도 올리니까 좋지.",
 	"2","목숨수당 5K면 절대 많은게 아닌데...","","",//195
- 	};
+	"1", "헤이, 가자가자!", "", "",
+	"2", "뭐야? 어디를?", "", "",
+	"1", "전쟁에서 용병으로 뛰면 10K 준대.", "", "",
+	"2", "올 때는 분명히 전쟁에 관여 안 한다고 했잖아!", "돈이 그렇게 좋은가!", "",
+	"1", "훗, 돈 때문이 아니야...", "정의를 지키기 위해서다!", "",	//200
+	"2", "정의감 0인 주제에 그딴 소리를...", "", "",
+	"1", "", "", "",
+	"1", "", "", "",
+	"1", "", "", "",
+	"1", "", "", "",	//205
+	//"1", "쳇, 여기까지 쫓아 왔나?", "급해서 이만 실례!!!",
+	};
 
 typedef struct{
 	unsigned char day, out;
