@@ -191,14 +191,17 @@ void Talk(int caracter, char* sen1, char* sen2, char* sen3)
 		case 5: strcpy(name, "히죽히죽");break;
 		case 6: strcpy(name, "나불나불");break;
 		case 7: strcpy(name, "엘프");break;
-		case 8: strcpy(name, "진흙골렘");break;
-		case 9: strcpy(name, "전설의 거인");break;
-		case 10: strcpy(name, "마을주민");break;
-		case 11: strcpy(name, "상인");break;
-		case 12: strcpy(name, "술집주인");break;
+		case 8: strcpy(name, "의문의 마도사");break;
+		case 9: strcpy(name, "벨라");break;
+		case 10: strcpy(name, "벨라");break;
+		case 12: strcpy(name, "진흙골렘");break;
+		case 13: strcpy(name, "전설의 거인");break;
+		case 14: strcpy(name, "마을주민");break;
+		case 15: strcpy(name, "상인");break;
+		case 16: strcpy(name, "술집주인");break;
 	}
 	SetRect(&BackRect, (caracter%4)*160, (caracter/4)*160, (caracter%4)*160+160, (caracter/4)*160+160);
-	if(caracter<8)_DrawBmp(BackRect, 20, 420, BmpScreen[1], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
+	if(caracter<12)_DrawBmp(BackRect, 20, 420, BmpScreen[1], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 	if(caracter!=99)PutFontOutline(200,440,YELLOW,"[%s]",name);
 	PutFontOutline(200,480,WHITE,sen1);
 	PutFontOutline(200,500,WHITE,sen2);
@@ -230,6 +233,24 @@ void MainScr()
 		PutFontOutline(hx,140,WHITE,"정의감");
 		_DrawBar(hx,160,hx+mn[i].just,180,JColor(SColor1(mn[i].just),SColor2(mn[i].just),0));
 		_DrawBox(hx,160,hx+99,180,WHITE);
+		char buffer[20];
+		sprintf(buffer, "%d", mn[i].just);
+		int ex = 0;
+		if(mn[i].just < 10)
+		{
+			ex = 8;
+		}
+		else if(mn[i].just < 100)
+		{
+			ex = 16;
+		}
+		else
+		{
+			ex = 24;
+		}
+
+		PutFontOutline(hx + 50 - ex,162,WHITE,buffer);
+
 		PutFontOutline(hx,200,WHITE,"무기");
 		if(!i)PutFontOutline(hx,220,GREEN,stk[mn[i].att]);
 			else PutFontOutline(hx,220,GREEN,swd[mn[i].att]);
@@ -921,7 +942,11 @@ void Event(int fafaDo, int sonDo)
 						Story(128,2,true);
 						gm.out++;
 						break;
-					case 7: //숲의 성자
+					case 7: //벨라 첫 전투
+						Story(267,11,true);
+						gm.out++;
+						break;
+					case 8: //숲의 성자
 						Story(130,5,true);
 						mn[1].just+=6;
 						break;
