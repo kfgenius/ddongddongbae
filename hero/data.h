@@ -8,8 +8,8 @@
 #define SCENE SetRect(&BackRect, 0, 0, 800, 600); _DrawBmp(BackRect, 0, 0, BmpScreen[0], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT)
 #define SMAX 100
 #define ENSPR int i2 = 0; for(i2=8;i2<SMAX;i2++)if(!spr[i2].life)break; if(i2<SMAX)
-#define MONSTERS 26
-#define ENEMYS 28
+#define MONSTERS 28
+#define ENEMYS 30
 
 BOOL LeftButton, RightButton, ReplayFlag, Quit=false, key, key2, Nsave;
 extern HSNDOBJ Sound[];
@@ -181,7 +181,7 @@ char *snr1[]={
 	"1","왠지 불길한데...","보물을 찾으러 가며 언제나 허탕을 하던데...","",
 	"2","한번 가보자구!","운 좋으면 고대유물이라도...","",
 	"1","흐음... 여기군.","응? 땅이 울리는 데...","... 역시 ... 이런 패턴인가?",
-	"12","누가 고대의 비보를 노리는가?","크어어어...","",//150
+	"13","누가 고대의 비보를 노리는가?","크어어어...","",//150
 	"1","결국엔 이렇게 허무하게 끝나는 거군.","쳇~","",
 	"2","앗! 아냐!","저길 좀 봐!","금이다!",
 	"1","앗! 정말... 하지만...","작군... 쳇. 한 10K쯤 되겠어.","뭐... 이걸로 만족해야 겠지?",
@@ -308,7 +308,20 @@ char *snr1[]={
 	"2", "빌어먹을...", "", "",
 	"8", "하긴 쉽지 않을 거라고 생각했어.", "", "",	//275
 	"8", "할 수 없지.", "용사가 될 수 없는 불구의 몸으로 만들어 줄게.", "",
-	"2", "이봐, 도대체 왜 이러는 거야!", "", ""
+	"2", "이봐, 도대체 왜 이러는 거야!", "", "",
+	"8", "쳇! 오늘은 이만 물러가 주지!", "", "",
+	"2", "휴, 살았다.", "", "",
+	"1", "쟤 누구야?", "너한테 원한 있는 거 같은데?", "",	//280
+	"2", "몰라! 처음 보는 얼굴이야!", "", "",
+	"1", "그래도 엘프보다 낫다.", "", "",
+	"2", "100배 낫지.", "", "",
+	"2", "", "", "",
+	"2", "", "", "",	//285
+	"2", "", "", "",
+	"2", "", "", "",
+	"2", "", "", "",
+	"2", "", "", "",
+	"2", "", "", "",
 	};
 
 typedef struct{
@@ -330,6 +343,7 @@ class CBattle{
 	int x, y, sizeX, sizeY;
 	int kind, speed, dir, dam;
 	int hp, att;
+	int master;	//소환체인 경우
 	bool life;
 
 	//기본 데이터
@@ -348,7 +362,7 @@ class CBattle{
 	int CenterY(int s1, int s2);
 	bool Bump(int i1);
 	void PutSpr(int num);
-	void NewSpr(int n, int kind, int x, int y, int hp, int at, int dr);
+	void NewSpr(int n, int kind, int x, int y, int hp, int at, int dr, int master = -1);
 	void CtrSpr();
 
 public:

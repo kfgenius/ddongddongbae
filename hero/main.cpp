@@ -346,6 +346,8 @@ void CBattle::PreBattle()
 	SetData(23,"엘프",600,450,60,130,X,150,X);
 	SetData(24,"히죽히죽",600,580,80,150,5,200,X);
 	SetData(25,"아들내미",150,170,50,80,3,500,X);
+	SetData(26,"의문의 마도사",150,170,50,80,3,100,X);
+	SetData(27,"벨라",150,170,50,80,3,200,X);
 	//방향
 	int OdirX[9]={-1,-1,-1,0,1,1,1,0,0}, OdirY[9]={1,0,-1,-1,-1,0,1,1,0};
 	for(int i1=0;i1<9;i1++)
@@ -364,7 +366,7 @@ void CBattle::PreBattle()
 		{0,21,21,21,21,20},{0,22,21,21,22,20},{0,22,22,22,22,20},//솔솔(18~20)
 		{1,0,8,0,0,10},{3,9,9,9,9,28},{4,0,16,0,0,28},//골렘, 화재, 전설의 거인(21~23)
 		{5,17,17,17,17,20},{0,0,23,0,0,0},{3,0,24,0,0,30},//전차부대, 엘프,히죽히죽(24~26)
-		{0,0,25,0,0,0}};//아들내미(27)
+		{0,0,25,0,0,0},{0,0,26,0,0,0},{0,0,27,0,0,0}};//아들내미, 벨라 1, 2(27~29)
 	for(int i1=0;i1<ENEMYS;i1++)
 		for(int i2=0;i2<6;i2++)enemy[i1][i2]=Oenemy[i1][i2];
 }
@@ -483,7 +485,7 @@ void CBattle::PutSpr(int num)
 	if(vic<0)PutFontOutline(300,290,RED,"G A M E   O V E R");
 }
 
-void CBattle::NewSpr(int n, int kind, int x, int y, int hp, int at, int dr)
+void CBattle::NewSpr(int n, int kind, int x, int y, int hp, int at, int dr, int master)
 {
 	spr[n].life=true;
 	spr[n].kind=kind;
@@ -499,6 +501,7 @@ void CBattle::NewSpr(int n, int kind, int x, int y, int hp, int at, int dr)
 	spr[n].att=at;
 	spr[n].dir=dr;
 	spr[n].dam=0;
+	spr[n].master = master;
 }
 
 void CBattle::CtrSpr()
@@ -647,7 +650,7 @@ void CBattle::CtrSpr()
 						if(!spr[i2].life)break;
 					int hijuk=rand()%3+5;
 					if(i2<6){
-						NewSpr(i2,hijuk,spr[i1].x,spr[i1].y,monHP[hijuk],monAT[hijuk],0);
+						NewSpr(i2,hijuk,spr[i1].x,spr[i1].y,monHP[hijuk],monAT[hijuk],0,i1);
 						_Play(9);
 					}
 				}
@@ -666,6 +669,26 @@ void CBattle::CtrSpr()
 				}
 				x2+=(dirX[spr[i1].dir]*spr[i1].speed);
 				y2+=(dirY[spr[i1].dir]*spr[i1].speed);
+			}
+			else if(spr[i1].kind==26)//벨라 1차
+			{
+				if((temp % 200) == 0)
+				{
+					int i2 = 0;
+					for(i2 = 2;i2 < 6; i2++)
+					{
+						if(!spr[i2].life)
+						{
+							NewSpr(i2,21,spr[i1].x,spr[i1].y,monHP[21],monAT[21],0,i1);
+							//_Play(9);
+
+							break;
+						}
+					}
+				}
+
+				spr[0].x = Max(spr[0].x - 1, 0);
+				spr[1].x = Max(spr[1].x - 1, 0);
 			}
 		}
 		if(i1==6 || i1==7)
@@ -698,6 +721,12 @@ void CBattle::CtrSpr()
 		else if(x2<0 || y2<0 || (x2-spr[i1].sizeX)>800 || (y2-spr[i1].sizeY)>600)
 			spr[i1].life=false;
 		spr[i1].x=x2; spr[i1].y=y2;
+
+		//소환체는 주인이 죽으면 사망
+		if(spr[i1].master >= 0 && spr[spr[i1].master].life == false)
+		{
+			spr[i1].hp = 0;
+		}
 	}
 }
 
@@ -944,6 +973,8 @@ void Event(int fafaDo, int sonDo)
 						break;
 					case 7: //벨라 첫 전투
 						Story(267,11,true);
+						spr[0].Battle(28,true);
+						Story(278,6,true);
 						gm.out++;
 						break;
 					case 8: //숲의 성자
