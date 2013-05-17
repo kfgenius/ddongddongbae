@@ -277,6 +277,8 @@ void Story(int page, int end, bool back)
 void Opening()
 {
 	gm.day=gm.out=0; gm.money=10;
+	gm.vella_flag = 0;
+
 	for(int i=0;i<2;i++)
 	{
 		mn[i].att=mn[i].shoes=mn[i].exp=mn[i].just=0;
@@ -346,8 +348,8 @@ void CBattle::PreBattle()
 	SetData(23,"엘프",600,450,60,130,X,150,X);
 	SetData(24,"히죽히죽",600,580,80,150,5,200,X);
 	SetData(25,"아들내미",150,170,50,80,3,500,X);
-	SetData(26,"의문의 마도사",150,170,50,80,3,100,X);
-	SetData(27,"벨라",150,170,50,80,3,200,X);
+	SetData(26,"의문의 마도사",0,690,90,150,X,150,X);
+	SetData(27,"벨라",0,690,90,150,X,300,X);
 	//방향
 	int OdirX[9]={-1,-1,-1,0,1,1,1,0,0}, OdirY[9]={1,0,-1,-1,-1,0,1,1,0};
 	for(int i1=0;i1<9;i1++)
@@ -670,9 +672,19 @@ void CBattle::CtrSpr()
 				x2+=(dirX[spr[i1].dir]*spr[i1].speed);
 				y2+=(dirY[spr[i1].dir]*spr[i1].speed);
 			}
-			else if(spr[i1].kind==26)//벨라 1차
+			else if(spr[i1].kind==26 || spr[i1].kind==27)//벨라
 			{
-				if((temp % 200) == 0)
+				int cool_time = 200;
+				int wind_power = 1;
+				if(spr[i1].kind == 27)
+				{
+					cool_time = 50;
+					wind_power = 2;
+				}
+
+				//_Play(9);
+
+				if((temp % cool_time) == 1)
 				{
 					int i2 = 0;
 					for(i2 = 2;i2 < 6; i2++)
@@ -680,15 +692,13 @@ void CBattle::CtrSpr()
 						if(!spr[i2].life)
 						{
 							NewSpr(i2,21,spr[i1].x,spr[i1].y,monHP[21],monAT[21],0,i1);
-							//_Play(9);
-
 							break;
 						}
 					}
 				}
 
-				spr[0].x = Max(spr[0].x - 1, 0);
-				spr[1].x = Max(spr[1].x - 1, 0);
+				spr[0].x = Max(spr[0].x - wind_power, 0);
+				spr[1].x = Max(spr[1].x - wind_power, 0);
 			}
 		}
 		if(i1==6 || i1==7)
@@ -864,12 +874,13 @@ void save()
 	Nsave=false;
 	FILE* fp;
 	unsigned char part1, part2;
-	fp=fopen("hero.sav","w");
+	fp=fopen("hero.sav","wb");
 	part1=gm.money/256;
 	part2=gm.money%256;
 	fprintf(fp,"%c%c%c%c",gm.day,gm.out,part1,part2);
 	for(int i1=0;i1<2;i1++)
 		fprintf(fp,"%c%c%c%c%c%c",mn[i1].att,mn[i1].exp,mn[i1].hp,mn[i1].just,mn[i1].pow,mn[i1].shoes);
+	fprintf(fp,"%c", &gm.vella_flag);
 	fclose(fp);
 }
 
@@ -975,6 +986,7 @@ void Event(int fafaDo, int sonDo)
 						Story(267,11,true);
 						spr[0].Battle(28,true);
 						Story(278,6,true);
+						gm.vella_flag = 1;
 						gm.out++;
 						break;
 					case 8: //숲의 성자
@@ -1009,8 +1021,14 @@ void Event(int fafaDo, int sonDo)
 						spr[0].Battle(22,true);
 						gm.money+=5;
 						mn[1].just+=3;
+					case 15: //벨라 두번째 전투
+						Story(284,7,true);
+						spr[0].Battle(29,true);
+						Story(278,6,true);
+						gm.out++;
 						break;
-					case 15: //용병 뛰기
+						break;
+					case 16: //용병 뛰기
 						Story(196,6,true);
 						spr[0].Battle(24,true);
 						gm.money+=10;
@@ -1299,13 +1317,14 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	srand( (unsigned)time( NULL ) );
 
 	FILE* fp;
-	if(!(fp=fopen("hero.sav","r")))Opening();
+	if(!(fp=fopen("hero.sav","rb")))Opening();
 	else{
 		unsigned char part1, part2;
 		fscanf(fp,"%c%c%c%c",&gm.day,&gm.out,&part1,&part2);
 		gm.money=part1*256+part2;
 		for(int i1=0;i1<2;i1++)
 			fscanf(fp,"%c%c%c%c%c%c",&mn[i1].att,&mn[i1].exp,&mn[i1].hp,&mn[i1].just,&mn[i1].pow,&mn[i1].shoes);
+		fscanf(fp,"%c", &gm.vella_flag);
 		_MidiPlay(bgm[gm.day/7], true);
 		BmpScreen[3] = DDLoadBitmap( DirectOBJ, scr[gm.day/7], 0, 0, SYSTEM);
 		Change(1); Nsave=false;
