@@ -824,6 +824,8 @@ int Shopping()
 			int selected_price = 0;
 			JColor color;
 
+			ani(10);
+
 			MainScr();
 
 			_DrawBar(fafa_x - 20, help_y - 20, son_x + 140, exit_y + 40, BLACK);
@@ -1504,6 +1506,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	else SoundCard = FALSE;
 
 	jdd->Initialize(NULL,MainHwnd,SCREEN_X,SCREEN_Y,16,true,window_mode);
+	jdd->SetFrameRate(100);
 	
 	//윈도우창 이동
 	if(window_mode)
