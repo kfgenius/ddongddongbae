@@ -238,15 +238,15 @@ void MainScr()
 		int ex = 0;
 		if(mn[i].just < 10)
 		{
-			ex = 8;
+			ex = 4;
 		}
 		else if(mn[i].just < 100)
 		{
-			ex = 16;
+			ex = 8;
 		}
 		else
 		{
-			ex = 24;
+			ex = 12;
 		}
 
 		PutFontOutline(hx + 50 - ex,162,WHITE,buffer);
@@ -880,7 +880,7 @@ void save()
 	fprintf(fp,"%c%c%c%c",gm.day,gm.out,part1,part2);
 	for(int i1=0;i1<2;i1++)
 		fprintf(fp,"%c%c%c%c%c%c",mn[i1].att,mn[i1].exp,mn[i1].hp,mn[i1].just,mn[i1].pow,mn[i1].shoes);
-	fprintf(fp,"%c", &gm.vella_flag);
+	fprintf(fp,"%c", gm.vella_flag);
 	fclose(fp);
 }
 
@@ -1022,12 +1022,15 @@ void Event(int fafaDo, int sonDo)
 						gm.money+=5;
 						mn[1].just+=3;
 					case 15: //벨라 두번째 전투
-						Story(284,7,true);
-						spr[0].Battle(29,true);
-						Story(278,6,true);
-						gm.out++;
-						break;
-						break;
+						if(gm.vella_flag == 1)
+						{
+							Story(284,7,true);
+							spr[0].Battle(29,true);
+							Story(291,9,true);
+							gm.vella_flag=2;
+							gm.out++;
+							break;
+						}
 					case 16: //용병 뛰기
 						Story(196,6,true);
 						spr[0].Battle(24,true);
@@ -1039,10 +1042,23 @@ void Event(int fafaDo, int sonDo)
 						Story(216,6,true);
 						gm.out++;
 						break;
-					case 19: //숲의 성자
-						Story(222,2,true);
-						mn[1].just+=6;
+					case 19: //숲의 성자 or 벨라 최종 스토리
+						if(gm.vella_flag == 2)
+						{
+							Story(300,50,true);
+							gm.vella_flag=3;
+							gm.out++;
+							mn[1].just = 100;
+						}
+						else
+						{
+							Story(222,2,true);
+							mn[1].just+=6;
+						}
 						break;
+					case 20:	//벨라 후기
+					Story(350,2,true);
+					break;
 				}
 				break;
 		}
@@ -1194,8 +1210,12 @@ void Event(int fafaDo, int sonDo)
 				Story(241,4,true);
 
 				//엔딩 분기
-				if(1)
-				if(mn[1].pow >= 5 && mn[1].just >= 100)	//용사 엔딩
+				if(mn[1].pow >= 5 && gm.vella_flag == 3)
+				{
+					Change(13);
+					Story(352,4,true);
+				}
+				else if(mn[1].pow >= 5 && mn[1].just >= 100)	//용사 엔딩
 				{
 					Change(9);
 					Story(248,6,true);
@@ -1210,10 +1230,15 @@ void Event(int fafaDo, int sonDo)
 					Change(11);
 					Story(254,2,true);
 				}
-				else //if(mn[1].pow >= 3)	//병사 엔딩
+				else if(mn[1].pow >= 3)	//병사 엔딩
 				{
 					Change(12);
 					Story(256,3,true);
+				}
+				else
+				{
+					Change(14);
+					Story(356,5,true);
 				}
 
 				Change(15);
