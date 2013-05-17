@@ -168,7 +168,7 @@ void Change(int to)
 						"DATA//event4.bmp","DATA//time.bmp", "DATA//event5.bmp",
 						"DATA//end1.bmp","DATA//end2.bmp", "DATA//end3.bmp",
 						"DATA//end4.bmp","DATA//end5.bmp", "DATA//end6.bmp",
-						"DATA//end.bmp"};
+						"DATA//end.bmp", "DATA//drink.bmp"};
 		BmpScreen[0] = DDLoadBitmap( DirectOBJ, fname[to], 0, 0, SYSTEM);
 		for(i=1;i<=101;i++){
 			SetRect(&BackRect,400-i*4,300-i*3, 400+i*4,300+i*3);
@@ -214,11 +214,11 @@ void MainScr()
 	SetRect(&BackRect, 0, 0, 600, 400);
 	_DrawBmp(BackRect, 100, 0, BmpScreen[3], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
 	//정보
-	PutFontOutline(120,0,BLUE,"%d째주 %d번째 날",gm.day/7+1,gm.day%7+1);
-	PutFontOutline(300,0,BLUE,stage[gm.day/7]);
+	PutFontOutlineBig(120,0,BLUE,"%d째주 %d번째 날",gm.day/7+1,gm.day%7+1);
+	PutFontOutlineBig(300,0,BLUE,stage[gm.day/7]);
 	SetRect(&BackRect, 0, 0, 20, 20);
-	_DrawBmp(BackRect, 500, 0, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
-	PutFontOutline(530,0,BLUE,"%d",gm.money);
+	_DrawBmp(BackRect, 550, 0, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+	PutFontOutline(580,0,BLUE,"%d",gm.money);
 
 	for(int i=0;i<2;i++)
 	{
@@ -804,6 +804,193 @@ int CBattle::Battle(int num, bool party)
 	return 0;
 }
 
+int Shopping()
+{
+	const int fafa_x = 200;
+	const int son_x = 400;
+	
+	const int help_y = 120;
+	const int weapon_y = 160;
+	const int shoes_y = 240;
+	const int exit_y = 320;
+	
+	const int price[] = {5, 20, 35};
+
+	while(1)
+	{
+		PRC
+		{
+			int selected_item = -1;
+			int selected_price = 0;
+			JColor color;
+
+			MainScr();
+
+			_DrawBar(fafa_x - 20, help_y - 20, son_x + 140, exit_y + 40, BLACK);
+
+			PutFontOutline(fafa_x, help_y, YELLOW, "구입할 무기를 선택하세요.");
+
+			if(MouseX >= son_x + 60 && MouseX < son_x + 140 && MouseY >= exit_y && MouseY < exit_y + 20)
+			{
+				color = GREEN;
+				selected_item = 999;
+			}
+			else
+			{
+				color = WHITE;
+			}
+			
+			PutFontOutline(son_x + 60, exit_y, color, "나가기");
+
+			//아버지 무기
+			for(int i = 0; i < 3; i++)
+			{
+				if(mn[0].att - 1 >= i)continue;
+
+				const int wy = weapon_y + i * 20;
+
+				if(price[i] > gm.money)
+				{
+					color = GRAY;
+				}
+				else if(MouseX >= fafa_x && MouseX < fafa_x + 140 && MouseY >= wy && MouseY < wy + 20)
+				{
+					color = GREEN;
+					selected_item = i;
+					selected_price = price[i];
+				}
+				else
+				{
+					color = WHITE;
+				}
+
+				PutFontOutline(fafa_x, wy, color, "%s", stk[i + 1]);
+				PutFontOutline(fafa_x + 100, wy, color, "%d", price[i]);
+			}
+			//아들 무기
+			for(int i = 0; i < 3; i++)
+			{
+				if(mn[1].att - 1 >= i)continue;
+
+				const int wy = weapon_y + i * 20;
+
+				if(price[i] > gm.money)
+				{
+					color = GRAY;
+				}
+				else if(MouseX >= son_x && MouseX < son_x + 140 && MouseY >= wy && MouseY < wy + 20)
+				{
+					color = GREEN;
+					selected_item = i + 100;
+					selected_price = price[i];
+				}
+				else
+				{
+					color = WHITE;
+				}
+
+				PutFontOutline(son_x, wy, color, "%s", swd[i + 1]);
+				PutFontOutline(son_x + 100, wy, color, "%d", price[i]);
+			}
+			//아버지 신발
+			for(int i = 0; i < 3; i++)
+			{
+				if(mn[0].shoes - 1 >= i)continue;
+
+				const int sy = shoes_y + i * 20;
+
+				if(price[i] > gm.money)
+				{
+					color = GRAY;
+				}
+				else if(MouseX >= fafa_x && MouseX < fafa_x + 140 && MouseY >= sy && MouseY < sy + 20)
+				{
+					color = GREEN;
+					selected_item = i + 10;
+					selected_price = price[i];
+				}
+				else
+				{
+					color = WHITE;
+				}
+
+				PutFontOutline(fafa_x, sy, color, "%s", shoes[i + 1]);
+				PutFontOutline(fafa_x + 100, sy, color, "%d", price[i]);
+			}
+			//아들 신발
+			for(int i = 0; i < 3; i++)
+			{
+				if(mn[1].shoes - 1 >= i)continue;
+
+				const int sy = shoes_y + i * 20;
+
+				if(price[i] > gm.money)
+				{
+					color = GRAY;
+				}
+				else if(MouseX >= son_x && MouseX < son_x + 140 && MouseY >= sy && MouseY < sy + 20)
+				{
+					color = GREEN;
+					selected_item = i + 110;
+					selected_price = price[i];
+				}
+				else
+				{
+					color = WHITE;
+				}
+
+				PutFontOutline(son_x + 100, sy, color, "%d", price[i]);
+				PutFontOutline(son_x, sy, color, "%s", shoes[i + 1]);
+			}
+
+			_DrawBox(MouseX-(5+Frame),MouseY-(5+Frame),MouseX+(5+Frame),MouseY+(5+Frame),RED);
+
+			_CopyScreen(false);
+
+			if(LeftButton)
+			{
+				if(!key)
+				{
+					if(selected_item == 999)
+					{
+						break;
+					}
+					//아버지 장비 교체
+					else if(selected_item >= 0 && selected_item < 3)
+					{
+						mn[0].att = selected_item + 1;
+					}
+					else if(selected_item >= 10 && selected_item < 13)
+					{
+						mn[0].shoes = selected_item + 1 - 10;
+					}
+					//아들 장비 교체
+					else if(selected_item >= 100 && selected_item < 103)
+					{
+						mn[1].att = selected_item + 1 - 100;
+					}
+					else if(selected_item >= 110 && selected_item < 113)
+					{
+						mn[1].shoes = selected_item + 1 - 110;
+					}
+
+					//지불
+					if(selected_item >= 0 && selected_item < 999)
+					{
+						_Play(11);
+						gm.money -= selected_price;
+					}
+					
+					key = true;
+				}
+			}
+			else key=false;
+		}
+	}
+
+	return 0;
+}
+
 int CBattle::Boat()
 {
 	Change(2);
@@ -1107,6 +1294,20 @@ void Event(int fafaDo, int sonDo)
 					Click();
 				}
 				break;
+			case 3:
+				if(mn[0].att >= 3 && mn[0].shoes >= 3 && mn[1].att >= 3 && mn[1].shoes >= 3)
+				{
+					Story(260, 1, false);
+					Change(16);
+					Click();
+				}
+				else
+				{
+					Story(259, 1, false);
+					Shopping();
+				}
+
+				break;
 		}
 		if(!sonDid) switch(sonDo)
 		{
@@ -1199,7 +1400,7 @@ void Event(int fafaDo, int sonDo)
 				_MidiPlay(bgm[gm.day/7], true);
 				Story(214, 2, false);
 				break;
-			case 7:	//$$
+			case 7:
 				_MidiPlay("music//first.mid",true);
 				Story(224,4,true);
 				spr[0].Battle(27,false);
@@ -1210,7 +1411,7 @@ void Event(int fafaDo, int sonDo)
 				Story(241,4,true);
 
 				//엔딩 분기
-				if(mn[1].pow >= 5 && gm.vella_flag == 3)
+				if(mn[1].pow >= 5 && gm.vella_flag == 3)	//이혼 엔딩
 				{
 					Change(13);
 					Story(352,4,true);
@@ -1235,7 +1436,7 @@ void Event(int fafaDo, int sonDo)
 					Change(12);
 					Story(256,3,true);
 				}
-				else
+				else	//효도 엔딩
 				{
 					Change(14);
 					Story(356,5,true);
@@ -1337,6 +1538,8 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			Sound[7] = SndObjCreate(SoundOBJ,"Sound//zzz.WAV",2);
 			Sound[8] = SndObjCreate(SoundOBJ,"Sound//drug.WAV",2);
 			Sound[9] = SndObjCreate(SoundOBJ,"Sound//summon.WAV",2);
+			Sound[10] = SndObjCreate(SoundOBJ,"Sound//drink.WAV",2);
+			Sound[11] = SndObjCreate(SoundOBJ,"Sound//sell.WAV",2);
         }
 	//변수 초기화
 	srand( (unsigned)time( NULL ) );
