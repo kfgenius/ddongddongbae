@@ -9,6 +9,7 @@ JResourceManager* jre;
 char* backbuffer;
 
 JFont font20;
+JFont font22;
 
 char* BmpScreen[10];
 
@@ -37,12 +38,14 @@ void Init()
 {
 	backbuffer = jdd->GetBackBuffer();
 	font20=jdd->CreateFont("±¼¸²Ã¼",16,true,false,false,false,false);
+	font22=jdd->CreateFont("±¼¸²Ã¼",22,true,false,false,false,false);
 	srand( (unsigned)time( NULL ) );
 }
 
 void Term()
 {
 	jdd->DeleteFont(font20);
+	jdd->DeleteFont(font22);
 
 	delete jdd;
 
@@ -63,6 +66,22 @@ void PutFontOutline(int x, int y, JColor jc,char *fmt,... )
 	jdd->DrawText(backbuffer,text,font20,x,y+1,JColor(0,0,0));
 	jdd->DrawText(backbuffer,text,font20,x,y-1,JColor(0,0,0));
 	jdd->DrawText(backbuffer,text,font20,x,y,jc);
+}
+
+void PutFontOutlineBig(int x, int y, JColor jc,char *fmt,... )
+{
+    char text[256];
+
+    va_list argptr;
+    va_start(argptr, fmt);
+    vsprintf(text,fmt,argptr);
+    va_end(argptr);
+
+	jdd->DrawText(backbuffer,text,font22,x+1,y,JColor(0,0,0));
+	jdd->DrawText(backbuffer,text,font22,x-1,y,JColor(0,0,0));
+	jdd->DrawText(backbuffer,text,font22,x,y+1,JColor(0,0,0));
+	jdd->DrawText(backbuffer,text,font22,x,y-1,JColor(0,0,0));
+	jdd->DrawText(backbuffer,text,font22,x,y,jc);
 }
 
 void PutFont(int x, int y, JColor jc, char* text)

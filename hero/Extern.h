@@ -20,6 +20,7 @@
 #define GREEN		JColor(0,255,0)
 #define BLUE		JColor(0,0,255)
 #define YELLOW		JColor(255,255,0)
+#define GRAY		JColor(128,128,128)
 
 #define SCREEN_X	800
 #define SCREEN_Y	600
@@ -69,6 +70,7 @@ extern MSG msg;
 void Init();
 void Term();
 void PutFontOutline(int x, int y, JColor jc,char *fmt,... );
+void PutFontOutlineBig(int x, int y, JColor jc,char *fmt,... );
 void PutFont(int x, int y, JColor jc, char* text);
 void _DrawBmp(RECT rect, int x, int y, char* surf_name, int flag);
 void _DrawBmp2(RECT rect, int x, int y, char* surf_name, int flag, RECT clip, int x2);
