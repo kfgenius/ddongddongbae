@@ -349,7 +349,7 @@ void CBattle::PreBattle()
 	SetData(24,"히죽히죽",600,580,80,150,5,200,X);
 	SetData(25,"아들내미",150,170,50,80,3,500,X);
 	SetData(26,"의문의 마도사",0,690,90,150,X,150,X);
-	SetData(27,"벨라",0,690,90,150,X,300,X);
+	SetData(27,"의문의 마도사",0,690,90,150,X,300,X);
 	SetData(28,"술병",750,160,15,60,X,X,X);
 	SetData(29,"술먹는 분노의 대갈",0,250,100,100,3,100,X);
 	SetData(30,"보트 위의 두사람",270,760,130,80,X,X,X);
@@ -1437,7 +1437,7 @@ void Event(int fafaDo, int sonDo)
 					Change(16);
 
 					//술먹기 게임
-					if(mn[0].att < 4 || mn[1].att < 4)
+					if(mn[0].shoes < 4 || mn[1].shoes < 4)
 					{
 						Story(261, 4, true);
 						if(spr[0].Drink() > 0)
@@ -1645,6 +1645,10 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		fafa_sound = true;
 		elf_sound = true;
 	}
+
+#ifdef _DEBUG
+	window_mode = true;	//디버그는 무조건 창모드
+#endif
 
 	if(window_mode)
 	{
