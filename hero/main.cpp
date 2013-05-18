@@ -341,7 +341,7 @@ void CBattle::PreBattle()
 	SetData(16,"전설의 거인",0,390,200,300,1,300,10);
 	SetData(17,"전차",600,360,80,40,3,80,X);
 	SetData(18,"소용돌이",480,160,50,50,X,X,X);
-	SetData(19,"보트",0,350,110,40,5,1,X);
+	SetData(19,"보트",0,370,110,20,5,1,X);
 	SetData(20,"로봇",600,285,50,75,1,120,3);
 	SetData(21,"회오리",630,110,50,50,10,40,2);
 	SetData(22,"돌새",600,400,80,50,10,40,3);
@@ -352,6 +352,7 @@ void CBattle::PreBattle()
 	SetData(27,"벨라",0,690,90,150,X,300,X);
 	SetData(28,"술병",750,160,15,60,X,X,X);
 	SetData(29,"술먹는 분노의 대갈",0,250,100,100,3,100,X);
+	SetData(30,"보트 위의 두사람",270,760,130,80,X,X,X);
 
 	//방향
 	int OdirX[9]={-1,-1,-1,0,1,1,1,0,0}, OdirY[9]={1,0,-1,-1,-1,0,1,1,0};
@@ -450,8 +451,17 @@ void CBattle::PutSpr(int num)
 			}
 		}
 	}while(ok);
+
+	int must_top = -1;
+
 	for(int i1=0;i1<SMAX;i1++)
 	{
+		if(spr[putN[i1]].kind == 30)
+		{
+			must_top = i1;
+			continue;
+		}
+
 		if(!spr[putN[i1]].life || spr[putN[i1]].dam%2)continue;
 		if(spr[putN[i1]].kind!=3&&spr[putN[i1]].kind!=18)//이식할때 수정
 			SetRect(&BackRect, spr[putN[i1]].sizeX*Frame+mondat[spr[putN[i1]].kind][0], mondat[spr[putN[i1]].kind][1], spr[putN[i1]].sizeX*(Frame+1)+mondat[spr[putN[i1]].kind][0], mondat[spr[putN[i1]].kind][1]+spr[putN[i1]].sizeY);
@@ -459,10 +469,18 @@ void CBattle::PutSpr(int num)
 			SetRect(&BackRect, spr[putN[i1]].sizeX*RFrame+mondat[spr[putN[i1]].kind][0], mondat[spr[putN[i1]].kind][1], spr[putN[i1]].sizeX*(RFrame+1)+mondat[spr[putN[i1]].kind][0], mondat[spr[putN[i1]].kind][1]+spr[putN[i1]].sizeY);
 		_DrawBmp(BackRect, spr[putN[i1]].x, spr[putN[i1]].y, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
 	}
+
+	//반드시 맨 위에 그려야 할 그림
+	if(must_top >= 0)
+	{
+		SetRect(&BackRect, spr[putN[must_top]].sizeX*Frame+mondat[spr[putN[must_top]].kind][0], mondat[spr[putN[must_top]].kind][1], spr[putN[must_top]].sizeX*(Frame+1)+mondat[spr[putN[must_top]].kind][0], mondat[spr[putN[must_top]].kind][1]+spr[putN[must_top]].sizeY);
+		_DrawBmp(BackRect, spr[putN[must_top]].x, spr[putN[must_top]].y, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+	}
+
 	//데이터
 	for(int i1=0;i1<6;i1++)
 	{
-		if(!spr[i1].life || spr[i1].kind==19 || spr[i1].kind==29)continue;//데이터를 표시하지 않는 타입들
+		if(!spr[i1].life || spr[i1].kind==19 || spr[i1].kind>=29)continue;//데이터를 표시하지 않는 타입들
 		PutFontOutline(i1*130, 560, WHITE, name[spr[i1].kind]);
 		if(spr[i1].hp>100)
 			_DrawBar(i1*130, 580, i1*130+100, 595, BLACK);
@@ -1009,6 +1027,7 @@ int CBattle::Boat()
 		spr[i1].dam=0;
 	}
 	NewSpr(0,19,0,280,0,0,0);
+	NewSpr(1,30,-20,220, 0, 0, 0);
 	//초기화 끝
 	while(cm<100000){PRC{
 		SetRect(&BackRect, 0, 0, 800, 600);
@@ -1051,6 +1070,10 @@ int CBattle::Boat()
 			}
 			if(spr[i1].x<0)spr[i1].life=false;
 		}
+
+		spr[1].x = spr[0].x - 20;
+		spr[1].y = spr[0].y - 60;
+
 		//출력
 		PutSpr(0);
 		SetRect(&BackRect, spr[0].sizeX*Frame+mondat[spr[0].kind][0], mondat[spr[0].kind][1], spr[0].sizeX*(Frame+1)+mondat[spr[0].kind][0], mondat[spr[0].kind][1]+spr[0].sizeY);
@@ -1244,15 +1267,15 @@ void Event(int fafaDo, int sonDo)
 						boat=spr[0].Boat();
 						Story(73,3,true);
 						Change(99); Change(1);
-						if(boat<50){
+						if(boat<=50){
 							Story(76,4,true);
 							mn[0].att=mn[1].att=4;
 						}
-						else if(boat<60){
+						else if(boat<=60){
 							Story(80,4,true);
 							mn[0].att=4;
 						}
-						else if(boat<70){
+						else if(boat<=70){
 							Story(84,4,true);
 							gm.money+=30;
 						}
