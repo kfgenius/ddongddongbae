@@ -655,7 +655,7 @@ void CBattle::CtrSpr()
 				if(!(temp%80)){
 					x2=rand()%(800-spr[i1].sizeX);
 					y2=rand()%(600-spr[i1].sizeY);
-					_Play(6);
+					if(elf_sound)_Play(6);
 				}
 				if(!(temp%10)){
 					int elf=temp%80/10;
@@ -793,7 +793,7 @@ int CBattle::Battle(int num, bool party)
 		{
 			if(spr[0].life&&!spr[6].life){
 				NewSpr(6,2,CenterX(0,2),CenterY(0,6),(mn[0].att+1)*10+10,mn[0].pow,(dir==8)?5:dir);
-				_Play(0);
+				if(fafa_sound)_Play(0);
 			}
 			if(spr[1].life&&!spr[7].life){
 				NewSpr(7,3,CenterX(1,3),CenterY(1,7),(mn[1].att+1)*10+10,mn[1].pow,(dir==8)?5:dir);
@@ -1191,6 +1191,8 @@ int CBattle::Drink()
 
 void save()
 {
+	_Play(12);
+
 	Nsave=false;
 	FILE* fp;
 	unsigned char part1, part2;
@@ -1627,6 +1629,22 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	wc.lpszClassName="Game";
 	RegisterClass(&wc);
 
+	FILE* fp;
+
+	if((fp = fopen("setup.sav", "rb")))
+	{
+		fwrite(&window_mode,sizeof(BOOL),1,fp);
+		fwrite(&fafa_sound,sizeof(BOOL),1,fp);
+		fwrite(&elf_sound,sizeof(BOOL),1,fp);
+		fclose(fp);
+	}
+	else
+	{
+		window_mode = true;
+		fafa_sound = true;
+		elf_sound = true;
+	}
+
 	if(window_mode)
 	{
 		LONG ws=WS_OVERLAPPEDWINDOW|WS_VISIBLE;
@@ -1699,11 +1717,11 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			Sound[9] = SndObjCreate(SoundOBJ,"Sound//summon.WAV",2);
 			Sound[10] = SndObjCreate(SoundOBJ,"Sound//drink.WAV",2);
 			Sound[11] = SndObjCreate(SoundOBJ,"Sound//sell.WAV",2);
+			Sound[12] = SndObjCreate(SoundOBJ,"Sound//save.WAV",2);
         }
 	//변수 초기화
 	srand( (unsigned)time( NULL ) );
 
-	FILE* fp;
 	if(!(fp=fopen("hero.sav","rb")))Opening();
 	else{
 		unsigned char part1, part2;
