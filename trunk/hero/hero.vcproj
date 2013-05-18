@@ -169,10 +169,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib dxguid.lib dsound.lib winmm.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib ddraw.lib gdiplus.lib dsound.lib dxerr9.lib ddeffects3.lib winmm.lib"
 				OutputFile=".\Release/hero.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libc.lib"
 				ProgramDatabaseFile=".\Release/hero.pdb"
 				SubSystem="2"
 				TargetMachine="1"
