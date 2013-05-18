@@ -21,6 +21,8 @@ HINSTANCE MainInstance;
 
 bool activate = true;
 bool window_mode = true;
+bool fafa_sound = true;
+bool elf_sound = true;
 
 char DirectOBJ = NULL;	//사용 안 함
 

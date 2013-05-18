@@ -57,6 +57,8 @@ extern HINSTANCE MainInstance;
 
 extern bool activate;
 extern bool window_mode;
+extern bool fafa_sound;
+extern bool elf_sound;
 
 extern char DirectOBJ;
 
