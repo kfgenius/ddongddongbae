@@ -1343,6 +1343,7 @@ void Event(int fafaDo, int sonDo)
 						spr[0].Battle(22,true);
 						gm.money+=5;
 						mn[1].just+=3;
+						break;
 					case 15: //벨라 두번째 전투
 						if(gm.vella_flag == 1)
 						{
@@ -1633,9 +1634,9 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	if((fp = fopen("setup.sav", "rb")))
 	{
-		fwrite(&window_mode,sizeof(BOOL),1,fp);
-		fwrite(&fafa_sound,sizeof(BOOL),1,fp);
-		fwrite(&elf_sound,sizeof(BOOL),1,fp);
+		fread(&window_mode,sizeof(BOOL),1,fp);
+		fread(&fafa_sound,sizeof(BOOL),1,fp);
+		fread(&elf_sound,sizeof(BOOL),1,fp);
 		fclose(fp);
 	}
 	else
