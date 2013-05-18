@@ -8,7 +8,7 @@
 #define SCENE SetRect(&BackRect, 0, 0, 800, 600); _DrawBmp(BackRect, 0, 0, BmpScreen[0], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT)
 #define SMAX 100
 #define ENSPR int i2 = 0; for(i2=8;i2<SMAX;i2++)if(!spr[i2].life)break; if(i2<SMAX)
-#define MONSTERS 28
+#define MONSTERS 30
 #define ENEMYS 30
 
 BOOL LeftButton, RightButton, ReplayFlag, Quit=false, key, key2, Nsave;
@@ -443,5 +443,6 @@ class CBattle{
 public:
 	int Battle(int num, bool party);
 	int Boat();
+	int Drink();
 };
 CBattle spr[SMAX];

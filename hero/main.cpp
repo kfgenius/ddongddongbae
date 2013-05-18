@@ -350,6 +350,9 @@ void CBattle::PreBattle()
 	SetData(25,"아들내미",150,170,50,80,3,500,X);
 	SetData(26,"의문의 마도사",0,690,90,150,X,150,X);
 	SetData(27,"벨라",0,690,90,150,X,300,X);
+	SetData(28,"술병",750,160,15,60,X,X,X);
+	SetData(29,"술먹는 분노의 대갈",0,250,100,100,3,100,X);
+
 	//방향
 	int OdirX[9]={-1,-1,-1,0,1,1,1,0,0}, OdirY[9]={1,0,-1,-1,-1,0,1,1,0};
 	for(int i1=0;i1<9;i1++)
@@ -459,7 +462,7 @@ void CBattle::PutSpr(int num)
 	//데이터
 	for(int i1=0;i1<6;i1++)
 	{
-		if(!spr[i1].life||spr[i1].kind==19)continue;//이식할때 수정
+		if(!spr[i1].life || spr[i1].kind==19 || spr[i1].kind==29)continue;//데이터를 표시하지 않는 타입들
 		PutFontOutline(i1*130, 560, WHITE, name[spr[i1].kind]);
 		if(spr[i1].hp>100)
 			_DrawBar(i1*130, 580, i1*130+100, 595, BLACK);
@@ -1011,7 +1014,12 @@ int CBattle::Boat()
 		SetRect(&BackRect, 0, 0, 800, 600);
 		for(int i1=0;i1<2;i1++)
 			_DrawBmp(BackRect, i1*800-cm%800, 0, BmpScreen[0], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
-		_DrawBar(100000-cm,0,100002-cm,600,RED);
+		
+		if(100000 - cm <= SCREEN_X)
+		{
+			_DrawBar(100000-cm,0,100002-cm,600,RED);
+		}
+		
 		//시간, 속도, 소용돌이
 		cm+=ms; temp++; if(sound)sound--;
 		if(!(temp%100)){ms++; time++;}
@@ -1053,6 +1061,106 @@ int CBattle::Boat()
 		_CopyScreen(false);
 	}}
 	Click();
+	Change(1);
+	_MidiPlay(bgm[gm.day/7],true);
+	return time;
+}
+
+int CBattle::Drink()
+{
+	PreBattle();
+	_MidiPlay("music//train.mid",true);
+	int time = 10;
+	int bottle = 10;
+	int msec = 99;
+	int x_state = 1;
+	int y_state = 1;
+	
+	for(int i1=0;i1<SMAX;i1++){
+		spr[i1].life=false;
+		spr[i1].dam=0;
+	}
+
+	NewSpr(0,29,0,280,0,0,0);
+
+	for(int i = 0; i < 10; i++)
+	{
+		NewSpr(8 + i,28,150 * (i / 2) + 100,50 + (i % 2) * 450,0,0,0);
+	}
+
+	//초기화 끝
+	while(1)
+	{
+		PRC
+		{
+			SetRect(&BackRect, 240, 0, 280, 40);
+			for(int i1=0;i1<20;i1++)
+				for(int i2=0;i2<15;i2++)
+					_DrawBmp(BackRect, i1*40, i2*40, BmpScreen[4], DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
+
+			//제어
+			dir=Key();
+			x2=spr[0].x; y2=spr[0].y;
+			x2+=(dirX[dir] * x_state * spr[0].speed);
+			y2+=(dirY[dir] * y_state * spr[0].speed);
+			x2=Max(x2,0);
+			y2=Max(y2,0);
+			x2=Min(x2,800-spr[0].sizeX);
+			y2=Min(y2,600-spr[0].sizeY);
+			spr[0].x=x2; spr[0].y=y2;
+
+			//술 처리
+			for(int i1=8;i1<SMAX;i1++)
+			{
+				if(!spr[i1].life)continue;
+				if(Crush(0,i1)){
+					spr[i1].life = false;
+					bottle--;
+					_Play(10);
+
+					//방향 이상 발생
+					if((rand() % 2) == 0)
+					{
+						x_state = 1;
+					}
+					else
+					{
+						x_state = -1;
+					}
+
+					if((rand() % 2) == 0)
+					{
+						y_state = 1;
+					}
+					else
+					{
+						y_state = -1;
+					}
+				}
+			}
+
+			//시간 감소
+			msec--;
+			if(msec < 0)
+			{
+				msec = 99;
+				time--;
+			}
+
+			//출력
+			PutSpr(0);
+			SetRect(&BackRect, spr[0].sizeX*Frame+mondat[spr[0].kind][0], mondat[spr[0].kind][1], spr[0].sizeX*(Frame+1)+mondat[spr[0].kind][0], mondat[spr[0].kind][1]+spr[0].sizeY);
+			_DrawBmp(BackRect, spr[0].x, spr[0].y, BmpScreen[2], DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+			PutFontOutline(400,0,WHITE,"시간: %d초",time);
+			_CopyScreen(false);
+
+			if(time == 0 || bottle == 0)
+			{
+				break;
+			}
+		}
+	}
+
 	Change(1);
 	_MidiPlay(bgm[gm.day/7],true);
 	return time;
@@ -1299,13 +1407,38 @@ void Event(int fafaDo, int sonDo)
 			case 3:
 				if(mn[0].att >= 3 && mn[0].shoes >= 3 && mn[1].att >= 3 && mn[1].shoes >= 3)
 				{
-					Story(260, 1, false);
+					Story(260, 1, true);
 					Change(16);
-					Click();
+
+					//술먹기 게임
+					if(mn[0].att < 4 || mn[1].att < 4)
+					{
+						Story(261, 4, true);
+						if(spr[0].Drink() > 0)
+						{
+							Story(265, 1, true);
+							if(mn[0].shoes < 4)
+							{
+								mn[0].shoes = 4;
+							}
+							else
+							{
+								mn[1].shoes = 4;
+							}
+						}
+						else
+						{
+							Story(266, 1, true);
+						}
+					}
+					else
+					{
+						Click();
+					}
 				}
 				else
 				{
-					Story(259, 1, false);
+					Story(259, 1, true);
 					Shopping();
 				}
 
