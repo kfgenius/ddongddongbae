@@ -1,0 +1,16 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\jsGameManager.js">
+    <Files>
+      <File FileName="Assets\Scripts\jsGameManager.js" Line="22" Column="1" />
+      <File FileName="Assets\Scripts\saori.js" Line="27" Column="1" />
+      <File FileName="Assets\Scripts\jsTalkManager.js" Line="82" Column="17" />
+      <File FileName="Assets\Scripts\jsHeroMove.js" Line="27" Column="64" />
+      <File FileName="Assets\Scripts\jsTalkWithYaohi.js" Line="88" Column="10" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
