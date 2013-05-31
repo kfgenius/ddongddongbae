@@ -57,6 +57,7 @@ function Update ()
 		life = false;
 		animator.speed = 0.5f;
 		animator.SetBool("life", false);
+		Die();
 		return;
 	}
 
@@ -145,4 +146,10 @@ function OnTriggerEnter(coll : Collider)
 		
 		hp--;
 	}
+}
+
+function Die()
+{
+	yield WaitForSeconds(5.0f);
+	Application.LoadLevel("talk_saori_end");
 }
