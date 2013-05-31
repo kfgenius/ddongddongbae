@@ -53,11 +53,11 @@ function Update ()
 
 	if(life == true && hp <= 0)
 	{
-		
 		AudioSource.PlayClipAtPoint(die_snd, transform.position);		
 		life = false;
 		animator.speed = 0.5f;
 		animator.SetBool("life", false);
+		Die();
 		return;
 	}
 
@@ -117,7 +117,7 @@ function Update ()
 		
 		delay += 1;
 		
-		if(delay > 600)
+		if(delay > 550)
 		{
 			delay = 0;
 		}
@@ -181,4 +181,10 @@ function OnTriggerEnter(coll : Collider)
 		
 		hp--;
 	}
+}
+
+function Die()
+{
+	yield WaitForSeconds(5.0f);
+	Application.LoadLevel("talk_mazuki_end");
 }

@@ -79,6 +79,7 @@ function Update ()
 		animator.speed = 0.5f;
 		animator.SetBool("life", false);
 		UnBlock();
+		Die();
 		return;
 	}
 
@@ -176,4 +177,10 @@ function OnTriggerEnter(coll : Collider)
 
 		Destroy(coll.gameObject);
 	}
+}
+
+function Die()
+{
+	yield WaitForSeconds(5.0f);
+	Application.LoadLevel("talk_yaohi_end");
 }
