@@ -4,29 +4,30 @@ var text : GUIText;
 var dialogBox : GUITexture;
 var bgm : AudioClip;
 
-var yaohi : Transform;
+var body : Transform;
 
 private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
 private var dlg = [
-	"<쉣빠딱>\n헉헉... 늦진 않았겠지...",
-	"<쉣빠딱>\n어라? 하늘이 완전 컴컴한데?\n조금... 늦은게... 아닌 듯?",
-	"<???>\n대단하군",
-	"<쉣빠딱>\n누구냐!",
+	"<쉣빠딱>\n... 없나...",
+	"<???>\n역시 용감하군\n내 학생다워.",
+	"<쉣빠딱>\n마즈키 선생님...",
 	"FadeIn",
 	"BgmOn",
-	"<야오희>\n이 시간에 등교하는 건 나 다음으로 네가 처음이다.",
-	"이 녀석은 우리 학교 캡짱, 야오희.\n학교에 잘 안 나온다 싶더니 이 시간에 등교하고 있었다.",
-	"<야오희>\n반했어!",
-	"<쉣빠딱>\n끄아아악!",
-	"<야오희>\n나랑 달밤의 고속도로를 드라이브하지 않겠나?",
-	"<쉣빠딱>\n니 얼굴은 고속도로에 갈았니?",
-	"<야오희>\n크크큭... 배짱좋군. 제군.",
-	"<야오희>\n그 도전 받아주지!",
-	"<야오희>\n하지만 넌 나에게 상처 하나 입히지 못 할 것이다!",
-	"<야오희>\n철괴!!!"
+	"<마즈키>\n크크큭... 네가 귀엽게 키운 미소녀 제자 2명을 없애다니...",
+	"<마즈키>\n네 녀석의 피는 무슨 색이냐!",
+	"<쉣빠딱>\n빨간색.",
+	"<마즈키>\n정상이군.",
+	"<마즈키>\n어쨌든...",
+	"<마즈키>\n난 네가 싫지 않아.\n마지막 기회를 주지.",
+	"<마즈키>\n나의 애완동물이 되면 살려주마.",
+	"<쉣빠딱>\n당신의 애완동물이 될 바에는\n배부른 소크라테스가 되겠소!",
+	"<마즈키>\n흑흑흑... 내가 널 잘못 가르쳤구나.",
+	"<마즈키>\n그럼 어쩔 수 없지.",
+	"<마즈키>\n널 사회에서 매장하는 게 나의 의무.",
+	"<마즈키>\n잘 봐둬라. 나의 스텝은 모든 공격을 흘려보낸다!"
 ];
 
 function Start () {
@@ -59,7 +60,7 @@ function Update ()
 			
 			if(dlg_no >= dlg.GetLength(0))
 			{
-				Application.LoadLevel("vs_yaohi");
+				Application.LoadLevel("vs_mazuki");
 			}
 		}
 		else
@@ -73,9 +74,9 @@ function Fade (start : float, end : float, length : float, currentObject : Trans
 {
 	for(var i = 0.0; i < 1.0; i += Time.deltaTime*(1/length))
 	{
-		currentObject.position.x = Mathf.Lerp(start, end, i);
+		currentObject.position.y = Mathf.Lerp(start, end, i);
 		yield;
-		currentObject.position.x = end;
+		currentObject.position.y = end;
 	}
 }
 
@@ -87,7 +88,7 @@ function OnGUI()
 	{
 		if(dlg[dlg_no] == "FadeIn")
 		{
-			Fade(4.0f, 0.0f, 1.0f, yaohi);
+			Fade(-4.0f, 0.0f, 1.0f, body);
 			dlg_no++;
 			return;		
 		}

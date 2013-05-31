@@ -2,8 +2,10 @@
 
 var animator : Animator;
 var target : Transform;
+var body : Transform;
 var hp : int;
 var snd : AudioClip;
+var def_snd : AudioClip;
 var die_snd : AudioClip;
 var shout_snd : AudioClip;
 var DamageFlash : GameObject;
@@ -15,6 +17,7 @@ private var isShout : boolean;
 private var life : boolean;
 private var delay : int;
 private var speed : float;
+private var block : boolean;
 
 function Fade (start : float, end : float, length : float, currentObject : GameObject)
 {
@@ -41,6 +44,24 @@ function Start ()
 	isHit = false;
 	
 	txtHP.material.color = txtColor;
+	
+	Block();
+}
+
+function Block()
+{
+	if(block)return;
+
+	body.renderer.material.color = Color.blue;
+	block = true;
+}
+
+function UnBlock()
+{
+	if(!block)return;
+
+	body.renderer.material.color = Color.white;
+	block = false;
 }
 
 function Update ()
@@ -57,6 +78,7 @@ function Update ()
 		life = false;
 		animator.speed = 0.5f;
 		animator.SetBool("life", false);
+		UnBlock();
 		return;
 	}
 
@@ -77,6 +99,8 @@ function Update ()
 				{
 					AudioSource.PlayClipAtPoint(shout_snd, transform.position);
 					isShout = true;
+					
+					UnBlock();
 				}
 			}
 			else
@@ -88,10 +112,10 @@ function Update ()
 			{
 				if(isHit == false)	//공격 성공
 				{
-					target.rigidbody.AddForce(transform.forward * 200);
+					target.rigidbody.AddForce(transform.forward * 2000);
 					AudioSource.PlayClipAtPoint(snd, transform.position);
 					FlashWhenHit();
-					jsGameManager.hp -= 10;
+					jsGameManager.hp -= 20;
 					isHit = true;
 				}
 			}
@@ -108,6 +132,8 @@ function Update ()
 	}
 	else
 	{
+		Block();
+	
 		animator.SetBool("attack", false);
 		
 		delay += 1;
@@ -119,8 +145,7 @@ function Update ()
 		}
 		else if(delay > 100)
 		{
-			speed = 1 + ((100 - hp) / 20);
-			animator.speed = speed;
+			speed = 1;
 		}
 	}
 
@@ -138,11 +163,17 @@ function OnTriggerEnter(coll : Collider)
 {
 	if(coll.tag == "BULLET" && hp > 0)
 	{
-		//Instantiate(fire, transform.position, Quaternion.identity);
-	
-		AudioSource.PlayClipAtPoint(snd, transform.position);
+		if(block)
+		{
+			AudioSource.PlayClipAtPoint(def_snd, transform.position);
+		}
+		else
+		{
+			AudioSource.PlayClipAtPoint(snd, transform.position);
+			hp--;
+			Block();
+		}
+
 		Destroy(coll.gameObject);
-		
-		hp--;
 	}
 }

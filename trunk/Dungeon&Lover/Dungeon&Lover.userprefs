@@ -1,12 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\jsGameManager.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\jsMazuki.js">
     <Files>
-      <File FileName="Assets\Scripts\jsGameManager.js" Line="22" Column="1" />
-      <File FileName="Assets\Scripts\saori.js" Line="27" Column="1" />
+      <File FileName="Assets\Scripts\jsTalkWithMazuki.js" Line="75" Column="25" />
+      <File FileName="Assets\Scripts\jsGameManager.js" Line="11" Column="2" />
+      <File FileName="Assets\Scripts\saori.js" Line="89" Column="30" />
       <File FileName="Assets\Scripts\jsTalkManager.js" Line="82" Column="17" />
-      <File FileName="Assets\Scripts\jsHeroMove.js" Line="27" Column="64" />
-      <File FileName="Assets\Scripts\jsTalkWithYaohi.js" Line="88" Column="10" />
+      <File FileName="Assets\Scripts\jsHeroMove.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\jsTalkWithYaohi.js" Line="62" Column="36" />
+      <File FileName="Assets\Scripts\jsBullet.js" Line="19" Column="1" />
+      <File FileName="Assets\Scripts\jsYaohi.js" Line="115" Column="53" />
+      <File FileName="Assets\Scripts\jsMazuki.js" Line="11" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
