@@ -47,8 +47,11 @@
      <Compile Include="Assets\Scripts\jsBullet.js" />
      <Compile Include="Assets\Scripts\jsGameManager.js" />
      <Compile Include="Assets\Scripts\jsHeroMove.js" />
+     <Compile Include="Assets\Scripts\jsMazuki.js" />
      <Compile Include="Assets\Scripts\jsTalkManager.js" />
+     <Compile Include="Assets\Scripts\jsTalkWithMazuki.js" />
      <Compile Include="Assets\Scripts\jsTalkWithYaohi.js" />
+     <Compile Include="Assets\Scripts\jsYaohi.js" />
      <Compile Include="Assets\Scripts\saori.js" />
      <Compile Include="Assets\battle\Cartoon SMG\Spin Dat.js" />
      <Compile Include="Assets\battle\ats Mobile Foliage\Scripts\fps.js" />

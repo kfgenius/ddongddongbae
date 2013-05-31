@@ -15,6 +15,7 @@ private var isShout : boolean;
 private var life : boolean;
 private var delay : int;
 private var speed : float;
+private var dir : Vector3;
 
 function Fade (start : float, end : float, length : float, currentObject : GameObject)
 {
@@ -65,6 +66,9 @@ function Update ()
 	var distance = Vector3.Distance(transform.position, target.transform.position);
 	//Debug.Log(distance);
 	
+	var amtToMove = speed * 3 * Time.deltaTime;
+	transform.LookAt(Vector3(target.position.x, transform.position.y, target.position.z));
+	
 	if(distance <= 3.4)
 	{
 		var state = animator.GetCurrentAnimationClipState(0);
@@ -88,7 +92,8 @@ function Update ()
 			{
 				if(isHit == false)	//공격 성공
 				{
-					target.rigidbody.AddForce(transform.forward * 200);
+					target.rigidbody.AddForce(transform.forward * 500);
+					rigidbody.AddForce(Vector3.back * 500);
 					AudioSource.PlayClipAtPoint(snd, transform.position);
 					FlashWhenHit();
 					jsGameManager.hp -= 10;
@@ -104,7 +109,7 @@ function Update ()
 		animator.SetBool("attack", true);
 
 		speed = 0;
-		delay = 0;
+		//delay = 0;
 	}
 	else
 	{
@@ -114,19 +119,49 @@ function Update ()
 		
 		if(delay > 600)
 		{
-			speed = 0;
 			delay = 0;
 		}
-		else if(delay > 100)
+		else if (delay > 300)
 		{
-			speed = 1 + ((100 - hp) / 20);
-			animator.speed = speed;
+			transform.Translate(Vector3.back * amtToMove);
 		}
+		else
+		{
+			transform.Translate(Vector3.forward * amtToMove);
+		}
+		
+		transform.Translate(dir * amtToMove);
+		
+		if((delay % 100) == 0)
+		{
+			var ran = Random.Range(0, 2);
+			//Debug.Log(ran);
+			
+			if(ran == 1)
+			{
+				dir = Vector3.left;
+			}
+			else
+			{
+				dir = Vector3.right;
+			}
+		}
+		
+		if(hp > 30)
+		{
+			speed = 1.0f;
+		}
+		else if(hp > 10)
+		{
+			speed = 1.5f;// + ((100 - hp) / 20);
+		}
+		else
+		{
+			speed = 1.8f;
+		}
+		
+		animator.speed = speed;
 	}
-
-	var amtToMove = speed * 3 * Time.deltaTime;
-	transform.LookAt(Vector3(target.position.x, transform.position.y, target.position.z));
-	transform.Translate(Vector3.forward * amtToMove);
 }
 
 function OnGUI()
@@ -139,6 +174,7 @@ function OnTriggerEnter(coll : Collider)
 	if(coll.tag == "BULLET" && hp > 0)
 	{
 		//Instantiate(fire, transform.position, Quaternion.identity);
+		rigidbody.AddForce(transform.forward * 120 * speed);
 	
 		AudioSource.PlayClipAtPoint(snd, transform.position);
 		Destroy(coll.gameObject);

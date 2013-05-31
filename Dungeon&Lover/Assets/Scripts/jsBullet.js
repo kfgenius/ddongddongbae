@@ -12,13 +12,8 @@ function Update () {
 
 function OnTriggerEnter(coll : Collider)
 {
-	if(coll.tag == "BOSS" && saori.hp > 0)
+	if(coll.tag == "BLOCK")
 	{
-		//Instantiate(fire, transform.position, Quaternion.identity);
-	
-		AudioSource.PlayClipAtPoint(snd, transform.position);
 		Destroy(gameObject);
-		
-		saori.hp--;
 	}
 }
