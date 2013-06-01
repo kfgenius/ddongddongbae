@@ -34,6 +34,7 @@ private var dlg = [
 
 function Start () {
 	text.material.color = Color.black;
+	text.fontSize = Screen.width  / 26;
 	//yaohi.renderer.material.mainTexture.color = Color.black;
 
 	delay = 0;

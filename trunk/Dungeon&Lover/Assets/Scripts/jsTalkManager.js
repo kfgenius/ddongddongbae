@@ -16,7 +16,7 @@ private var dlg = [
 	"내 이름이 뭐였더라?",
 	"아아, 그래. 난 쉣빠딱...",
 	"<???>\n쉣빠딱~~~!! 아직 안 일어 났어?",
-	"오 쉣! 저 끔찍한 목소리는 지긋지긋한 소꿉친구 사오리다.\n죽기 전에 빨리 내려가야 겠다.",
+	"오 쉣!\n저 끔찍한 목소리는 지긋지긋한 소꿉친구 사오리다.\n죽기 전에 빨리 내려가야 겠다.",
 	"FadeIn",
 	"BgmOn",
 	"<쉣빠딱>\n미안... 늦어서.",
@@ -32,6 +32,7 @@ private var dlg = [
 
 function Start () {
 	text.material.color = Color.black;
+	text.fontSize = Screen.width  / 26;
 
 	delay = 0;
 	dd = 0;
