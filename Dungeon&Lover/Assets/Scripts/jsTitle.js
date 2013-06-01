@@ -4,6 +4,11 @@ var text : GUIText;
 
 private var alphaDown = true;
 
+function Start ()
+{
+	text.fontSize = Screen.width  / 30;
+}
+
 function Update ()
 {
 	if(Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1"))

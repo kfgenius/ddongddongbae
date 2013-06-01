@@ -17,7 +17,7 @@ private var dlg = [
 	"<야오희>\n크흑... 후후후...",
 	"<야오희>\n나의 전신전령, 명실상부한 패배다!!",
 	"<쉣빠딱>\n야오희...",
-	"<야오희>\n후후... 세상에는 손에 넣지 못 하기 때문에 아름다운 것도 있지.",
+	"<야오희>\n후후...\n세상에는 손에 넣지 못 하기 때문에 아름다운 것도 있지.",
 	"<야오희>\n적어도 마지막은 이 남자 품에서...",
 	"<쉣빠딱>\n거절한다!",
 	"Die",
@@ -30,6 +30,7 @@ private var dlg = [
 
 function Start () {
 	text.material.color = Color.black;
+	text.fontSize = Screen.width  / 26;
 	//yaohi.renderer.material.mainTexture.color = Color.black;
 
 	delay = 0;

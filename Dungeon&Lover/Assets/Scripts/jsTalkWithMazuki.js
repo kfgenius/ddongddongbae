@@ -18,7 +18,7 @@ private var dlg = [
 	"<쉣빠딱>\n마즈키 선생님...",
 	"In",
 	"BgmOn",
-	"<마즈키>\n크크큭... 내가 귀엽게 키운 미소녀 제자 2명을 없애다니...",
+	"<마즈키>\n크크큭...\n내가 귀엽게 키운 미소녀 제자 2명을 없애다니...",
 	"<마즈키>\n네 녀석의 피는 무슨 색이냐!",
 	"<쉣빠딱>\n빨간색.",
 	"<마즈키>\n정상이군.",
@@ -34,6 +34,7 @@ private var dlg = [
 
 function Start () {
 	text.material.color = Color.black;
+	text.fontSize = Screen.width  / 26;
 	//yaohi.renderer.material.mainTexture.color = Color.black;
 
 	delay = 0;

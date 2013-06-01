@@ -31,10 +31,18 @@ function Update()
 	var amtToRot = rotSpeed * Time.deltaTime;
 	
 	var front = Input.GetAxis("Vertical");
+	//var right = Input.GetAxis("Horizontal");
 	var ang = Input.GetAxis("Horizontal");
 	
 	transform.Translate(Vector3.forward * front * amtToMove);
-	transform.Rotate(Vector3(0, ang * amtToRot, 0));
+	if(Input.GetButton("Shift"))
+	{
+		transform.Translate(Vector3.right * ang * amtToMove);
+	}
+	else
+	{
+		transform.Rotate(Vector3(0, ang * amtToRot, 0));
+	}
 	
 	transform.position.x = Mathf.Clamp(transform.position.x, -45, 45);
 	transform.position.z = Mathf.Clamp(transform.position.z, -45, 45);
