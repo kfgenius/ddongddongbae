@@ -44,7 +44,12 @@ function Start ()
 	isHit = false;
 	
 	txtHP.material.color = txtColor;
-	
+
+	if(jsGameManager.difficult == 1)
+	{
+		hp /= 2;
+	}
+
 	Block();
 }
 

@@ -40,6 +40,11 @@ function Start ()
 	speed = 0;
 	isHit = false;
 	
+	if(jsGameManager.difficult == 1)
+	{
+		hp /= 2;
+	}
+	
 	txtHP.material.color = txtColor;
 }
 
