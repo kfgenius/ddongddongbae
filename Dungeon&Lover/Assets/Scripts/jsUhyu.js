@@ -25,7 +25,12 @@ function Start ()
 	speed = 0;
 	isHit = false;
 	dir = Vector3.up;
-	
+
+	if(jsGameManager.difficult == 1)
+	{
+		hp /= 2;
+	}
+		
 	txtHP.material.color = txtColor;
 }
 

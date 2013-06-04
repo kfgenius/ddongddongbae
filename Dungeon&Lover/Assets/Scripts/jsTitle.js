@@ -1,36 +1,34 @@
 #pragma strict
 
-var text : GUIText;
-
-private var alphaDown = true;
-
 function Start ()
 {
-	text.fontSize = Screen.width  / 30;
 }
 
 function Update ()
 {
-	if(Input.GetButtonDown("Jump") || Input.GetButtonDown("Fire1"))
-	{
-		Application.LoadLevel("talk_saori");
-	}
+}
+
+function OnGUI()
+{
+	var w = Screen.width / 4;
+	var h = Screen.height / 32;
 	
-	if(alphaDown)
-	{
-		text.material.color.a -= 0.02f;
-	}
-	else
-	{
-		text.material.color.a += 0.02f;
-	}
 	
-	if(text.material.color.a <= 0.0f)
+	var menuNum : int;
+	
+	if(GUI.Button(Rect(w, h * 20, w * 2, h * 2), "Easy Mode"))menuNum = 1;
+	if(GUI.Button(Rect(w, h * 23, w * 2, h * 2), "Normal Mode"))menuNum = 2;
+	if(GUI.Button(Rect(w, h * 26, w * 2, h * 2), "Hard Mode"))menuNum = 3;
+	if(GUI.Button(Rect(w, h * 29, w * 2, h * 2), "Hell Mode"))menuNum = 4;
+	
+	switch(menuNum)
 	{
-		alphaDown = false;
-	}
-	else if(text.material.color.a >= 1.0f)
-	{
-		alphaDown = true;
+		case 1 :
+		case 2 :
+		case 3 :
+		case 4 :
+			jsGameManager.difficult = menuNum;
+			Application.LoadLevel("talk_saori");
+			break;
 	}
 }
