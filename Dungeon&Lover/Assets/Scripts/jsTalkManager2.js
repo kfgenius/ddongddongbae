@@ -10,6 +10,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"<사오리>\n이럴 수가! 내가 이런 놈따위에게...",
 	"<쉣빠딱>\n잘가라...",
@@ -22,6 +24,23 @@ private var dlg = [
 	"<쉣빠딱>\n...",
 	"<쉣빠딱>\n학교나 가자."
 ];
+
+#else
+
+private var dlg = [
+	"<Saori>\nI can't believe this!\nHow this piece of shit could do this to me...",
+	"<SPT>\nGood-bye!",
+	"<Saori>\nKukuku, your relive too early...",
+	"<Saori>\nI'm one of three rosebuds in this neighbourhood!\nTwo still remain!",
+	"<SPT>\nWhat! They're still alive?",
+	"Die",
+	"<Saori>\nKuhahah!\nI already see your nightmare!",
+	"FadeOut",
+	"<SPT>\n...",
+	"<SPT>\nI should head to school."
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

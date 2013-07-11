@@ -11,6 +11,7 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
 
 private var dlg = [
 	"FadeIn",
@@ -32,6 +33,31 @@ private var dlg = [
 	"<야오희>\n철괴!!!",
 	"TIP : 철괴는 공격할 때 잠깐 풀립니다.\n그 때를 노려서 총알을 박아 줍시다."
 ];
+
+#else
+
+private var dlg = [
+	"FadeIn",
+	"<SPT>\nMy gosh... Not late, I suppose...",
+	"<SPT>\nOuch, the sky's so dim!\nI must be a little late... or not?",
+	"<???>\nImpressive.",
+	"<SPT>\nWho are you?",
+	"In",
+	"BgmOn",
+	"<Yaohi>\nI have never seen anyone coming to school\nin this late hour other than me.You are the second.",
+	"She's Yaohi, the bully of my school.\nI rarely saw her in the school but she was here,\nin this hour.",
+	"<Yaohi>\nI'm falling in love with you.",
+	"<SPT>\nShit~~~~!!",
+	"<Yaohi>\nLet's drive moonlit highways, would you?",
+	"<SPT>\nSo you rubbed your face to that end.",
+	"<Yaohi>\nOh... what a bold taunt.",
+	"<Yaohi>\nChallange accepted!",
+	"<Yaohi>\nBut you will never be able to make a scratch on me!",
+	"<Yaohi>\nTEKKAI!!!",
+	"TIP: TEKKA goes of temporalily on Yaohi's attack.\nMake your bullet's way on precise timing"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

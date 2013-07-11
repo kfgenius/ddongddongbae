@@ -13,6 +13,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"FadeIn",
 	"<어휴>\n크헉! 이건 말도 안돼!",
@@ -45,9 +47,47 @@ private var dlg = [
 	"반복되는 지겨운 일상이지만\n이런 평화도 미소녀를 물리쳤기 때문이겠지.",
 	"도시의 평화를 지키는 쉣빠닥! 30세!",
 	"솔로다!",
-	"제작 : 똥똥배\nBGM : 창도 단편제 음악\n효과음 : RPG2000 리소스",
 	"THE END"
 ];
+
+#else
+
+private var dlg = [
+	"FadeIn",
+	"<Gosh>\nAh, nonsense!",
+	"<Gosh>\nNooo! I don't wanna die!",
+	"FadeOut",
+	"Effect",
+	"<Gosh>\nAAAaaaAAAaaaAAArgh!",
+	"Die",
+	"FadeIn",
+	"<SPT>\nFinally, it's all over...",
+	"<Police>\nHey.",
+	"<SPT>\nYes?",
+	"<Police>\nYou killed all these girls?",
+	"<SPT>\nOh! well, er...",
+	"<Police>\nExcuses are futile!\nYou have no right to remain silent and eligible to tortures.",
+	"<SPT>\nAlas!",
+	"<SPT>\nMy only wish in the jail is a piece of hamburger steak!",
+	"BgmOn",
+	"<Police>\nNo, just kidding.",
+	"<SPT>\nOh?",
+	"<Police>\nGOOD JOB!",
+	"<Police>\nRosebuds, the town's headaches, are gone now.\nWe can have a hope.",
+	"<Police>\nYou did a great deed.\nHow about being a police?",
+	"<SPT>\nPolice? me?",
+	"<Police>\nOh yeah.",
+	"FadeOut",
+	"So I became a policeman",
+	"And even today, to protect justice,",
+	"I give traffic signs with glowing baton in my hand.",
+	"Tedious repeating everyday life,\ncame at last over dead rosebuds.",
+	"I'm Shit-pa-tack, guardian of the city, aged 30!",
+	"Virgin!",
+	"THE END"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

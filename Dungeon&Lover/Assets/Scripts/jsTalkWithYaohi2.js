@@ -13,6 +13,8 @@ private var dd : int;
 private var dlg_no = 0;
 
 
+#if def KOREAN
+
 private var dlg = [
 	"<야오희>\n크흑... 후후후...",
 	"<야오희>\n나의 전신전령, 명실상부한 패배다!!",
@@ -27,6 +29,25 @@ private var dlg = [
 	"FadeOut",
 	"그렇다, 내가 지면 이제 인류에 희망은 없는 것이다!"
 ];
+
+#else
+
+private var dlg = [
+	"<Yaohi>\nKu... huhu...",
+	"<Yaohi>\nMy defeat, decesive and total!",
+	"<SPT>\nYaohi...",
+	"<Yaohi>\nHu hu...\nYour independancy makes you more... beautiful.",
+	"<Yaohi>\nMy last hope... is your hug...",
+	"<SPT>\nNever.",
+	"Die",
+	"<Yaohi>\nKWAAAAA~",
+	"<SPT>\nClasses are already over...",
+	"<SPT>\nBut I should continue...\nto get rid of the last rosebud.",
+	"FadeOut",
+	"Oh, now I'm the last hope of the mankind!"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

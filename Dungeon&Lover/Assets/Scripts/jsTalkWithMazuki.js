@@ -11,6 +11,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"FadeIn",
 	"<쉣빠딱>\n... 아무도 없나...",
@@ -31,6 +33,31 @@ private var dlg = [
 	"<마즈키>\n널 사회에서 매장하는 게 나의 의무.",
 	"<마즈키>\n잘 봐둬라. 나의 스텝은 모든 공격을 흘려보낸다!"
 ];
+
+#else
+
+private var dlg = [
+	"FadeIn",
+	"<SPT>\n...\nIs anybody there?",
+	"<???>\nYou're so brave. My true pupil.",
+	"<SPT>\nTeacher Mazuki...",
+	"In",
+	"BgmOn",
+	"<Mazuki>\nKukuku...\nYou eliminated two of my dear rosebud pupils...",
+	"<Mazuki>\nWhat color is your blood?",
+	"<SPT>\nRed.",
+	"<Mazuki>\nNormal.",
+	"<Mazuki>\nAnyway...",
+	"<Mazuki>\nI don't have a bad feeling on you.\nHere's your last chance.",
+	"<Mazuki>\nYou may survive if you agree to be my pet.",
+	"<SPT>\nI would rather be a Socrates satisfied than a pet of yours!",
+	"<Mazuki>\nOh... my lessons ware so in vain.",
+	"<Mazuki>\nNow there's no way left.",
+	"<Mazuki>\nIt's my obligation to put you out of this society!",
+	"<Mazuki>\nHave a look on my step,\nwhich slips through every attacks on me!"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

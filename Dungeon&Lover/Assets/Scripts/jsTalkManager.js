@@ -9,6 +9,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"으음...",
 	"꽤나 오래 잤던 것 같다.",
@@ -29,6 +31,32 @@ private var dlg = [
 	"<사오리>\n하지만 말야.",
 	"<사오리>\n난 농담을 아주 싫어해!"
 ];
+
+#else
+
+private var dlg = [
+	"Mmm...",
+	"I've slept for quite a while.",
+	"Oops... The sleep was so long.\nI can hardly remember my own name.",
+	"My name, what was it?",
+	"Aww... Oh, I see, I'm Shit-pa-tack.",
+	"<???>\nShit-pa-tak~~~!!\nStill sleeping?",
+	"Oh, Shit!\nThat nightmare of a voice must be that of Saori,\nmy wearing friend from childhood.",
+	"Got to hurry before I get killed.",
+	"FadeIn",
+	"BgmOn",
+	"<SPT>\nI'm so sorry... to be late.",
+	"<Saori>\nWe are running late again.\nYou're killing me.",
+	"This monster is named Saori.\nMy childhood friend.\nShe's a human, to your surprise.",
+	"Everyone was not like this mess,\nbut an atomic bomb changed everything.",
+	"<Saori>\nMy gosh, always oversleeping...\nShame on you.",
+	"<SPT>\nI feel shame on your face.",
+	"<Saori>\nAhahaha! What a joke. Nice try.",
+	"<Saori>\nBut...",
+	"<Saori>\nI don't like joke. Seriously."
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;
@@ -94,7 +122,7 @@ function OnGUI()
 		}
 		else if(dlg[dlg_no] == "BgmOn")
 		{
-			AudioSource.PlayClipAtPoint(bgm, Vector3(0, 0, 0));		
+			AudioSource.PlayClipAtPoint(bgm, Vector3(0, 3.3, -2));		
 			dlg_no++;
 			return;		
 		}

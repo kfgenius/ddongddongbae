@@ -10,6 +10,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"BgmOn",
 	"<쉣빠딱>\n크헉, 이게 도대체...?",
@@ -32,6 +34,33 @@ private var dlg = [
 	"<쉣빠딱>\n나도 피하지 않겠어!",
 	"<어휴>\n와라! 쉣빠딱!\n하늘로 가자꾸나!"
 ];
+
+#else
+
+private var dlg = [
+	"BgmOn",
+	"<SPT>\nArgh, What the...?",
+	"<???>\nIt has been a long time... Shit-pa-tack.",
+	"<SPT>\nThe voice!",
+	"<SPT>\nOh my, you must be dead-",
+	"FadeIn",
+	"<SPT>\nGosh!",
+	"<Gosh>\nNow I feel sorry to be alive, huh.",
+	"<SPT>\nSo you chanted every rosebuds in this town\nto this horrible fate?",
+	"<Gosh>\nNo, never, an atomic bomb, you know.\nNo changes on settings.",
+	"<SPT>\nWell, comic books which changes background sets sucks.",
+	"<Gosh>\nWhatever.\nI forefeited my humanity to have revenge on you!",
+	"<SPT>\nYou were not one of mankind at first...\nwhat the hell is your resentment?",
+	"<Gosh>\n......",
+	"<Gosh>\nI forgot.",
+	"<Gosh>\nBut my anger never cease!",
+	"<Gosh>\nThirsty.. I'm burning! agony! Arghhhhh....",
+	"<SPT>\nYour mimicking makes me sick...",
+	"<SPT>\nAll right, come on!",
+	"<Gosh>\nCome, Shit-pa-tack! to hell!"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;
