@@ -101,8 +101,8 @@ function OnTriggerEnter(coll : Collider)
 		Destroy(coll.gameObject);
 		
 		//transform.LookAt(Vector3(target.position.x, transform.position.y, target.position.z));
-		transform.position.x = Random.RandomRange(-40.0f, 40.0f);
-		transform.position.z = Random.RandomRange(-40.0f, 40.0f);
+		transform.position.x = Random.RandomRange(-35.0f, 35.0f);
+		transform.position.z = Random.RandomRange(-35.0f, 35.0f);
 		
 		hp--;
 	}
