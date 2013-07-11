@@ -12,6 +12,8 @@ private var delay : int;
 private var dd : int;
 private var dlg_no = 0;
 
+#if def KOREAN
+
 private var dlg = [
 	"<마즈키>\n푸헉!",
 	"<마즈키>\n흐흐, 훌륭하구나.\n멋진 샷이었다.",
@@ -24,6 +26,23 @@ private var dlg = [
 	"<쉣빠딱>\n음... 뭐지 이 한기는...",
 	"<쉣빠딱>\n모든 미소녀를 쓰러뜨렸을 텐데?"
 ];
+
+#else
+
+private var dlg = [
+	"<Mazuki>\nArghhh!",
+	"<Mazuki>\nGreat shot, nicely done.",
+	"<Mazuki>\nPupil must overcome his master, sooner or later.",
+	"<Mazuki>\nMy last wish - Can I see your face?",
+	"<SPT>\nNoo~O",
+	"Die",
+	"<Mazuki>\nFuck!",
+	"<SPT>\nNow I killed last of these abomination, didn't I?",
+	"<SPT>\nOh, what a chill..",
+	"<SPT>\nRosebuds shall walk this world no more!"
+];
+
+#endif
 
 function Start () {
 	text.material.color = Color.black;

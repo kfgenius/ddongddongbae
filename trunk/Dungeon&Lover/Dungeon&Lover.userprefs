@@ -1,17 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\jsHeroMove.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\jsTitle.js">
     <Files>
-      <File FileName="Assets\Scripts\jsHeroMove.js" Line="38" Column="21" />
-      <File FileName="Assets\Scripts\jsTalkManager.js" Line="19" Column="10" />
-      <File FileName="Assets\Scripts\jsTalkManager2.js" Line="28" Column="36" />
-      <File FileName="Assets\Scripts\jsTalkWithYaohi.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\jsGameManager.js" Line="15" Column="2" />
-      <File FileName="Assets\Scripts\jsTalkWithYaohi2.js" Line="20" Column="17" />
-      <File FileName="Assets\Scripts\jsTalkWithMazuki.js" Line="21" Column="18" />
-      <File FileName="Assets\Scripts\jsTalkWithMazuki2.js" Line="30" Column="36" />
-      <File FileName="Assets\Scripts\jsTalkWithUhyu.js" Line="29" Column="27" />
-      <File FileName="Assets\Scripts\jsTalkWithUhyu2.js" Line="54" Column="36" />
+      <File FileName="Assets\Scripts\jsTitle.js" Line="37" Column="33" />
+      <File FileName="Assets\Scripts\jsCredit.js" Line="24" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

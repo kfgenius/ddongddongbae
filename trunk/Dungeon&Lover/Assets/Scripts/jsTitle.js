@@ -21,6 +21,8 @@ function OnGUI()
 	if(GUI.Button(Rect(w, h * 26, w * 2, h * 2), "Hard Mode"))menuNum = 3;
 	if(GUI.Button(Rect(w, h * 29, w * 2, h * 2), "Hell Mode"))menuNum = 4;
 	
+	if(GUI.Button(Rect(0, Screen.height - 20, 80, 20), "Credit"))menuNum = 5;
+	
 	switch(menuNum)
 	{
 		case 1 :
@@ -29,6 +31,10 @@ function OnGUI()
 		case 4 :
 			jsGameManager.difficult = menuNum;
 			Application.LoadLevel("talk_saori");
+			break;
+			
+		case 5:
+			Application.LoadLevel("Credit");
 			break;
 	}
 }
