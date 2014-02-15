@@ -1,8 +1,6 @@
 #include "srpg.h"
 #include "donglib.h"
 
-#define COMMAND_WINDOW_WIDTH	100
-
 //명령
 char* battle_commands[] = {"공격", "마법", "휴식", "대기"};
 
@@ -19,15 +17,7 @@ enum
 
 CSRPG::CSRPG(char* map_name, char* tile1_name, char* tile2_name) : CRPG(map_name, tile1_name, tile2_name)
 {
-	jdd->LoadPicture("BLUE", "DATA\\blue.gif", NULL, TRUE);	//이동 가능 영역
-
-	for(int i = 0; i < x_size; i++)
-	{
-		for(int j = 0; j < y_size; j++)
-		{
-			map[i][j].distance = MOVE_DISABLE;
-		}
-	}
+	jdd->LoadPicture("BLUE", "DATA\\blue.gif", NULL, true);	//이동 가능 영역
 
 	command = new CCommand(battle_commands, 0, 0, 630, 4);
 }
@@ -86,20 +76,19 @@ void CSRPG::Control()
 				else if(GetKey(vkey_enter))
 				{
 					//명령창 위치
-					int px = unit[active_unit].GetRealX() + TILE_SIZE-scroll_x;
-					int py = unit[active_unit].GetRealY() + TILE_SIZE-scroll_y;
-					if(px + COMMAND_WINDOW_WIDTH > SCREEN_WIDTH)
+					int px = unit[active_unit].GetRealX()+TILE_SIZE-scroll_x;
+					int py = unit[active_unit].GetRealY()+TILE_SIZE-scroll_y;
+					if(px + 100 > SCREEN_WIDTH)
 					{
-						px -= COMMAND_WINDOW_WIDTH + TILE_SIZE;
+						px -= 100 + TILE_SIZE;
 					}
 					if(py + 80 > SCREEN_HEIGHT)
 					{
-						py -= COMMAND_WINDOW_WIDTH + TILE_SIZE;
+						py -= 100 + TILE_SIZE;
 					}
 
 					//명령창 생성
-					command->com_dlg.SetDlg(px, py, COMMAND_WINDOW_WIDTH, 4);
-					command->com_dlg.MakeDlgBox("_commandbox");
+					command->comdlg.SetDlg(px, py, 100, 4);
 					command->Init(battle_commands);
 					command->AddCom(1);
 					command->AddCom(2);
@@ -129,8 +118,8 @@ void CSRPG::Control()
 	}
 
 	//이동하고 있는 유닛이 없을 때 다음 이동할 유닛 찾기
-	bool moveable = FALSE;
-	for(int i = 0; i < unit_max; i++)
+	bool moveable = false;
+	for(int i = 0; i < unit_max; ++i)
 	{
 		if(unit[i].ap >= 100 && unit[i].GetLife())
 		{
@@ -142,7 +131,7 @@ void CSRPG::Control()
 
 			SetActiveUnit(i);
 			SetStartPoint(unit[i].GetX(), unit[i].GetY(), unit[i].move);
-			moveable = TRUE;
+			moveable = true;
 			mode = mode_control_unit;
 			break;
 		}
@@ -151,7 +140,7 @@ void CSRPG::Control()
 	//AP 회복
 	if(!moveable)
 	{
-		for(int i=0; i<unit_max; i++)
+		for(int i=0; i<unit_max; ++i)
 		{
 			unit[i].ap += unit[i].quickness;
 		}
@@ -176,19 +165,16 @@ void CSRPG::ShowMoveAble()
 	//투명해졌다가 뚜렷해지는 효과
 	static int delay;
 	++delay;
-	if(delay >= 64)
-	{
-		delay = 0;
-	}
+	if(delay>=64)delay=0;
 
-	float strlength = float(abs(32 - delay)) / 100;
+	float strlength = float(abs(32-delay))/100;
 	JPictureInfo pi;
 	pi.SetOpacity(strlength);
 	jdd->SetPictureInfo("BLUE", &pi);
 
-	for(int j = start_y; j <= end_y; j++)
+	for(int j = start_y; j <= end_y; ++j)
 	{
-		for(int i = start_x; i <= end_x; i++)
+		for(int i = start_x; i <= end_x; ++i)
 		{
 			int px = i * TILE_SIZE - scroll_x;
 			int py = j * TILE_SIZE - scroll_y;
@@ -214,7 +200,7 @@ void CSRPG::Process()
 	}
 
 	//유닛들 행동
-	for(int i=0; i<unit_max; i++)
+	for(int i=0; i<unit_max; ++i)
 	{
 		unit[i].Action();
 	}
@@ -230,8 +216,8 @@ void CSRPG::Process()
 
 	//출력
 	Draw1F();
-	ShowMoveAble();
 	Draw2F();
+	ShowMoveAble();
 	Draw3F();
 
 	//페이드인
@@ -264,18 +250,18 @@ void CSRPG::SetStartPoint(int x, int y, int move_max)
 	point.y = MaxMin(y, 0, y_size-1);
 
 	//맵 초기화
-	for(int i = 0; i < x_size; i++)
+	for(int i = 0; i < x_size; ++i)
 	{
-		for(int j = 0; j < y_size; j++)
+		for(int j = 0; j < y_size; ++j)
 		{
 			map[i][j].road = MOVE_DISABLE;
 		}
 	}
 
 	//맵 초기화(임시)
-	for(int i = 0; i < x_size; i++)
+	for(int i = 0; i < x_size; ++i)
 	{
-		for(int j = 0; j < y_size; j++)
+		for(int j = 0; j < y_size; ++j)
 		{
 			map[i][j].distance = MOVE_DISABLE;
 		}
@@ -288,9 +274,9 @@ void CSRPG::SetStartPoint(int x, int y, int move_max)
 void CSRPG::SetEndPoint(int x, int y)
 {
 	//맵 초기화
-	for(int i = 0; i < x_size; i++)
+	for(int i = 0; i < x_size; ++i)
 	{
-		for(int j = 0; j < y_size; j++)
+		for(int j = 0; j < y_size; ++j)
 		{
 			map[i][j].distance = MOVE_DISABLE;
 		}
@@ -352,9 +338,9 @@ bool CSRPG::MoveNextPointFast(int move)
 		else if(best_dir==2)--point.y;
 		else if(best_dir==3)++point.y;
 
-	//목적지에 도착하면 TRUE, 아니면 FALSE
-	if(map[point.x][point.y].distance==0)return TRUE;
-		else return FALSE;
+	//목적지에 도착하면 true, 아니면 false
+	if(map[point.x][point.y].distance==0)return true;
+		else return false;
 }
 
 bool CSRPG::MoveNextPoint(int move)
@@ -365,7 +351,7 @@ bool CSRPG::MoveNextPoint(int move)
 	//첫째로 검사하는 곳을 랜덤하게 정하기 위한 플래그
 	//(우선순위가 정해져 있으면 패턴이 단순해서 보기에 안 좋다.)
 	bool left_ok, right_ok, up_ok, down_ok;
-	left_ok=right_ok=up_ok=down_ok=FALSE;
+	left_ok=right_ok=up_ok=down_ok=false;
 
 	while(!left_ok || !right_ok || !up_ok || !down_ok)
 	{
@@ -379,7 +365,7 @@ bool CSRPG::MoveNextPoint(int move)
 				best_dir=0;
 				best_expense=map[point.x-1][point.y].distance;
 			}
-			left_ok=TRUE;
+			left_ok=true;
 		}
 		//오른쪽 검사
 		else if(ran==1)
@@ -389,7 +375,7 @@ bool CSRPG::MoveNextPoint(int move)
 				best_dir=1;
 				best_expense=map[point.x+1][point.y].distance;
 			}
-			right_ok=TRUE;
+			right_ok=true;
 		}
 		//위 검사
 		else if(ran==2)
@@ -399,7 +385,7 @@ bool CSRPG::MoveNextPoint(int move)
 				best_dir=2;
 				best_expense=map[point.x][point.y-1].distance;
 			}
-			up_ok=TRUE;
+			up_ok=true;
 		}
 		//아래 검사
 		else if(ran==3)
@@ -409,7 +395,7 @@ bool CSRPG::MoveNextPoint(int move)
 				best_dir=3;
 				best_expense=map[point.x][point.y+1].distance;
 			}
-			down_ok=TRUE;
+			down_ok=true;
 		}
 	}
 
@@ -419,9 +405,9 @@ bool CSRPG::MoveNextPoint(int move)
 		else if(best_dir==2)--point.y;
 		else if(best_dir==3)++point.y;
 
-	//목적지에 도착하면 TRUE, 아니면 FALSE
-	if(map[point.x][point.y].distance==0)return TRUE;
-		else return FALSE;
+	//목적지에 도착하면 true, 아니면 false
+	if(map[point.x][point.y].distance==0)return true;
+		else return false;
 }
 
 //유닛 활성화
@@ -431,77 +417,38 @@ void CSRPG::SetActiveUnit(int id)
 	map[unit[active_unit].GetX()][unit[active_unit].GetY()].unit = 0xff;	//활성화 유닛은 특수취급
 
 	//유닛의 속성에 따라 이동용 맵 생성
-	for(int j = 0; j < y_size; j++)
+	for(int j=0; j<y_size; ++j)
 	{
-		for(int i = 0; i < x_size; i++)
+		for(int i=0; i<x_size; ++i)
 		{
 			if(unit[active_unit].move_bonus == NORMAL_MOVE)
 			{
-				if(map[i][j].object != 0xff)
-				{
-					map[i][j].move = tile_mov[1][map[i][j].object];
-				}
-				else
-				{
-					map[i][j].move = tile_mov[0][map[i][j].ground];
-				}
+				if(map[i][j].object!=0xff)map[i][j].move = tile_mov[1][map[i][j].object];
+				else map[i][j].move = tile_mov[0][map[i][j].ground];
 			}
 			else if(unit[active_unit].move_bonus == WATER_MOVE)
 			{
-				if(map[i][j].object != 0xff)
-				{
-					map[i][j].move = tile_mov[1][map[i][j].object] + 1;
-				}
-				else if(tile_attr[0][map[i][j].ground] == 1)
-				{
-					map[i][j].move = 1; //수상 유닛의 이동 보너스
-				}
-				else
-				{
-					map[i][j].move = tile_mov[0][map[i][j].ground] + 1;	//지상 이동 핸디캡
-				}
+				if(map[i][j].object!=0xff)map[i][j].move = tile_mov[1][map[i][j].object]+1;
+				else if(tile_attr[0][map[i][j].ground] == 1)map[i][j].move = 1; //수상 유닛의 이동 보너스
+				else map[i][j].move = tile_mov[0][map[i][j].ground]+1;
 			}
 			else if(unit[active_unit].move_bonus == FIRE_MOVE)
 			{
-				if(map[i][j].object != 0xff)
-				{
-					map[i][j].move = tile_mov[1][map[i][j].object];
-				}
-				else if(tile_attr[0][map[i][j].ground] == 2)
-				{
-					map[i][j].move = 1; //불 유닛의 이동 보너스
-				}
-				else
-				{
-					map[i][j].move = tile_mov[0][map[i][j].ground];
-				}
+				if(map[i][j].object!=0xff)map[i][j].move = tile_mov[1][map[i][j].object];
+				else if(tile_attr[0][map[i][j].ground] == 2)map[i][j].move = 1; //불 유닛의 이동 보너스
+				else map[i][j].move = tile_mov[0][map[i][j].ground];
 			}
 			else if(unit[active_unit].move_bonus == SPECIAL_MOVE)
 			{
-				if(map[i][j].object != 0xff)
-				{
-					map[i][j].move = tile_mov[1][map[i][j].object];
-				}
-				else
-				{
-					map[i][j].move = tile_mov[0][map[i][j].ground];
-				}
+				if(map[i][j].object!=0xff)map[i][j].move = tile_mov[1][map[i][j].object];
+				else map[i][j].move = tile_mov[0][map[i][j].ground];
 
-				if(map[i][j].move != 99)
-				{
-					map[i][j].move = 2;		//이동 가능한 모든 지형은 똑같은 힘으로 이동
-				}
+				if(map[i][j].move != 99)map[i][j].move = 2;		//이동 가능한 모든 지형은 똑같은 힘으로 이동
 			}
 			else if(unit[active_unit].move_bonus == SKY_MOVE)
 			{
-				if(tile_mov[0][map[i][j].ground] != 99)
-				{
-					map[i][j].move = 2;	//이동 불가 지형(벽, 암흑지역) 빼고 모두 보통 이동력
-				}
-				else
-				{
-					map[i][j].move = 99;
-				}
+				if(tile_mov[0][map[i][j].ground] != 99)map[i][j].move = 2;	//이동 불가 지형(벽, 암흑지역) 빼고 모두 보통 이동력
+				else map[i][j].move = 99;
 			}
 			else if(unit[active_unit].move_bonus == GHOST_MOVE)
 			{
@@ -509,10 +456,7 @@ void CSRPG::SetActiveUnit(int id)
 			}
 
 			//이동력 0이면 이동 불가 지형
-			if(map[i][j].move == 99)
-			{
-				map[i][j].move = MOVE_DISABLE;
-			}
+			if(map[i][j].move == 99)map[i][j].move = MOVE_DISABLE;
 		}
 	}
 }
